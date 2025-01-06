@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Enum\Permissions;
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class RoleController extends Controller
+{
+    use AuthorizesRequests;
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $this->authorize(Permissions::ROLE_READ);
+
+        $roles = Role::where('team_id', getPermissionsTeamId())->get();
+        return view('pages.role.index', ['roles' => $roles]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $this->authorize(Permissions::ROLE_CREATE);
+
+        return view('pages.role.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $this->authorize(Permissions::ROLE_CREATE);
+
+        $teamId = getPermissionsTeamId();
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->where('team_id', $teamId)],
+        ]);
+
+        Role::create(['name' => $validated['name'], 'team_id' => $teamId]);
+        return redirect()
+            ->route('role.index')
+            ->withSuccess('Role created successfully');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Role $role)
+    {
+        $this->authorize(Permissions::ROLE_UPDATE);
+
+        if ($role->team_id != getPermissionsTeamId()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($role->name == 'Super Admin') {
+            return redirect()->route('role.index')->withError('Super Admin cannot be edited');
+        }
+
+        return view('pages.role.edit', ['role' => $role]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Role $role)
+    {
+        $this->authorize(Permissions::ROLE_UPDATE);
+
+        if ($role->team_id != getPermissionsTeamId()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($role->name == 'Super Admin') {
+            return redirect()->route('role.index')->withError('Super Admin cannot be edited');
+        }
+
+        $teamId = getPermissionsTeamId();
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->where('team_id', $teamId)->ignore($role->id)],
+        ]);
+
+        $role->name = $validated['name'];
+        $role->save();
+        return redirect()
+            ->route('role.index')
+            ->withSuccess('Role updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Role $role)
+    {
+        $this->authorize(Permissions::ROLE_DELETE);
+
+        if ($role->team_id != getPermissionsTeamId()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($role->name == 'Super Admin') {
+            return redirect()->route('role.index')->withError('Super Admin cannot be deleted');
+        }
+
+        $role->delete();
+        return redirect()
+            ->route('role.index')
+            ->withSuccess('Role deleted successfully');
+    }
+
+    public function assignPermissions(Request $request, Role $role)
+    {
+        $this->authorize(Permissions::ROLE_ASSIGN_PERMISSIONS);
+
+        if ($role->team_id != getPermissionsTeamId()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($role->name == 'Super Admin') {
+            return redirect()->route('role.index')->withError('Super Admin cannot be assigned permissions');
+        }
+
+        // allow all permissions in assign page for superadmin
+        if ($request->user()->team_id == 1) {
+            $permissions = Permission::all();
+        } else {
+            $teamSuperAdminRole = Role::where(['team_id' => $role->team_id, 'name' => 'Super Admin'])->first();
+            $permissions = $teamSuperAdminRole->permissions;
+        }
+
+        return view('pages.role.assign-permissions', ['role' => $role, 'permissions' => $permissions]);
+    }
+
+    public function saveAssignPermissions(Request $request, Role $role)
+    {
+        $this->authorize(Permissions::ROLE_ASSIGN_PERMISSIONS);
+
+        if ($role->team_id != getPermissionsTeamId()) {
+            abort(403, 'Unauthorized');
+        }
+
+        if ($role->name == 'Super Admin') {
+            return redirect()->route('role.index')->withError('Super Admin cannot be assigned permissions');
+        }
+
+        $role->syncPermissions($request->permissions);
+        return redirect()
+            ->route('role.index')
+            ->withSuccess('Permissions assigned successfully');
+    }
+}
