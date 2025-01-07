@@ -12,30 +12,33 @@
         <span class="menu-header-text">User Management</span>
     </li>
 
-    @canAny(['team__read', 'team__create'])
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-store"></i>
-                <div class="text-truncate">Teams</div>
-            </a>
-            <ul class="menu-sub">
-                @can('team__create')
-                    <li class="menu-item">
-                        <a href="{{ route('team.create') }}" class="menu-link">
-                            <div class="text-truncate">Add Team</div>
-                        </a>
-                    </li>
-                @endcan
-                @can('team__read')
-                    <li class="menu-item">
-                        <a href="{{ route('team.index') }}" class="menu-link">
-                            <div class="text-truncate">List Team</div>
-                        </a>
-                    </li>
-                @endcan
-            </ul>
-        </li>
-    @endcan
+    {{-- Enable Team Management only for Super Admin Team --}}
+    @if (auth()->user()->team_id == 1)
+        @canAny(['team__read', 'team__create'])
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-store"></i>
+                    <div class="text-truncate">Teams</div>
+                </a>
+                <ul class="menu-sub">
+                    @can('team__create')
+                        <li class="menu-item">
+                            <a href="{{ route('team.create') }}" class="menu-link">
+                                <div class="text-truncate">Add Team</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('team__read')
+                        <li class="menu-item">
+                            <a href="{{ route('team.index') }}" class="menu-link">
+                                <div class="text-truncate">List Team</div>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
+    @endif
 
     @canAny(['role__read', 'role__create'])
         <li class="menu-item">
@@ -87,33 +90,36 @@
         </li>
     @endcan
 
-    <!-- Modules -->
-    <li class="menu-header small text-uppercase">
-        <span class="menu-header-text">Modules</span>
-    </li>
-
-    @canAny(['article__read', 'article__create'])
-        <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-news"></i>
-                <div class="text-truncate">Articles</div>
-            </a>
-            <ul class="menu-sub">
-                @can('article__create')
-                    <li class="menu-item">
-                        <a href="{{ route('article.create') }}" class="menu-link">
-                            <div class="text-truncate">Add Article</div>
-                        </a>
-                    </li>
-                @endcan
-                @can('article__read')
-                    <li class="menu-item">
-                        <a href="{{ route('article.index') }}" class="menu-link">
-                            <div class="text-truncate">List Article</div>
-                        </a>
-                    </li>
-                @endcan
-            </ul>
+    {{-- Disable Modules for Super Admin Team --}}
+    @if (auth()->user()->team_id != 1)
+        <!-- Modules -->
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">Modules</span>
         </li>
-    @endcan
+
+        @canAny(['article__read', 'article__create'])
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons bx bx-news"></i>
+                    <div class="text-truncate">Articles</div>
+                </a>
+                <ul class="menu-sub">
+                    @can('article__create')
+                        <li class="menu-item">
+                            <a href="{{ route('article.create') }}" class="menu-link">
+                                <div class="text-truncate">Add Article</div>
+                            </a>
+                        </li>
+                    @endcan
+                    @can('article__read')
+                        <li class="menu-item">
+                            <a href="{{ route('article.index') }}" class="menu-link">
+                                <div class="text-truncate">List Article</div>
+                            </a>
+                        </li>
+                    @endcan
+                </ul>
+            </li>
+        @endcan
+    @endif
 </ul>

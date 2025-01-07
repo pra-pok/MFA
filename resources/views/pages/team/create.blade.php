@@ -46,9 +46,9 @@
                             </div>
                             <div class="col-sm-4">
                                 <div class="mb-6">
-                                    <label class="form-label" for="password_confirmation">Confirm Password</label>
-                                    <input type="password" class="form-control" id="password_confirmation"
-                                        name="password_confirmation" placeholder="Confirm Password">
+                                    <label class="form-label" for="admin_password_confirmation">Confirm Password</label>
+                                    <input type="password" class="form-control" id="admin_password_confirmation"
+                                        name="admin_password_confirmation" placeholder="Confirm Password">
                                 </div>
                             </div>
                         </div>

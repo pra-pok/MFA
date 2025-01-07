@@ -100,7 +100,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role)
+    public function destroy(Request $request, Role $role)
     {
         $this->authorize(Permissions::ROLE_DELETE);
 
@@ -110,6 +110,10 @@ class RoleController extends Controller
 
         if ($role->name == 'Super Admin') {
             return redirect()->route('role.index')->withError('Super Admin cannot be deleted');
+        }
+
+        if ($request->user()->getRoleNames()->contains($role->name)) {
+            return redirect()->route('role.index')->withError('You cannot delete your role');
         }
 
         $role->delete();

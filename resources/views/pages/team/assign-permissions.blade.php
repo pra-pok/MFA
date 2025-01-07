@@ -17,10 +17,13 @@
                     @csrf
 
                     @php
-                        $permissionGroups = collect($permissions)->groupBy(function ($permission) {
-                            $key = explode('__', $permission)[0];
-                            return $key;
-                        });
+                        $permissionGroups = collect($permissions)
+                            ->groupBy(function ($permission) {
+                                $key = explode('__', $permission)[0];
+                                return $key;
+                            })
+                            ->except(['team']);
+
                         $ownedPermissions = $teamSuperAdminRole->permissions->pluck('name')->toArray();
                     @endphp
 
