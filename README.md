@@ -30,7 +30,8 @@
 
     php artisan migrate --seed
 
-Admin Login & Demo Team login can be found in UserTableSeeder
+Admin Login & Demo Team login can be found in UserTableSeeder  
+Template Url: https://github.com/themeselection/sneat-bootstrap-html-admin-template-free
 
 ### Permission Management
 

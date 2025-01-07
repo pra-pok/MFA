@@ -95,7 +95,7 @@
                                 </g>
                             </svg>
                         </span>
-                        <span class="app-brand-text demo menu-text fw-bold ms-2">sneat</span>
+                        <span class="app-brand-text demo menu-text fw-bold ms-2">mfa</span>
                     </a>
 
                     <a href="javascript:void(0);"
@@ -140,8 +140,8 @@
                                         Nepal</a>
                                 </div>
                                 <div class="d-none d-lg-inline-block">
-                                    <a href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template-free/html/"
-                                        class="footer-link me-4" target="_blank">UI Demo</a>
+                                    <a href="https://edigitalnepal.com/privacy-policy" class="footer-link me-4"
+                                        target="_blank">Privacy Policy</a>
                                     {{-- <a href="https://themeselection.com/" target="_blank"
                                         class="footer-link me-4">More Themes</a>
 

@@ -15,7 +15,7 @@
     @canAny(['team__read', 'team__create'])
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <i class="menu-icon tf-icons bx bx-store"></i>
                 <div class="text-truncate">Teams</div>
             </a>
             <ul class="menu-sub">
@@ -40,7 +40,7 @@
     @canAny(['role__read', 'role__create'])
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
                 <div class="text-truncate">Roles</div>
             </a>
             <ul class="menu-sub">
@@ -65,7 +65,7 @@
     @canAny(['user__read', 'user__create'])
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <i class="menu-icon tf-icons bx bx-user"></i>
                 <div class="text-truncate">Users</div>
             </a>
             <ul class="menu-sub">
@@ -95,7 +95,7 @@
     @canAny(['article__read', 'article__create'])
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons bx bx-dock-top"></i>
+                <i class="menu-icon tf-icons bx bx-news"></i>
                 <div class="text-truncate">Articles</div>
             </a>
             <ul class="menu-sub">
