@@ -19,7 +19,7 @@ class ArticleController extends Controller
         $this->authorize(Permissions::ARTICLE_READ);
 
         $articles = Article::with('user')->get();
-        return view('pages.article.index', ['articles' => $articles]);
+        return view('admin.components.article.index', ['articles' => $articles]);
     }
 
     /**

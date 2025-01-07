@@ -22,14 +22,14 @@ class TeamController extends Controller
         $this->authorize(Permissions::TEAM_READ);
 
         $teams = Team::all();
-        return view('pages.team.index', ['teams' => $teams]);
+        return view('admin.components.team.index', ['teams' => $teams]);
     }
 
     public function create(Request $request)
     {
         $this->authorize(Permissions::TEAM_CREATE);
 
-        return view('pages.team.create');
+        return view('admin.components.team.create');
     }
 
     public function store(Request $request)
@@ -71,7 +71,7 @@ class TeamController extends Controller
     {
         $this->authorize(Permissions::TEAM_UPDATE);
 
-        return view('pages.team.edit', ['team' => $team]);
+        return view('admin.components.team.edit', ['team' => $team]);
     }
 
     public function update(Request $request, Team $team)
@@ -121,7 +121,7 @@ class TeamController extends Controller
 
         $teamSuperAdminRole = Role::where(['team_id' => $team->id, 'name' => 'Super Admin'])->first();
 
-        return view('pages.team.assign-permissions', [
+        return view('admin.components.team.assign-permissions', [
             'team' => $team,
             'teamSuperAdminRole' => $teamSuperAdminRole,
             'permissions' => $permissions

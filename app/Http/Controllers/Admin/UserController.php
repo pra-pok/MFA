@@ -23,7 +23,7 @@ class UserController extends Controller
         $this->authorize(Permissions::USER_READ);
 
         $users = User::where('team_id', getPermissionsTeamId())->get();
-        return view('pages.user.index', ['users' => $users]);
+        return view('admin.components.user.index', ['users' => $users]);
     }
 
     /**
@@ -33,11 +33,11 @@ class UserController extends Controller
     {
         $this->authorize(Permissions::USER_CREATE);
 
-        return view('pages.user.create');
+        return view('admin.components.user.create');
     }
 
     /**
-     * Store a newly created resource in storage.   
+     * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
@@ -72,7 +72,7 @@ class UserController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        return view('pages.user.edit', ['user' => $user]);
+        return view('admin.components.user.edit', ['user' => $user]);
     }
 
     /**
@@ -141,7 +141,7 @@ class UserController extends Controller
         }
 
         $roles = Role::where('team_id', getPermissionsTeamId())->where('name', '!=', 'Super Admin')->get();
-        return view('pages.user.assign-roles', ['user' => $user, 'roles' => $roles]);
+        return view('admin.components.user.assign-roles', ['user' => $user, 'roles' => $roles]);
     }
 
     public function saveAssignRoles(Request $request, User $user)

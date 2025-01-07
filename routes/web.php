@@ -7,12 +7,13 @@ use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/dashboard', 301);
+//Route::redirect('/', '/dashboard', 301);
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+//    Route::get('/dashboard', function () {
+//        return view('dashboard');
+//    })->name('dashboard');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -23,8 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/team/{team}/assign-permissions', [TeamController::class, 'saveAssignPermission'])->name('team.assign-permissions.save');
 
     Route::resource('role', RoleController::class)->except('show');
-    Route::get('/role/{role}/assign-permssions', [RoleController::class, 'assignPermissions'])->name('role.assign-permissions');
-    Route::post('/role/{role}/assign-permssions', [RoleController::class, 'saveAssignPermissions'])->name('role.assign-permissions.save');
+    Route::get('/role/{role}/assign-permissions', [RoleController::class, 'assignPermissions'])->name('role.assign-permissions');
+    Route::post('/role/{role}/assign-permissions', [RoleController::class, 'saveAssignPermissions'])->name('role.assign-permissions.save');
 
     Route::resource('user', UserController::class)->except('show');
     Route::get('/user/{user}/assign-roles', [UserController::class, 'assignRoles'])->name('user.assign-roles');

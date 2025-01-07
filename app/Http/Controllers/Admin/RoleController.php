@@ -21,7 +21,7 @@ class RoleController extends Controller
         $this->authorize(Permissions::ROLE_READ);
 
         $roles = Role::where('team_id', getPermissionsTeamId())->get();
-        return view('pages.role.index', ['roles' => $roles]);
+        return view('admin.components.role.index', ['roles' => $roles]);
     }
 
     /**
@@ -31,7 +31,7 @@ class RoleController extends Controller
     {
         $this->authorize(Permissions::ROLE_CREATE);
 
-        return view('pages.role.create');
+        return view('admin.components.role.create');
     }
 
     /**
@@ -67,7 +67,7 @@ class RoleController extends Controller
             return redirect()->route('role.index')->withError('Super Admin cannot be edited');
         }
 
-        return view('pages.role.edit', ['role' => $role]);
+        return view('admin.components.role.edit', ['role' => $role]);
     }
 
     /**
@@ -142,7 +142,7 @@ class RoleController extends Controller
             $permissions = $teamSuperAdminRole->permissions;
         }
 
-        return view('pages.role.assign-permissions', ['role' => $role, 'permissions' => $permissions]);
+        return view('admin.components.role.assign-permissions', ['role' => $role, 'permissions' => $permissions]);
     }
 
     public function saveAssignPermissions(Request $request, Role $role)
