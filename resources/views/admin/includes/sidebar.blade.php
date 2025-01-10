@@ -122,4 +122,17 @@
             </li>
         @endcan
     @endif
+    <li class="menu-item active open">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-detail"></i>
+            <div class="text-truncate" data-i18n="Form Elements">University</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item active">
+                <a href="{{route('admin.university.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">University</div>
+                </a>
+            </li>
+        </ul>
+    </li>
 </ul>
