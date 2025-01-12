@@ -15,7 +15,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         Authenticated::class => [
-            'App\Listeners\LogAuthenticated',
+            'App\Listeners\LogAuthenticatedUser',
         ],
         ];
 

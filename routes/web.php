@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\UserActionController;
 use Illuminate\Support\Facades\Route;
 
 //Route::redirect('/', '/dashboard', 301);
@@ -30,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('user', UserController::class)->except('show');
     Route::get('/user/{user}/assign-roles', [UserController::class, 'assignRoles'])->name('user.assign-roles');
     Route::post('/user/{user}/assign-roles', [UserController::class, 'saveAssignRoles'])->name('user.assign-roles.save');
+    Route::post('/log-user-action', [UserActionController::class, 'logUserAction']);
 
     Route::resource('article', ArticleController::class);
 });

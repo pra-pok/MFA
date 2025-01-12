@@ -119,9 +119,7 @@ class UniversityController extends DM_BaseController
                 Log::error('Database Error', ['error' => $exception->getMessage()]);
                 $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
             }
-
         return redirect()->route($this->base_route . '.index');
-
     }
 
     /**
@@ -197,7 +195,7 @@ class UniversityController extends DM_BaseController
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                Log::info($this->panel . ' updated successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
+                Log::channel('daily')->info($this->panel . ' updated successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
                 $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
                 $request->session()->flash('alert-danger', $this->panel . ' update failed!');

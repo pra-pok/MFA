@@ -55,4 +55,5 @@ class kernel extends HttpKernel
     protected $middlewarePriority = [
         //
     ];
+
 }

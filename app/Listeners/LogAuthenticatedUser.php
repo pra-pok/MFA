@@ -23,11 +23,10 @@ class LogAuthenticatedUser
     public function handle(Authenticated $event): void
     {
         Log::info('User Logged In: ' , [
-            'user_id' => $event->user->name,
+            'user_name' => $event->user->name,
             'email' => $event->user->email,
             'timestamp' => now(),
             ]);
     }
-
 
 }

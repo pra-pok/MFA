@@ -20,14 +20,23 @@ class ActivityLogger
         $url = $request->url();
         $method = $request->method();
 
-        $message = "User Activity: ";
-        $message .= $user ? "User ID: {$user->name}, " : "Guest User, ";
-        $message .= "Action: {$method}, ";
-        $message .= "URL: {$url}, ";
-        $message .= "Timestamp: " . now();
+        if ($user) {
 
-        // Log the message
-        Log::info($message);
+            $teamId = $user->team_id;
+            $userId = $user->id;
+            $logger = teamUserLogger($teamId, $userId);
+            $logger->info('User activity recorded.', [
+                'action' => $method,
+                'url' => $url,
+                'timestamp' => now(),
+            ]);
+        } else {
+
+            Log::info("Guest User Activity: URL: {$url}, Method: {$method}, Timestamp: " . now());
+        }
+
         return $next($request);
     }
+
+
 }
