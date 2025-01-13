@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class University extends Model
+class Stream extends Model
 {
     use HasFactory;
     use SoftDeletes;
@@ -14,19 +14,15 @@ class University extends Model
         'title',
         'slug',
         'rank',
-        'types',
-        'description',
         'meta_title',
         'meta_keywords',
         'meta_description',
-        'logo',
         'status',
         'created_by',
-        'updated_by',
-        'country_id'
+        'updated_by'
     ];
 
-    protected $table = 'universities';
+    protected $table = 'streams';
 
     public function createdBy(){
         return $this->belongsTo(User::class,'created_by','id');
@@ -34,8 +30,5 @@ class University extends Model
 
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
-    }
-    public function country(){
-        return $this->belongsTo(Country::class,'country_id','id');
     }
 }

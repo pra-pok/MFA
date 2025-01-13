@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\UniversityRequest;
+use App\Http\Requests\CountryRequest;
 use App\Models\Country;
-use App\Models\University;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\DB;
@@ -13,27 +12,27 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 
-class UniversityController extends DM_BaseController
+class CountryController extends DM_BaseController
 {
-    protected $panel = 'University';
-    protected $base_route = 'admin.university';
-    protected $view_path = 'admin.components.university';
+    protected $panel = 'Country';
+    protected $base_route = 'admin.country';
+    protected $view_path = 'admin.components.country';
     protected $model;
     protected $table;
 
 
 
-    public function __construct(Request $request, University $university)
+    public function __construct(Request $request, Country $country)
     {
 //        $this->middleware('auth');
-//        $this->middleware('permission:university-list', ['only' => ['index']]);
-//        $this->middleware('permission:university-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:university-show', ['only' => ['show']]);
-//        $this->middleware('permission:university-edit', ['only' => ['edit', 'update']]);
-//        $this->middleware('permission:university-delete', ['only' => ['destroy']]);
-//        $this->middleware('permission:university-restore', ['only' => ['restore']]);
-//        $this->middleware('permission:university-forceDeleteData', ['only' => ['forceDeleteData']]);
-        $this->model = $university;
+//        $this->middleware('permission:country-list', ['only' => ['index']]);
+//        $this->middleware('permission:country-create', ['only' => ['create', 'store']]);
+//        $this->middleware('permission:country-show', ['only' => ['show']]);
+//        $this->middleware('permission:country-edit', ['only' => ['edit', 'update']]);
+//        $this->middleware('permission:country-delete', ['only' => ['destroy']]);
+//        $this->middleware('permission:country-restore', ['only' => ['restore']]);
+//        $this->middleware('permission:country-forceDeleteData', ['only' => ['forceDeleteData']]);
+        $this->model = $country;
     }
     /**
      * Display a listing of the resource.
@@ -58,13 +57,13 @@ class UniversityController extends DM_BaseController
 
             return DataTables::of($data)
                 ->addColumn('action', function ($row) {
-                    $editButton = '<a href="/admin/university/' . $row->id . '/edit" class="btn rounded-pill btn-warning">
+                    $editButton = '<a href="/admin/country/' . $row->id . '/edit" class="btn rounded-pill btn-warning">
                                 <i class="icon-base bx bx-edit icon-sm"></i>
                                </a>';
-                    $showButton = '<a href="/admin/university/' . $row->id . '/show" class="btn rounded-pill btn-info">
+                    $showButton = '<a href="/admin/country/' . $row->id . '/show" class="btn rounded-pill btn-info">
                                 <i class="bx bx-show"></i>
                                </a>';
-                    $deleteButton = '<form action="/admin/university/' . $row->id . '" class="d-inline" method="post" onsubmit="return confirm(\'Are you sure to delete?\')">
+                    $deleteButton = '<form action="/admin/country/' . $row->id . '" class="d-inline" method="post" onsubmit="return confirm(\'Are you sure to delete?\')">
                                     <input type="hidden" name="_token" value="' . csrf_token() . '">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn rounded-pill btn-danger" title="Move to Trash">
@@ -74,9 +73,6 @@ class UniversityController extends DM_BaseController
 
 
                     return $editButton . ' ' . $showButton . ' ' . $deleteButton;
-                })
-                ->addColumn('country', function ($row) {
-                    return $row->country->name ?? 'Unknown';
                 })
                 ->make(true);
         }
@@ -91,9 +87,8 @@ class UniversityController extends DM_BaseController
      */
     public function create(Request $request)
     {
-        $data['type'] = ['Affiliated' => 'Affiliated', 'Foreign Affiliated' => 'Foreign Affiliated'];
-        $data['country'] = Country::pluck('name', 'id');
-        return view(parent::loadView($this->view_path . '.create'),compact('data'));
+
+        return view(parent::loadView($this->view_path . '.create'));
     }
 
     /**
@@ -103,24 +98,45 @@ class UniversityController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(UniversityRequest $request)
+    public function store(CountryRequest $request)
     {
        // dd($request->all());
         $request->request->add(['created_by' => auth()->user()->id]);
-        if ($request->hasfile('image_file')) {
-            $image_file = time() . '.' . $request->file('image_file')->getClientOriginalExtension();
-            $request->file('image_file')->move('images/' . $this->folder . '/', $image_file);
-            $request->request->add(['logo' => $image_file]);
-        }
+
             try {
                 $category = $this->model->create($request->all());
                 if ($category) {
-                    Log::info($this->panel . ' created successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
+                    logUserAction(
+                        auth()->user()->id, // User ID
+                        auth()->user()->team_id, // Team ID
+                        $this->panel . ' created successfully!',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
+
                     $request->session()->flash('alert-success', $this->panel . ' created successfully!');
                 } else {
+                    logUserAction(
+                        auth()->user()->id,
+                        auth()->user()->team_id,
+                        $this->panel . ' creation failed.',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
                     $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
                 }
             } catch (\Exception $exception) {
+                logUserAction(
+                    auth()->user()->id,
+                    auth()->user()->team_id,
+                    'Database Error during ' . $this->panel . ' update',
+                    [
+                        'error' => $exception->getMessage(),
+                        'data' => $request->all(),
+                    ]
+                );
                 Log::error('Database Error', ['error' => $exception->getMessage()]);
                 $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
             }
@@ -159,8 +175,6 @@ class UniversityController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        $data['type'] = ['Affiliated' => 'Affiliated', 'Foreign Affiliated' => 'Foreign Affiliated'];
-        $data['country'] = Country::pluck('name', 'id');
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
@@ -177,41 +191,58 @@ class UniversityController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UniversityRequest $request, $id)
+    public function update(CountryRequest $request, $id)
     {
-       // dd($request->all());
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
+            $request->session()->flash('alert-danger', 'Invalid Request');
+            return redirect()->route($this->base_route . '.index');
         }
-        if ($request->hasfile('image_file')) {
-            $image_file = time() . '.' . $request->file('image_file')->getClientOriginalExtension();
 
-            $request->file('image_file')->move('images/' . $this->folder . '/', $image_file);
-            $request->request->add(['logo' => $image_file]);
-            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->logo))) {
-                unlink(public_path('images/' . $this->folder . '/' . $data['record']->logo));
-            }
-        } else {
-            $request->request->add(['logo' => $data['record']->logo]);
-        }
-        // dd($request);
         $request->request->add(['updated_by' => auth()->user()->id]);
+
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                Log::info($this->panel . ' updated successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
+                // Custom log for success
+                logUserAction(
+                    auth()->user()->id, // User ID
+                    auth()->user()->team_id, // Team ID
+                    $this->panel . ' updated successfully!',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
                 $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
+                // Custom log for failure
+                logUserAction(
+                    auth()->user()->id,
+                    auth()->user()->team_id,
+                    $this->panel . ' update failed.',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
                 $request->session()->flash('alert-danger', $this->panel . ' update failed!');
             }
         } catch (\Exception $exception) {
-            Log::error('Database Error', ['error' => $exception->getMessage()]);
-            $request->session()->flash('alert-danger', 'Database Error:' . $exception->getMessage());
+            // Custom log for errors
+            logUserAction(
+                auth()->user()->id,
+                auth()->user()->team_id,
+                'Database Error during ' . $this->panel . ' update',
+                [
+                    'error' => $exception->getMessage(),
+                    'data' => $request->all(),
+                ]
+            );
+            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
+
         return redirect()->route($this->base_route . '.index');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -227,7 +258,14 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($record->delete()) {
-            Log::info($this->panel . ' moved to trash successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
+            logUserAction(
+                auth()->user()->id, // User ID
+                auth()->user()->team_id, // Team ID
+                $this->panel . ' moved to trash successfully!',
+                [
+                    'data' => request()->all(),
+                ]
+            );
             request()->session()->flash('alert-success', $this->panel . ' moved to trash successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' trash failed!');
@@ -249,7 +287,14 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . '.trash');
         }
         if ($record->restore()) {
-            Log::info($this->panel . ' restore successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
+            logUserAction(
+                auth()->user()->id, // User ID
+                auth()->user()->team_id, // Team ID
+                $this->panel . ' restore successfully!',
+                [
+                    'data' => request()->all(),
+                ]
+            );
             request()->session()->flash('alert-success', $this->panel . ' restore successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' restore failed!');
@@ -260,18 +305,20 @@ class UniversityController extends DM_BaseController
     public function forceDeleteData($id)
     {
         $record = $this->model->where('id', $id)->withTrashed()->first();
-        // dd('images/' . $this->folder . '/' .$record->image);
-        $banner = public_path('images/' . $this->folder . '/' . $record->image);
-        // dd(File::exists($banner));
-        if (File::exists($banner)) {
-            File::delete($banner);
-        }
         if (!$record) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . '.index');
         }
         if ($record->forceDelete()) {
-            Log::info($this->panel . ' deleted successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
+
+            logUserAction(
+                auth()->user()->id, // User ID
+                auth()->user()->team_id, // Team ID
+                $this->panel . ' deleted successfully!',
+                [
+                    'data' => request()->all(),
+                ]
+            );
             request()->session()->flash('alert-success', $this->panel . ' deleted successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' delete failed!');

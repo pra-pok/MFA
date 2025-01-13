@@ -12,6 +12,18 @@
                             @csrf
                             @method('PUT')
                             <div>
+                                <label for="country_id" class="form-label">Select Country Name</label>
+                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name">
+                                    <option selected disabled>Select Country Name</option>
+                                    @foreach ($data['country'] as $key => $value)
+                                        <option value="{{ $key }}"
+                                            {{ $data['record']->country_id === $key ? 'selected' : '' }}>
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
                                 <label for="title" class="form-label">Title</label>
                                 <input
                                     type="text"
@@ -118,14 +130,6 @@
     </div>
 @endsection
 @section('js')
-    <script>
-        $(document).ready(function() {
-            $('#title').on('input', function() {
-                var title = $(this).val();
-                var slug = title.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                $('#slug').val(slug);
-            });
-        });
-    </script>
+    @include('admin.includes.slug')
 @endsection
 

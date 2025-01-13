@@ -19,11 +19,9 @@
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Country</th>
                                 <th>Title</th>
                                 <th>Slug</th>
                                 <th>Rank</th>
-                                <th>Types</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -58,7 +56,7 @@
         $('#datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route("admin.university.getData") }}",
+            ajax: "{{ route("admin.stream.getData") }}",
             columns: [
             {
                 data: null,
@@ -67,12 +65,10 @@
                     return meta.row + 1;
                 }
             },
-                { data: 'country', name: 'country' },
+
                 { data: 'title', name: 'title' },
                 { data: 'slug', name: 'slug' },
                 { data: 'rank', name: 'rank' },
-                { data: 'types', name: 'types' },
-
                 {
                     data: 'status',
                     name: 'status',

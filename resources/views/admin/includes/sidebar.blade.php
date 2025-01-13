@@ -124,7 +124,20 @@
     @endif
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-detail"></i>
+            <i class="menu-icon tf-icons bx bx-globe"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Country</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.country.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Country</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-building-house"></i>
             <div class="text-truncate" data-i18n="Form Elements">University</div>
         </a>
         <ul class="menu-sub">
@@ -135,4 +148,33 @@
             </li>
         </ul>
     </li>
+
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-street-view"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Stream/Discipline</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.stream.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Stream/Discipline</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-lira"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Level</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.level.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Level</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+
 </ul>

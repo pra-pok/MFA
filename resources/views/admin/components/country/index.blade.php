@@ -19,11 +19,11 @@
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Country</th>
-                                <th>Title</th>
+                                <th>Name</th>
                                 <th>Slug</th>
                                 <th>Rank</th>
-                                <th>Types</th>
+                                <th>ISO Code</th>
+                                <th>Currency</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
@@ -58,7 +58,7 @@
         $('#datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ route("admin.university.getData") }}",
+            ajax: "{{ route("admin.country.getData") }}",
             columns: [
             {
                 data: null,
@@ -67,12 +67,12 @@
                     return meta.row + 1;
                 }
             },
-                { data: 'country', name: 'country' },
-                { data: 'title', name: 'title' },
+
+                { data: 'name', name: 'name' },
                 { data: 'slug', name: 'slug' },
                 { data: 'rank', name: 'rank' },
-                { data: 'types', name: 'types' },
-
+                { data: 'iso_code', name: 'iso_code' },
+                { data: 'currency', name: 'currency' },
                 {
                     data: 'status',
                     name: 'status',

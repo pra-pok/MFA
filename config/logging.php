@@ -68,7 +68,7 @@ return [
 
         'daily' => [
             'driver' => 'daily',
-            'path' => base_path('logs_file/team_logs/team_{team_id}_user_{user_id}.log'),
+            'path' => base_path('logs_file/team_logs/team_' . env('TEAM_ID') . '_user_' . env('USER_ID') . '.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => env('LOG_DAILY_DAYS', 30),
             'replace_placeholders' => true,

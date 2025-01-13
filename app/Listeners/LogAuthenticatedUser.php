@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Authenticated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class LogAuthenticatedUser
 {
@@ -22,11 +23,17 @@ class LogAuthenticatedUser
      */
     public function handle(Authenticated $event): void
     {
-        Log::info('User Logged In: ' , [
-            'user_name' => $event->user->name,
-            'email' => $event->user->email,
-            'timestamp' => now(),
-            ]);
+        $user = $event->user;
+        logUserAction(
+            $user->id,
+            $user->team_id,
+            'User Logged In',
+            [
+                'user_name' => $user->name,
+                'email' => $user->email,
+                'timestamp' => now(),
+            ]
+        );
     }
 
 }

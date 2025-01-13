@@ -19,10 +19,7 @@
                             <td>{{$data['record']->id}}</td>
                         </tr>
                         <tr>
-                            <th>Country Name</th>
-                            <td>{{$data['record']->country->name ?? 'No Country'}}</td>
-                        <tr>
-                            <th>University Name</th>
+                            <th>Stream Name</th>
                             <td>{{$data['record']->title}}</td>
                         </tr>
                         <tr>
@@ -32,26 +29,6 @@
                         <tr>
                             <th>Rank</th>
                             <td>{{$data['record']->rank}}</td>
-                        </tr>
-                        <tr>
-                            <th>Types</th>
-                            <td>{{$data['record']->types}}</td>
-                        </tr>
-                        <tr>
-                            <th>Logo</th>
-                            <td>
-                                @if(!empty($data['record']->logo))
-                                    <a href="{{asset('images/' . $folder . '/' . $data['record']->logo)}}" target="_blank">
-                                        <img src="{{asset('images/' . $folder . '/' . $data['record']->logo)}}" alt="{{$data['record']->title}}" width="150px" />
-                                    </a>
-                                @else
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="{{$data['record']->title}}" width="200px" />
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Description</th>
-                            <td>{!! $data['record']->description !!}</td>
                         </tr>
                         <tr>
                             <th>Meta Title</th>

@@ -6,27 +6,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class University extends Model
+class Country extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'title',
+        'name',
         'slug',
         'rank',
-        'types',
-        'description',
+        'iso_code',
+        'currency',
         'meta_title',
         'meta_keywords',
         'meta_description',
-        'logo',
+        'icon',
         'status',
         'created_by',
-        'updated_by',
-        'country_id'
+        'updated_by'
     ];
 
-    protected $table = 'universities';
+    protected $table = 'countries';
 
     public function createdBy(){
         return $this->belongsTo(User::class,'created_by','id');
@@ -35,7 +34,7 @@ class University extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
     }
-    public function country(){
-        return $this->belongsTo(Country::class,'country_id','id');
+    public function universities(){
+        return $this->hasMany(University::class,'country_id','id');
     }
 }

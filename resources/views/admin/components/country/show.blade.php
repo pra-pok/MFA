@@ -20,10 +20,7 @@
                         </tr>
                         <tr>
                             <th>Country Name</th>
-                            <td>{{$data['record']->country->name ?? 'No Country'}}</td>
-                        <tr>
-                            <th>University Name</th>
-                            <td>{{$data['record']->title}}</td>
+                            <td>{{$data['record']->name}}</td>
                         </tr>
                         <tr>
                             <th>Slug</th>
@@ -34,24 +31,18 @@
                             <td>{{$data['record']->rank}}</td>
                         </tr>
                         <tr>
-                            <th>Types</th>
-                            <td>{{$data['record']->types}}</td>
+                            <th>Iso Code</th>
+                            <td>{{$data['record']->iso_code}}</td>
                         </tr>
                         <tr>
-                            <th>Logo</th>
+                            <th>Currency</th>
                             <td>
-                                @if(!empty($data['record']->logo))
-                                    <a href="{{asset('images/' . $folder . '/' . $data['record']->logo)}}" target="_blank">
-                                        <img src="{{asset('images/' . $folder . '/' . $data['record']->logo)}}" alt="{{$data['record']->title}}" width="150px" />
-                                    </a>
-                                @else
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="{{$data['record']->title}}" width="200px" />
-                                @endif
+                                {{$data['record']->currency}}
                             </td>
                         </tr>
                         <tr>
-                            <th>Description</th>
-                            <td>{!! $data['record']->description !!}</td>
+                            <th>Icon</th>
+                            <td>{{ $data['record']->icon }}</td>
                         </tr>
                         <tr>
                             <th>Meta Title</th>

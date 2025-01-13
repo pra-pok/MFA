@@ -31,6 +31,7 @@ class kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             'bindings',
+            \App\Http\Middleware\ActivityLogger::class,
         ],
     ];
 

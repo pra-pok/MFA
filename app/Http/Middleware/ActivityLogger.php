@@ -20,20 +20,39 @@ class ActivityLogger
         $url = $request->url();
         $method = $request->method();
 
+        // Build the log message
+        $message = "User Activity: ";
+
         if ($user) {
+            // Log the user activity using custom logUserAction
+            logUserAction(
+                $user->id,  // User ID
+                $user->team_id,  // Team ID
+                'User Activity Recorded',
+                [
+                    'action' => $method,
+                    'url' => $url,
+                    'timestamp' => now(),
+                ]
+            );
 
-            $teamId = $user->team_id;
-            $userId = $user->id;
-            $logger = teamUserLogger($teamId, $userId);
-            $logger->info('User activity recorded.', [
-                'action' => $method,
-                'url' => $url,
-                'timestamp' => now(),
-            ]);
+            // Add user-specific data to the message
+            $message .= "User ID: {$user->name}, ";
         } else {
-
+            // If guest, log that information (still using default log)
             Log::info("Guest User Activity: URL: {$url}, Method: {$method}, Timestamp: " . now());
+
+            // Add guest-specific message
+            $message .= "Guest User, ";
         }
+
+        // Add the rest of the log message
+        $message .= "Action: {$method}, ";
+        $message .= "URL: {$url}, ";
+        $message .= "Timestamp: " . now();
+
+        // Optionally log the general message as well (can still use default log)
+        Log::info($message);
 
         return $next($request);
     }
