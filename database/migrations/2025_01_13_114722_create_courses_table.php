@@ -18,10 +18,14 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->integer('rank');
+            $table->string('short_title')->nullable();
             $table->longText('description')->nullable();
+            $table->longText('eligibility')->nullable();
+            $table->longText('job_prospects')->nullable();
             $table->string('meta_title')->nullable();
             $table->text('meta_keywords')->nullable();
             $table->text('meta_description')->nullable();
+            $table->longText('syllabus')->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
             $table->softDeletes();

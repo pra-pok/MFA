@@ -31,4 +31,8 @@ class Level extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
     }
+
+    public function courses(){
+        return $this->hasMany(Course::class,'level_id','id');
+    }
 }

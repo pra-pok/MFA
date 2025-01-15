@@ -204,6 +204,9 @@
     const editorIds = [
         'des',
         'desc',
+        'syllabus',
+        'eligibility',
+        'job_prospects',
     ];
 
     // Loop through each ID and initialize CKEditor

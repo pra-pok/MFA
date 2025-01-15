@@ -177,4 +177,31 @@
         </ul>
     </li>
 
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-book"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Course</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.course.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Course</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-area"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.administrative_area.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Administrative Area</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+
 </ul>
