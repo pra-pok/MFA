@@ -2,51 +2,64 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\OrganizationRequest;
-use App\Models\AdministrativeArea;
-use App\Models\Organization;
-use App\Models\Level;
-use App\Models\Stream;
+use App\Dtos\ResponseDTO;
+use App\Http\Requests\GalleryCategoryRequest;
+use App\Models\GalleryCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
-use Yajra\DataTables\Facades\DataTables;
+use App\Utils;
 
-class OrganizationController extends DM_BaseController
+class GalleryCategoryController extends DM_BaseController
 {
-    protected $panel = 'College / School';
-    protected $base_route = 'admin.organization';
-    protected $view_path = 'admin.components.organization';
+    protected $panel = 'Galley Category';
+    protected $base_route = 'admin.gallery_category';
+    protected $view_path = 'admin.components.gallery_category';
     protected $model;
     protected $table;
-    protected $folder = 'organization';
 
 
-
-    public function __construct(Request $request, Organization $organization)
+    public function __construct(Request $request, GalleryCategory $gallery_category)
     {
-        $this->model = $organization;
+        $this->model = $gallery_category;
     }
+
     /**
      * Display a listing of the resource.
-     *@return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @return \Illuminate\Contracts\View\View
      */
+
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = $this->model->with(['createds' => function($query) {
-                $query->select('id', 'username');
-            }, 'updatedBy' => function($query) {
-                $query->select('id', 'username');
-            }])->get();
-            return response()->json($data);
+        try {
+            if ($request->ajax()) {
+                $data = $this->model->with([
+                    'createds' => function ($query) {
+                        $query->select('id', 'username');
+                    },
+                    'updatedBy' => function ($query) {
+                        $query->select('id', 'username');
+                    }
+                ])->get();
+
+                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
+            }
+        } catch (\Exception $exception) {
+            \Log::error('Error in index method: ' . $exception->getMessage(), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving data.',
+                'status' => 'error'
+            ], 500);
         }
+
         return view(parent::loadView($this->view_path . '.index'));
     }
+
 
 
     /**
@@ -57,48 +70,64 @@ class OrganizationController extends DM_BaseController
      */
     public function create(Request $request)
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
-        return view(parent::loadView($this->view_path . '.create'),compact('data'));
+
+        return view(parent::loadView($this->view_path . '.create'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(OrganizationRequest $request)
+    public function store(GalleryCategoryRequest $request)
     {
+        // dd($request->all());
+        $request->request->add(['created_by' => auth()->user()->id]);
         try {
-            $request->request->add(['created_by' => auth()->user()->id]);
-
-            if ($request->hasfile('logo_file')) {
-                $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
-                $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
-                $request->request->add(['logo' => $logo_file]);
+            $category = $this->model->create($request->all());
+            if ($category) {
+                logUserAction(
+                    auth()->user()->id, // User ID
+                    auth()->user()->team_id, // Team ID
+                    $this->panel . ' created successfully!',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
+                $request->session()->flash('alert-success', $this->panel . ' created successfully!');
+            } else {
+                logUserAction(
+                    auth()->user()->id,
+                    auth()->user()->team_id,
+                    $this->panel . ' creation failed.',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
+                $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
             }
-
-            if ($request->hasfile('banner_file')) {
-                $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-                $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
-                $request->request->add(['banner_image' => $banner_file]);
-            }
-
-            $this->model->updateOrCreate(['id' => $request->id], $request->all());
-
-            return response()->json(['success' => true], 200);
         } catch (\Exception $exception) {
-            Log::error('Error saving organization data', ['error' => $exception->getMessage()]);
-            return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
+            logUserAction(
+                auth()->user()->id,
+                auth()->user()->team_id,
+                'Database Error during ' . $this->panel . ' update',
+                [
+                    'error' => $exception->getMessage(),
+                    'data' => $request->all(),
+                ]
+            );
+            Log::error('Database Error', ['error' => $exception->getMessage()]);
+            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
+        return redirect()->route($this->base_route . '.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
@@ -116,36 +145,36 @@ class OrganizationController extends DM_BaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+    public function edit($id)
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
+            return redirect()->route($this->base_route . '.index')->with('alert-danger', 'Invalid Request');
         }
 
-        return view(parent::loadView($this->view_path . '.edit'), compact('data'));
+        if (request()->ajax()) {
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data['record'], 'Record fetched successfully.', 'success'));
+        }
+        return view('admin.gallery_category.edit', compact('data'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationRequest  $request, $id)
+    public function update(GalleryCategoryRequest $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
@@ -158,39 +187,14 @@ class OrganizationController extends DM_BaseController
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                // Custom log for success
-                logUserAction(
-                    auth()->user()->id, // User ID
-                    auth()->user()->team_id, // Team ID
-                    $this->panel . ' updated successfully!',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
+                logUserAction(auth()->user()->id, auth()->user()->team_id, $this->panel . ' updated successfully!', ['data' => $request->all()]);
                 $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
-                // Custom log for failure
-                logUserAction(
-                    auth()->user()->id,
-                    auth()->user()->team_id,
-                    $this->panel . ' update failed.',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
+                logUserAction(auth()->user()->id, auth()->user()->team_id, $this->panel . ' update failed.', ['data' => $request->all()]);
                 $request->session()->flash('alert-danger', $this->panel . ' update failed!');
             }
         } catch (\Exception $exception) {
-            // Custom log for errors
-            logUserAction(
-                auth()->user()->id,
-                auth()->user()->team_id,
-                'Database Error during ' . $this->panel . ' update',
-                [
-                    'error' => $exception->getMessage(),
-                    'data' => $request->all(),
-                ]
-            );
+            logUserAction(auth()->user()->id, auth()->user()->team_id, 'Database Error during ' . $this->panel . ' update', ['error' => $exception->getMessage(), 'data' => $request->all()]);
             $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
 
@@ -201,7 +205,7 @@ class OrganizationController extends DM_BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

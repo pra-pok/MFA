@@ -12,30 +12,36 @@
                             @csrf
                             <div class="mt-3">
                                 <label for="stream_id" class="form-label">Select Stream Name</label>
-                                <select class="form-select" id="stream_id" name="stream_id" aria-label="Select Stream Name" required>
+                                <select class="form-select required" id="stream_id" name="stream_id" aria-label="Select Stream Name" >
                                     <option selected disabled>Select Stream Name</option>
                                     @foreach ($data['stream'] as $key => $value)
                                         <option value="{{ $key }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
+                                @if($errors->has('stream_id'))
+                                    <div class="error">{{ $errors->first('stream_id') }}</div>
+                                @endif
                             </div>
                             <div class="mt-3">
                                 <label for="level_id" class="form-label">Select Level Name</label>
-                                <select class="form-select" id="level_id" name="level_id" aria-label="Select Level Name" required>
+                                <select class="form-select required" id="level_id" name="level_id" aria-label="Select Level Name" >
                                     <option selected disabled>Select Level Name</option>
                                     @foreach ($data['level'] as $key => $value)
                                         <option value="{{ $key }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
+                                @if($errors->has('level_id'))
+                                    <div class="error">{{ $errors->first('level_id') }}</div>
+                                @endif
                             </div>
                             <div class="mt-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input
                                     type="text"
                                     name="title"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="title"
-                                    placeholder="Enter The Title" required/>
+                                    placeholder="Enter The Title" />
 
                                 @if($errors->has('title'))
                                     <div class="error">{{ $errors->first('title') }}</div>
@@ -46,7 +52,7 @@
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" placeholder="slug" />
                             </div>
                             <div class="mt-3">
@@ -54,9 +60,12 @@
                                 <input
                                     type="text"
                                     name="short_title"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="short_title"
-                                    placeholder="Enter The Short Title" required/>
+                                    placeholder="Enter The Short Title" />
+                                @if($errors->has('short_title'))
+                                    <div class="error">{{ $errors->first('short_title') }}</div>
+                                @endif
                             </div>
                             <div class="mt-3">
                                 <label for="rank" class="form-label">Rank</label>
@@ -65,24 +74,27 @@
                                     name="rank"
                                     min="0"
                                     max="100"
-                                    class="form-control"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required />
+                                    class="form-control required"
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)"  />
+                                @if($errors->has('rank'))
+                                    <div class="error">{{ $errors->first('rank') }}</div>
+                                @endif
                             </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="des" rows="3" required></textarea>
+                                <textarea class="form-control required" name="description" id="des" rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="eligibility" class="form-label">Eligibility</label>
-                                <textarea class="form-control" name="eligibility" id="eligibility" rows="3" required></textarea>
+                                <textarea class="form-control" name="eligibility" id="eligibility" rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="job_prospects" class="form-label">Job Prospects</label>
-                                <textarea class="form-control" name="job_prospects" id="job_prospects" rows="3" required></textarea>
+                                <textarea class="form-control" name="job_prospects" id="job_prospects" rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="syllabus" class="form-label">Syllabus</label>
-                                <textarea class="form-control" name="syllabus" id="syllabus" rows="3" required></textarea>
+                                <textarea class="form-control" name="syllabus" id="syllabus" rows="3" ></textarea>
                             </div>
                             @include('admin.includes.create_meta')
                             @include('admin.includes.create_status')

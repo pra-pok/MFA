@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\AdministrativeAreaController;
+use App\Http\Controllers\Admin\GalleryCategoryController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {
@@ -106,4 +107,17 @@ Route::group(['prefix' =>'organization', 'as' => 'organization.'], function() {
     Route::delete('{id}',[OrganizationController::class,'destroy'])->name('destroy');
     Route::get('{id}/edit',[OrganizationController::class,'edit'])->name('edit');
     Route::put('{id}',[OrganizationController::class,'update'])->name('update');
+});
+Route::group(['prefix' =>'gallery_category', 'as' => 'gallery_category.'], function() {
+    Route::get('trash',[GalleryCategoryController::class,'trash'])->name('trash');
+    Route::get('restore/{id}',[GalleryCategoryController::class,'restore'])->name('restore');
+    Route::delete('force-delete/{id}',[GalleryCategoryController::class,'forceDeleteData'])->name('force_delete');
+    Route::get('create',[GalleryCategoryController::class,'create'])->name('create');
+    Route::post('/',[GalleryCategoryController::class,'store'])->name('store');
+    Route::get('/',[GalleryCategoryController::class,'index'])->name('index');
+    Route::get('/all-data',[GalleryCategoryController::class,'getData'])->name('getData');
+    Route::get('{id}/show',[GalleryCategoryController::class,'show'])->name('show');
+    Route::delete('{id}',[GalleryCategoryController::class,'destroy'])->name('destroy');
+    Route::get('{id}/edit',[GalleryCategoryController::class,'edit'])->name('edit');
+    Route::put('{id}',[GalleryCategoryController::class,'update'])->name('update');
 });

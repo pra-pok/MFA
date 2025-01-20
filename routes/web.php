@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\UserActionController;
+use App\Http\Controllers\Admin\GalleryCategoryController;
 use Illuminate\Support\Facades\Route;
 
 //Route::redirect('/', '/dashboard', 301);
@@ -34,6 +35,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/log-user-action', [UserActionController::class, 'logUserAction']);
 
     Route::resource('article', ArticleController::class);
+
+//    Route::resource('gallery_category' , GalleryCategoryController::class);
+//    Route::get('trash',[GalleryCategoryController::class,'trash'])->name('gallery_category.trash');
+//    Route::get('restore/{id}',[GalleryCategoryController::class,'restore'])->name('gallery_category.restore');
+//    Route::delete('force-delete/{id}',[GalleryCategoryController::class,'forceDeleteData'])->name('gallery_category.force_delete');
+//    Route::delete('{id}',[GalleryCategoryController::class,'destroy'])->name('gallery_category.destroy');
 });
 
 require __DIR__ . '/auth.php';
