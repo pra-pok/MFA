@@ -11,9 +11,9 @@
                         <form action="{{ route('admin.university.update', $data['record']->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <div>
+                            <div class="mt-3">
                                 <label for="country_id" class="form-label">Select Country Name</label>
-                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name">
+                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name" required>
                                     <option selected disabled>Select Country Name</option>
                                     @foreach ($data['country'] as $key => $value)
                                         <option value="{{ $key }}"
@@ -23,34 +23,34 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input
                                     type="text"
                                     name="title"
                                     class="form-control"
                                     id="title"
-                                    value="{{$data['record']->title}}"/>
+                                    value="{{$data['record']->title}}" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
                                     name="slug"
                                     class="form-control"
-                                    id="slug" value="{{$data['record']->slug}}"  />
+                                    id="slug" value="{{$data['record']->slug}}" required />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="rank" class="form-label">Rank</label>
                                 <input
                                     type="number"
                                     name="rank"
                                     class="form-control"
-                                    id="rank" value="{{$data['record']->rank}}" />
+                                    id="rank" value="{{$data['record']->rank}}" required />
                             </div>
-                            <div>
-                                <label for="types" class="form-label">Types</label>
-                                <select class="form-select" id="types" name="types" aria-label="Select Type">
+                            <div class="mt-3">
+                                <label for="types" class="form-label">Type</label>
+                                <select class="form-select" id="types" name="types" aria-label="Select Type" required>
                                     <option selected disabled>Select Type</option>
                                     @foreach ($data['type'] as $key => $value)
                                         <option value="{{ $key }}"
@@ -60,65 +60,16 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="logo" class="form-label">Logo</label>
                                 <input class="form-control" type="file" id="logo" name="image_file"/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" name="description" id="des" rows="3">{!! $data['record']->description !!}</textarea>
                             </div>
-                            <div>
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    class="form-control"
-                                    id="meta_title"
-                                    value="{{$data['record']->meta_title}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_keywords" class="form-label">Meta Keyword</label>
-                                <input
-                                    type="text"
-                                    name="meta_keywords"
-                                    class="form-control"
-                                    id="meta_keywords"
-                                    value="{{$data['record']->meta_keywords}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <input
-                                    type="text"
-                                    name="meta_description"
-                                    class="form-control"
-                                    id="meta_description"
-                                    value="{{$data['record']->meta_description}}"/>
-                            </div><br>
-                            <div>
-                                <label for="status" class="form-label">Status</label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 1 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 0 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
-
-                            </div>
+                            @include('admin.includes.edit_meta')
+                            @include('admin.includes.edit_status')
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>

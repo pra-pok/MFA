@@ -27,7 +27,7 @@ class Country extends Model
 
     protected $table = 'countries';
 
-    public function createdBy(){
+    public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
 

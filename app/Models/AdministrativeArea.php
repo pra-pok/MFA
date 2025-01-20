@@ -17,7 +17,8 @@ class AdministrativeArea extends Model
         'parent_id',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'country_id'
     ];
 
     protected $table = 'administrative_area';
@@ -36,6 +37,10 @@ class AdministrativeArea extends Model
 
     public function children(){
         return $this->hasMany(AdministrativeArea::class,'parent_id','id');
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class,'country_id','id');
     }
 
 }

@@ -17,10 +17,10 @@
                 @include('includes.message')
 
                 <div class="table-responsive text-nowrap">
-                    <table class="table">
+                    <table class="table table-bordered" id="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
+                                <th width="150">SN</th>
                                 <th>Role</th>
                                 <th width="100">Actions</th>
                             </tr>
@@ -62,4 +62,13 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
+        });
+
+    </script>
 @endsection

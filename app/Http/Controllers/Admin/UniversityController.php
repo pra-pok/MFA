@@ -40,17 +40,20 @@ class UniversityController extends DM_BaseController
      *@return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['rows'] = $this->model->all();
-        return view(parent::loadView($this->view_path . '.index'), compact('data'));
+        if ($request->ajax()) {
+            $data = $this->model->with( ['createds' => function($query) {
+                $query->select('id', 'username');
+            }, 'updatedBy' => function($query) {
+                $query->select('id', 'username');
+            }, 'country' => function($query) {
+                $query->select('id', 'name');
+            }])->get();
+            return response()->json($data);
+        }
+        return view(parent::loadView($this->view_path . '.index'));
     }
-    public function getData1()
-    {
-        $rows = $this->model->all(); // Fetch all data
-        return response()->json(['data' => $rows]);
-    }
-    // Fetch data for the DataTable
     public function getData(Request $request)
     {
         if ($request->ajax()) {

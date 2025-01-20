@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\OrganizationRequest;
+use App\Models\AdministrativeArea;
 use App\Models\Organization;
 use App\Models\Level;
 use App\Models\Stream;
@@ -16,7 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class OrganizationController extends DM_BaseController
 {
-    protected $panel = 'Organization';
+    protected $panel = 'College / School';
     protected $base_route = 'admin.organization';
     protected $view_path = 'admin.components.organization';
     protected $model;
@@ -26,14 +27,6 @@ class OrganizationController extends DM_BaseController
 
     public function __construct(Request $request, Organization $organization)
     {
-//        $this->middleware('auth');
-//        $this->middleware('permission:organization-list', ['only' => ['index']]);
-//        $this->middleware('permission:organization-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:organization-show', ['only' => ['show']]);
-//        $this->middleware('permission:organization-edit', ['only' => ['edit', 'update']]);
-//        $this->middleware('permission:organization-delete', ['only' => ['destroy']]);
-//        $this->middleware('permission:organization-restore', ['only' => ['restore']]);
-//        $this->middleware('permission:organization-forceDeleteData', ['only' => ['forceDeleteData']]);
         $this->model = $organization;
     }
     /**
@@ -41,44 +34,17 @@ class OrganizationController extends DM_BaseController
      *@return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
-    {
-        $data['rows'] = $this->model->all();
-        return view(parent::loadView($this->view_path . '.index'), compact('data'));
-    }
-    // Fetch data for the DataTable
-    public function getData(Request $request)
+    public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->all();
-
-            return DataTables::of($data)
-                ->addColumn('action', function ($row) {
-                    $editButton = '<a href="/admin/organization/' . $row->id . '/edit" class="btn rounded-pill btn-warning">
-                                <i class="icon-base bx bx-edit icon-sm"></i>
-                               </a>';
-                    $showButton = '<a href="/admin/organization/' . $row->id . '/show" class="btn rounded-pill btn-info">
-                                <i class="bx bx-show"></i>
-                               </a>';
-                    $deleteButton = '<form action="/admin/organization/' . $row->id . '" class="d-inline" method="post" onsubmit="return confirm(\'Are you sure to delete?\')">
-                                    <input type="hidden" name="_token" value="' . csrf_token() . '">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="btn rounded-pill btn-danger" title="Move to Trash">
-                                        <i class="bx bx-trash me-1"></i>
-                                    </button>
-                                 </form>';
-
-
-                    return $editButton . ' ' . $showButton . ' ' . $deleteButton;
-                })
-                ->addColumn('stream', function ($row) {
-                    return $row->stream->title ?? 'Unknown';
-                })
-                ->addColumn('level', function ($row) {
-                    return $row->level->title ?? 'Unknown';
-                })
-                ->make(true);
+            $data = $this->model->with(['createds' => function($query) {
+                $query->select('id', 'username');
+            }, 'updatedBy' => function($query) {
+                $query->select('id', 'username');
+            }])->get();
+            return response()->json($data);
         }
+        return view(parent::loadView($this->view_path . '.index'));
     }
 
 
@@ -90,8 +56,8 @@ class OrganizationController extends DM_BaseController
      */
     public function create(Request $request)
     {
-        $data['stream'] = Stream::pluck('title', 'id');
-        $data['level'] = Level::pluck('title', 'id');
+        $data['area'] = AdministrativeArea::pluck('name', 'id');
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -177,8 +143,8 @@ class OrganizationController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        $data['stream'] = Stream::pluck('title', 'id');
-        $data['level'] = Level::pluck('title', 'id');
+        $data['area'] = AdministrativeArea::pluck('name', 'id');
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');

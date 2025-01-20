@@ -40,40 +40,19 @@ class LevelController extends DM_BaseController
      *@return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
-    {
-        $data['rows'] = $this->model->all();
-        return view(parent::loadView($this->view_path . '.index'), compact('data'));
-    }
-    // Fetch data for the DataTable
-    public function getData(Request $request)
+    public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->all();
-
-            return DataTables::of($data)
-                ->addColumn('action', function ($row) {
-                    $editButton = '<a href="/admin/level/' . $row->id . '/edit" class="btn rounded-pill btn-warning">
-                                <i class="icon-base bx bx-edit icon-sm"></i>
-                               </a>';
-                    $showButton = '<a href="/admin/level/' . $row->id . '/show" class="btn rounded-pill btn-info">
-                                <i class="bx bx-show"></i>
-                               </a>';
-                    $deleteButton = '<form action="/admin/level/' . $row->id . '" class="d-inline" method="post" onsubmit="return confirm(\'Are you sure to delete?\')">
-                                    <input type="hidden" name="_token" value="' . csrf_token() . '">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="btn rounded-pill btn-danger" title="Move to Trash">
-                                        <i class="bx bx-trash me-1"></i>
-                                    </button>
-                                 </form>';
-
-
-                    return $editButton . ' ' . $showButton . ' ' . $deleteButton;
-                })
-                ->make(true);
+            $data = $this->model->with( ['createds' => function($query) {
+                $query->select('id', 'username');
+            }, 'updatedBy' => function($query) {
+                $query->select('id', 'username');
+            }])->get();
+            return response()->json($data);
         }
+        return view(parent::loadView($this->view_path . '.index'));
     }
-
+    // Fetch data for the DataTable
 
     /**
      * Show the form for creating a new resource.

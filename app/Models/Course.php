@@ -31,7 +31,7 @@ class Course extends Model
 
     protected $table = 'courses';
 
-    public function createdBy(){
+    public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
 

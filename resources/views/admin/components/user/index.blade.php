@@ -17,34 +17,37 @@
                 @include('includes.message')
 
                 <div class="table-responsive text-nowrap">
-                    <table class="table">
+                    <table class="table table-bordered" id="dataTable">
                         <thead>
                             <tr>
-                                <th>SN</th>
-                                <th>Name</th>
+                                <th width="100">SN</th>
+                                <th width="100">Name</th>
+                                <th>Role</th>
                                 <th>Email</th>
-                                <th width="100">Actions</th>
+                                <th>Status</th>
+                                <th width="100">Modified By/At</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
                             @foreach ($users as $user)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
                                     <td>
-                                        <div class="dropdown">
+                                        {{ $user->name }}
+                                        <br> <span style="font-size: 13px;"> {{ $user->username ?? 'No Username ' }} </span>
+
+                                        <div class="dropdown" style="margin-left: 251px; margin-top: -22px;">
                                             <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
-                                                data-bs-toggle="dropdown">
+                                                    data-bs-toggle="dropdown">
                                                 <i class="bx bx-dots-vertical-rounded"></i>
                                             </button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href="{{ route('user.edit', $user) }}"><i
                                                         class="bx bx-edit-alt me-1"></i> Edit</a>
-                                                <a class="dropdown-item" href="{{ route('user.assign-roles', $user) }}"><i
-                                                        class="bx bx-edit-alt me-1"></i> Assign Roles</a>
+                                                {{--                                                <a class="dropdown-item" href="{{ route('user.assign-roles', $user) }}"><i--}}
+                                                {{--                                                        class="bx bx-edit-alt me-1"></i> Assign Roles</a>--}}
                                                 <form action="{{ route('user.destroy', $user) }}" method="POST"
-                                                    onsubmit="return confirm('Are you sure?');">
+                                                      onsubmit="return confirm('Are you sure?');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="dropdown-item"><i
@@ -55,6 +58,29 @@
                                             </div>
                                         </div>
                                     </td>
+                                    <td>
+                                            {{$user->role->name ?? 'No Role'}}
+
+                                    </td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @if ($user->status == 1)
+                                            <span class="badge bg-success">Active</span>
+                                        @else
+                                            <span class="badge bg-danger">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($user->updatedBy)
+                                            {{  $user->updatedBy->username }}
+                                            <br>
+                                            {{ $user->updated_at }}
+                                        @else
+                                            {{ $user->createdBy->username  }}
+                                            <br>
+                                            {{ $user->created_at }}
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -63,4 +89,12 @@
             </div>
         </div>
     </div>
+@endsection
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#dataTable').DataTable();
+        });
+
+    </script>
 @endsection

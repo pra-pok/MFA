@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\AdministrativeAreaRequest;
 use App\Models\AdministrativeArea;
+use App\Models\Country;
 use App\Models\Level;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Yajra\DataTables\Facades\DataTables;
 
 class AdministrativeAreaController extends DM_BaseController
 {
-    protected $panel = 'AdministrativeArea';
+    protected $panel = 'Administrative Area';
     protected $base_route = 'admin.administrative_area';
     protected $view_path = 'admin.components.administrative_area';
     protected $model;
@@ -25,14 +26,6 @@ class AdministrativeAreaController extends DM_BaseController
 
     public function __construct(Request $request, AdministrativeArea $administrative_area)
     {
-//        $this->middleware('auth');
-//        $this->middleware('permission:administrative_area-list', ['only' => ['index']]);
-//        $this->middleware('permission:administrative_area-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:administrative_area-show', ['only' => ['show']]);
-//        $this->middleware('permission:administrative_area-edit', ['only' => ['edit', 'update']]);
-//        $this->middleware('permission:administrative_area-delete', ['only' => ['destroy']]);
-//        $this->middleware('permission:administrative_area-restore', ['only' => ['restore']]);
-//        $this->middleware('permission:administrative_area-forceDeleteData', ['only' => ['forceDeleteData']]);
         $this->model = $administrative_area;
     }
     /**
@@ -43,57 +36,19 @@ class AdministrativeAreaController extends DM_BaseController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->with(['createds', 'parent'])->get();
+            $data = $this->model->with(['createds', 'parent','country'])->get();
             return response()->json($data);
         }
-        $data['parents'] = AdministrativeArea::pluck('name' , 'id');
+        $data['parents'] = AdministrativeArea::whereNull('parent_id')->pluck('name' , 'id');
+        $data['country'] = Country::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.index'), compact('data'));
     }
-    // Fetch data for the DataTable
-    public function getData(Request $request)
+    public function getParentsByCountry(Request $request)
     {
-        if ($request->ajax()) {
-            $data = $this->model->all();
-
-            return DataTables::of($data)
-                ->addColumn('action', function ($row) {
-                    $editUrl = route($this->base_route . '.edit', ['id' => $row->id]);
-                    $deleteUrl = route($this->base_route . '.destroy', ['id' => $row->id]);
-
-                    $dropdown = '
-                    <div class="dropdown">
-                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                            <i class="bx bx-dots-vertical-rounded"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <button type="button"  class="dropdown-item" data-bs-toggle="modal" data-bs-target="#editModal" onclick="editRecord(' . $row->id . ')">
-                                <i class="bx bx-edit-alt me-1"></i> Edit
-                          </button>
-                            <form action="' . $deleteUrl . '" method="POST" onsubmit="return confirm(\'Are you sure?\');">
-                                ' . csrf_field() . '
-                                ' . method_field('DELETE') . '
-                                <button type="submit" class="dropdown-item">
-                                    <i class="bx bx-trash me-1"></i> Delete
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                ';
-                    return $dropdown;
-                })
-                ->addColumn('parent', function ($row) {
-                    return $row->parent->name ?? 'No Parent Id';
-                })
-                ->addColumn('createdBy', function ($row) {
-                    return $row->createdBy->name ?? 'No';
-                })
-                ->addColumn('created_at', function ($row) {
-                    return $row->created_at->format('Y-m-d ');
-                })
-                ->make(true);
-        }
+        $countryId = $request->id;
+        $parents = AdministrativeArea::where('country_id', $countryId)->whereNull('parent_id')->pluck('name', 'id');
+        return response()->json(['parents' => $parents]);
     }
-
     /**
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
@@ -103,6 +58,7 @@ class AdministrativeAreaController extends DM_BaseController
     public function create(Request $request)
     {
         $data['parents'] = AdministrativeArea::pluck('name' , 'id');
+        $data['country'] = Country::whereNull('parent_id')->pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -186,20 +142,20 @@ class AdministrativeAreaController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
      */
-    public function edit($id)
+    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        try {
-            $record = AdministrativeArea::find($id);
-            if (!$record) {
-                return response()->json(['error' => 'Record not found.'], 404);
-            }
+        $data['record'] = $this->model->find($id);
 
-            $data['parents'] = AdministrativeArea::pluck('name', 'id');
-            return response()->json(['record' => $record, 'parents' => $data['parents']]);
-        } catch (\Exception $e) {
-            Log::error('Error fetching record: ' . $e->getMessage());
-            return response()->json(['error' => 'Server error. Please try again later.'], 500);
+        if (!$data['record']) {
+            request()->session()->flash('alert-danger', 'Invalid Request');
+            return redirect()->route($this->base_route . '.index');
         }
+
+        // Load countries and parents for the selected country_id
+        $data['country'] = Country::pluck('name', 'id');
+        $data['parents'] = AdministrativeArea::whereNull('parent_id')->pluck('name', 'id');
+
+        return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 
     /**

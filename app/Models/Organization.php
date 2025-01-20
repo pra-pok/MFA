@@ -11,18 +11,23 @@ class Organization extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'title',
+        'administrative_area_id',
+        'name',
         'slug',
-        'rank',
-        'stream_id',
-        'level_id',
+        'logo',
+        'banner_image',
+        'address',
+        'phone',
+        'email',
+        'website',
         'description',
-        'eligibility',
-        'job_prospects',
-        'syllabus',
+        'type',
+        'search_keywords',
+        'established_year',
         'meta_title',
         'meta_keywords',
         'meta_description',
+        'total_view',
         'status',
         'created_by',
         'updated_by'
@@ -30,7 +35,7 @@ class Organization extends Model
 
     protected $table = 'organizations';
 
-    public function createdBy(){
+    public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
 

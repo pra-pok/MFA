@@ -91,6 +91,7 @@ Route::group(['prefix' =>'administrative_area', 'as' => 'administrative_area.'],
     Route::delete('{id}',[AdministrativeAreaController::class,'destroy'])->name('destroy');
     Route::get('{id}/edit',[AdministrativeAreaController::class,'edit'])->name('edit');
     Route::put('{id}',[AdministrativeAreaController::class,'update'])->name('update');
+    Route::get('/get-parents-by-country',[AdministrativeAreaController::class,'getParentsByCountry'])->name('get_parent');
 });
 //organization
 Route::group(['prefix' =>'organization', 'as' => 'organization.'], function() {

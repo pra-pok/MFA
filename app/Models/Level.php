@@ -24,7 +24,7 @@ class Level extends Model
 
     protected $table = 'levels';
 
-    public function createdBy(){
+    public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
 

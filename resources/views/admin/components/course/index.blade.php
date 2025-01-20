@@ -22,28 +22,12 @@
                                 <th>Stream Name</th>
                                 <th>Level Name</th>
                                 <th>Title</th>
-                                <th>Slug</th>
+                                <th>Short Title</th>
                                 <th>Status</th>
-                                <th>Actions</th>
+                                <th>Modified By/At</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
-    {{--                        @foreach ($data['rows'] as $item)--}}
-    {{--                            <tr>--}}
-    {{--                                <td>{{ $loop->iteration }}</td>--}}
-    {{--                                <td>{{ $item->title }}</td>--}}
-    {{--                                <td>{{ $item->slug }}</td>--}}
-    {{--                                <td>{{ $item->rank }}</td>--}}
-    {{--                                <td>{{ $item->createdBy->name }}</td>--}}
-    {{--                                <td>--}}
-    {{--                                    @include('admin.includes.buttons.display_status',['status' => $item->status])--}}
-    {{--                                </td>--}}
-    {{--                                <td>--}}
-    {{--                                    @include('admin.includes.buttons.button-edit',['edit' => $item->id])--}}
-    {{--                                    @include('admin.includes.buttons.button-trash',['trash' => $item->id])--}}
-    {{--                                </td>--}}
-    {{--                            </tr>--}}
-    {{--                        @endforeach--}}
                         </tbody>
                     </table>
                 </div>
@@ -53,36 +37,80 @@
 @endsection
 @section('js')
 <script>
-    $(document).ready(function () {
-        $('#datatable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route($_base_route . '.getData') }}",
-            columns: [
-            {
-                data: null,
-                name: 'id',
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
-                }
+    $('#datatable').DataTable({
+        ajax: {
+            url: '{{ route($_base_route . '.index') }}',
+            dataSrc: '',
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': "{{ csrf_token() }}"
             },
-                { data: 'stream', name: 'stream' },
-                { data: 'level', name: 'level' },
-                { data: 'title', name: 'title' },
-                { data: 'slug', name: 'slug' },
+            error: function(xhr, status, error) {
+                console.error("Error loading data: " + error);
+                alert("Failed to load data. Please check your console for details.");
+            }
+        },
+        columns: [
+            { data: null },
+            {data: 'stream.title'},
+            {data: 'level.title'},
+            { data: 'title' },
+            { data: 'short_title' },
+            { data: 'status' },
+            { data: 'createds.username' },
+        ],
+        rowCallback: function (row, data, index) {
+            const statusBadge = data.status === 1
+                ? '<span class="badge bg-label-primary me-1">Active</span>'
+                : '<span class="badge bg-label-danger">De-Active</span>';
 
-                {
-                    data: 'status',
-                    name: 'status',
-                    render: function (data, type, row) {
-                        return data === 1
-                            ? '<span class="badge bg-label-primary me-1">Active</span>'
-                            : '<span class="badge bg-label-danger">De-Active</span>';
-                    }
-                },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
-        });
+            const editUrl = `{{ url('admin/course/${data.id}/edit') }}`;
+            const showUrl = `{{ url('admin/course/${data.id}/show') }}`;
+            const deleteUrl = `{{ url('admin/course/${data.id}') }}`;
+            const modifiedByName = data.updatedBy && data.updatedBy.username
+                ? data.updatedBy.username
+                : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
+            const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
+            const rowContent = `
+            <td>${index + 1}</td>
+            <td>${data.stream.title}</td>
+            <td>${data.level.title}</td>
+            <td>${data.title}
+                <div class="dropdown" style="  margin-left: 250px; margin-top: -22px;">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="${editUrl}">
+                            <i class="bx bx-edit-alt me-1"></i> Edit
+                        </a>
+                         <a class="dropdown-item" href="${showUrl}">
+                            <i class="bx bx-show"></i> Show
+                        </a>
+                        <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="dropdown-item">
+                                <i class="bx bx-trash me-1"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+            <td>${data.short_title}</td>
+
+            <td>${statusBadge}</td>
+            <td>
+                ${modifiedByName}<br>
+                ${modifiedDate}
+            </td>
+        `;
+            // Replace the content of the row
+            $(row).html(rowContent);
+        },
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50],
+        responsive: true
     });
 </script>
 @endsection

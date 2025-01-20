@@ -11,8 +11,31 @@
                         <form action="{{ route($_base_route . '.update', $data['record']->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
+
                             <div>
-                                <label for="name" class="form-label">Administrative Area Name</label>
+                                <label for="country_id" class="form-label">Name</label>
+                                <select class="form-select" name="country_id">
+                                    <option value="">None</option>
+                                    @foreach($data['country'] as $key => $value)
+                                        <option value="{{ $key }}" {{ $data['record']->country_id === $key ? 'selected' : '' }} >
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="parent_id" class="form-label">Parent</label>
+                                <select class="form-select" name="parent_id">
+                                    <option value="">None</option>
+                                    @foreach($data['parents'] as $key => $value)
+                                        <option value="{{ $key }}" {{ $data['record']->parent_id === $key ? 'selected' : '' }} >
+                                            {{ $value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="name" class="form-label">Name</label>
                                 <input
                                     type="text"
                                     name="name"
@@ -36,17 +59,7 @@
                                     class="form-control"
                                     id="rank" value="{{$data['record']->rank}}" />
                             </div>
-                            <div>
-                                <label for="parent_id" class="form-label">Parent:</label>
-                                <select class="form-select" name="parent_id">
-                                    <option value="">None</option>
-                                    @foreach($data['parents'] as $key => $value)
-                                        <option value="{{ $key }}" {{ $data['record']->parent_id === $key ? 'selected' : '' }} >
-                                            {{ $value }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div><br>
+                            <br>
                             <div>
                                 <label for="status" class="form-label">Status</label>
 
@@ -68,7 +81,7 @@
                                         id="deactiveStatus"
                                         {{ isset($data['record']->status) && $data['record']->status == 0 ? 'checked' : '' }}
                                     />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
+                                    <label class="form-check-label" for="deactiveStatus"> In-Active </label>
 
                             </div>
                             <div class="mt-3">
@@ -88,6 +101,27 @@
                 var name = $(this).val();
                 var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
                 $('#slug').val(slug);
+            });
+
+
+            $('#country_id').change(function () {
+                let countryId = $(this).val();
+                $('#parent_id').html('<option value="">None</option>');
+
+                if (countryId) {
+                    $.ajax({
+                        url: '/admin/administrative_area/get-parents-by-country', // Update with your route
+                        type: 'GET',
+                        data: { id: countryId },
+                        success: function (response) {
+                            if (response.parents) {
+                                $.each(response.parents, function (key, value) {
+                                    $('#parent_id').append('<option value="' + key + '">' + value + '</option>');
+                                });
+                            }
+                        }
+                    });
+                }
             });
         });
     </script>

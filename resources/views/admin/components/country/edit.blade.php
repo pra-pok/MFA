@@ -11,16 +11,16 @@
                         <form action="{{ route('admin.country.update', $data['record']->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             @method('PUT')
-                            <div>
+                            <div class="mt-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input
                                     type="text"
                                     name="name"
                                     class="form-control"
                                     id="name"
-                                    value="{{$data['record']->name}}"/>
+                                    value="{{$data['record']->name}}" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
@@ -28,94 +28,47 @@
                                     class="form-control"
                                     id="slug" value="{{$data['record']->slug}}"  />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="rank" class="form-label">Rank</label>
                                 <input
                                     type="number"
                                     name="rank"
                                     class="form-control"
-                                    id="rank" value="{{$data['record']->rank}}" />
+                                    min="0"
+                                    max="100"
+                                    id="rank" value="{{$data['record']->rank}}" required />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="iso_code" class="form-label">Iso Code</label>
                                 <input
                                     type="text"
                                     name="iso_code"
                                     class="form-control"
                                     id="iso_code"
-                                    value="{{$data['record']->iso_code}}"/>
+                                    value="{{$data['record']->iso_code}}" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="currency" class="form-label">Currency</label>
                                 <input
                                     type="text"
                                     name="currency"
                                     class="form-control"
                                     id="currency"
-                                    value="{{$data['record']->currency}}"/>
+                                    value="{{$data['record']->currency}}" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="icon" class="form-label">Icon</label>
                                 <input
                                     type="text"
                                     name="icon"
                                     class="form-control"
                                     id="icon"
-                                    value="{{$data['record']->icon}}"
+                                    value="{{$data['record']->icon}}" required
                                 />
 
                             </div>
-                            <div>
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    class="form-control"
-                                    id="meta_title"
-                                    value="{{$data['record']->meta_title}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_keywords" class="form-label">Meta Keyword</label>
-                                <input
-                                    type="text"
-                                    name="meta_keywords"
-                                    class="form-control"
-                                    id="meta_keywords"
-                                    value="{{$data['record']->meta_keywords}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <input
-                                    type="text"
-                                    name="meta_description"
-                                    class="form-control"
-                                    id="meta_description"
-                                    value="{{$data['record']->meta_description}}"/>
-                            </div><br>
-                            <div>
-                                <label for="status" class="form-label">Status</label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 1 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 0 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
-
-                            </div>
+                            @include('admin.includes.edit_meta')
+                            @include('admin.includes.edit_status')
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">Update</button>
                             </div>

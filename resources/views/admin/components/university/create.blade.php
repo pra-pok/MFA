@@ -10,34 +10,34 @@
                     <div class="card-body">
                         <form action="{{ route('admin.university.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div>
+                            <div class="mt-3">
                                 <label for="country_id" class="form-label">Select Country Name</label>
-                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name">
+                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name" required>
                                     <option selected disabled>Select Country Name</option>
                                     @foreach ($data['country'] as $key => $value)
                                         <option value="{{ $key }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div>
-                                <label for="types" class="form-label">Types</label>
-                                <select class="form-select" id="types" name="types" aria-label="Select Type">
+                            <div class="mt-3">
+                                <label for="types" class="form-label">Type</label>
+                                <select class="form-select" id="types" name="types" aria-label="Select Type" required>
                                     <option selected disabled>Select Type</option>
                                     @foreach ($data['type'] as $key => $value)
                                         <option value="{{ $key }}">{{ $value }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input
                                     type="text"
                                     name="title"
                                     class="form-control"
                                     id="title"
-                                    placeholder="Enter The Title"/>
+                                    placeholder="Enter The Title" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
@@ -45,73 +45,27 @@
                                     class="form-control"
                                     id="slug" placeholder="slug" />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="rank" class="form-label">Rank</label>
                                 <input
                                     type="number"
                                     name="rank"
                                     class="form-control"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" />
+                                    min="0"
+                                    max="100"
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required />
                             </div>
 
-                            <div>
+                            <div class="mt-3">
                                 <label for="logo" class="form-label">Logo</label>
-                                <input class="form-control" type="file" id="logo" name="image_file"/>
+                                <input class="form-control" type="file" id="logo" name="image_file" required/>
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control" name="description" id="des" rows="3"></textarea>
                             </div>
-                            <div>
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    class="form-control"
-                                    id="meta_title"
-                                    placeholder="Enter The Meta Title"/>
-                            </div>
-                            <div>
-                                <label for="meta_keywords" class="form-label">Meta Keyword</label>
-                                <input
-                                    type="text"
-                                    name="meta_keywords"
-                                    class="form-control"
-                                    id="meta_keywords"
-                                    placeholder="Enter The Meta Keyword"/>
-                            </div>
-                            <div>
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <input
-                                    type="text"
-                                    name="meta_description"
-                                    class="form-control"
-                                    id="meta_description"
-                                    placeholder="Enter The Title"/>
-                            </div><br>
-                            <div>
-                                <label for="status" class="form-label">Status</label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        checked
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
-                            </div>
+                            @include('admin.includes.create_meta')
+                            @include('admin.includes.create_status')
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">Create</button>
                             </div>
@@ -124,4 +78,5 @@
 @endsection
 @section('js')
     @include('admin.includes.slug')
+
 @endsection

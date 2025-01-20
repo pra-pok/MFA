@@ -22,7 +22,7 @@ class UserController extends Controller
     {
         $this->authorize(Permissions::USER_READ);
 
-        $users = User::where('team_id', getPermissionsTeamId())->get();
+        $users = User::all();
         return view('admin.components.user.index', ['users' => $users]);
     }
 
@@ -32,8 +32,8 @@ class UserController extends Controller
     public function create()
     {
         $this->authorize(Permissions::USER_CREATE);
-
-        return view('admin.components.user.create');
+        $data['roles'] = Role::pluck('name', 'id');
+        return view('admin.components.user.create' , compact('data'));
     }
 
     /**
@@ -42,18 +42,24 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->authorize(Permissions::USER_CREATE);
-
+      // dd($request->all());
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
+
         User::create([
             'name' => $validated['name'],
+            'username' => $validated['username'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'team_id' => getPermissionsTeamId()
+            'team_id' => getPermissionsTeamId(),
+            'role_id' => $request->role_id,
+            'status' => $request->status,
+            'created_by' => $request->user()->id,
         ]);
 
         return redirect()
@@ -71,8 +77,8 @@ class UserController extends Controller
         if ($user->team_id != getPermissionsTeamId()) {
             abort(403, 'Unauthorized');
         }
-
-        return view('admin.components.user.edit', ['user' => $user]);
+        $data['roles'] = Role::pluck('name', 'id');
+        return view('admin.components.user.edit', ['user' => $user , 'data' => $data]);
     }
 
     /**
@@ -89,10 +95,15 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+
         ]);
 
         $user->name = $validated['name'];
+        $user->username = $request->username;
         $user->email = $validated['email'];
+        $user->role_id = $request->role_id;
+        $user->status = $request->status;
+        $user->updated_by = $request->user()->id;
         $user->save();
         return redirect()
             ->route('user.index')
@@ -108,10 +119,6 @@ class UserController extends Controller
 
         if ($user->team_id != getPermissionsTeamId()) {
             abort(403, 'Unauthorized');
-        }
-
-        if ($user->hasRole('Super Admin')) {
-            return redirect()->route('user.index')->withError('Super Admin cannot be deleted');
         }
 
         if ($user->id == $request->user()->id) {
@@ -132,15 +139,12 @@ class UserController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        if ($user->hasRole('Super Admin')) {
-            return redirect()->route('user.index')->withError('Super Admin cannot be assigned roles');
-        }
 
         if ($user->id == $request->user()->id) {
             return redirect()->route('user.index')->withError('You cannot assign role to yourself');
         }
 
-        $roles = Role::where('team_id', getPermissionsTeamId())->where('name', '!=', 'Super Admin')->get();
+        $roles = Role::where('name', '!=', 'Super Admin')->get();
         return view('admin.components.user.assign-roles', ['user' => $user, 'roles' => $roles]);
     }
 
@@ -152,9 +156,6 @@ class UserController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        if ($user->hasRole('Super Admin')) {
-            return redirect()->route('user.index')->withError('Super Admin cannot be assigned roles');
-        }
 
         if ($user->id == $request->user()->id) {
             return redirect()->route('user.index')->withError('You cannot assign role to yourself');

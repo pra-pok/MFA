@@ -71,7 +71,7 @@
                         </tr>
                         <tr>
                             <th>Created By</th>
-                            <td>{{$data['record']->createdBy->name}}</td>
+                            <td>{{$data['record']->createds->name}}</td>
                         </tr>
                         @if($data['record']->updated_by != null)
                             <tr>

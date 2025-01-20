@@ -24,7 +24,7 @@ class Stream extends Model
 
     protected $table = 'streams';
 
-    public function createdBy(){
+    public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
 

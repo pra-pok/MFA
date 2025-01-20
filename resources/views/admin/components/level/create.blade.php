@@ -17,7 +17,7 @@
                                     name="title"
                                     class="form-control"
                                     id="title"
-                                    placeholder="Enter The Title"
+                                    placeholder="Enter The Title" required
                                 />
                             </div>
                             <div>
@@ -35,61 +35,13 @@
                                     type="number"
                                     name="rank"
                                     class="form-control"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)"
+                                    min="0"
+                                    max="100"
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required
                                 />
                             </div>
-                            <div>
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    class="form-control"
-                                    id="meta_title"
-                                    placeholder="Enter The Meta Title"
-                                />
-                            </div>
-                            <div>
-                                <label for="meta_keywords" class="form-label">Meta Keyword</label>
-                                <input
-                                    type="text"
-                                    name="meta_keywords"
-                                    class="form-control"
-                                    id="meta_keywords"
-                                    placeholder="Enter The Meta Keyword"
-                                />
-                            </div>
-                            <div>
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <input
-                                    type="text"
-                                    name="meta_description"
-                                    class="form-control"
-                                    id="meta_description"
-                                    placeholder="Enter The Meta Description"
-                                />
-                            </div><br>
-                            <div>
-                                <label for="status" class="form-label">Status</label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        checked
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
-                            </div>
+                            @include('admin.includes.create_meta')
+                            @include('admin.includes.create_status')
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">Create</button>
                             </div>

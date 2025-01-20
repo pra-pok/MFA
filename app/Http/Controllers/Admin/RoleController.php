@@ -8,7 +8,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use App\Models\Role;
 
 class RoleController extends Controller
 {
@@ -20,7 +20,7 @@ class RoleController extends Controller
     {
         $this->authorize(Permissions::ROLE_READ);
 
-        $roles = Role::where('team_id', getPermissionsTeamId())->get();
+        $roles = Role::all();
         return view('admin.components.role.index', ['roles' => $roles]);
     }
 
@@ -41,12 +41,11 @@ class RoleController extends Controller
     {
         $this->authorize(Permissions::ROLE_CREATE);
 
-        $teamId = getPermissionsTeamId();
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->where('team_id', $teamId)],
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles')],
         ]);
 
-        Role::create(['name' => $validated['name'], 'team_id' => $teamId]);
+        Role::create(['name' => $validated['name']]);
         return redirect()
             ->route('role.index')
             ->withSuccess('Role created successfully');
@@ -85,9 +84,8 @@ class RoleController extends Controller
             return redirect()->route('role.index')->withError('Super Admin cannot be edited');
         }
 
-        $teamId = getPermissionsTeamId();
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('roles')->where('team_id', $teamId)->ignore($role->id)],
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles')],
         ]);
 
         $role->name = $validated['name'];
@@ -103,18 +101,6 @@ class RoleController extends Controller
     public function destroy(Request $request, Role $role)
     {
         $this->authorize(Permissions::ROLE_DELETE);
-
-        if ($role->team_id != getPermissionsTeamId()) {
-            abort(403, 'Unauthorized');
-        }
-
-        if ($role->name == 'Super Admin') {
-            return redirect()->route('role.index')->withError('Super Admin cannot be deleted');
-        }
-
-        if ($request->user()->getRoleNames()->contains($role->name)) {
-            return redirect()->route('role.index')->withError('You cannot delete your role');
-        }
 
         $role->delete();
         return redirect()
@@ -138,7 +124,7 @@ class RoleController extends Controller
         if ($request->user()->team_id == 1) {
             $permissions = Permission::all();
         } else {
-            $teamSuperAdminRole = Role::where(['team_id' => $role->team_id, 'name' => 'Super Admin'])->first();
+            $teamSuperAdminRole = Role::first();
             $permissions = $teamSuperAdminRole->permissions;
         }
 
@@ -156,8 +142,12 @@ class RoleController extends Controller
         if ($role->name == 'Super Admin') {
             return redirect()->route('role.index')->withError('Super Admin cannot be assigned permissions');
         }
+        // Log the permissions to debug
+        \Log::info('Permissions:', $request->permissions);
 
+        // Sync permissions
         $role->syncPermissions($request->permissions);
+
         return redirect()
             ->route('role.index')
             ->withSuccess('Permissions assigned successfully');

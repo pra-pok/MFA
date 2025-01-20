@@ -22,7 +22,7 @@
                         @foreach ($roles as $role)
                             <div class="form-check form-check-inline mt-3">
                                 <input class="form-check-input" type="checkbox" id="{{ $role->name }}" name="roles[]"
-                                    value="{{ $role->name }}" @checked($user->hasRole($role->name))>
+                                    value="{{ $role->name }}" @checked($role->name)>
                                 <label class="form-check-label" for="{{ $role->name }}">{{ $role->name }}</label>
                             </div>
                         @endforeach

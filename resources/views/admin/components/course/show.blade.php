@@ -75,12 +75,12 @@
                         </tr>
                         <tr>
                             <th>Created By</th>
-                            <td>{{$data['record']->createdBy->name}}</td>
+                            <td>{{$data['record']->createds->username}}</td>
                         </tr>
                         @if($data['record']->updated_by != null)
                             <tr>
                                 <th>Updated By</th>
-                                <td>{{$data['record']->updatedBy->name}}</td>
+                                <td>{{$data['record']->updatedBy->username}}</td>
                             </tr>
                         @endif
                         <tr>

@@ -39,7 +39,7 @@
                             <td>{{ $item->rank }}</td>
                             <td>{{$item->iso_code}}</td>
                             <td>{{$item->currency}}</td>
-                            <td>{{ $item->createdBy->name }}</td>
+                            <td>{{ $item->createds->name }}</td>
                             <td>{{$item->updated_by}}</td>
                             <td>{{$item->deleted_at}}</td>
                             <td>

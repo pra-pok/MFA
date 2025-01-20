@@ -39,10 +39,17 @@ class StreamController extends DM_BaseController
      *@return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['rows'] = $this->model->all();
-        return view(parent::loadView($this->view_path . '.index'), compact('data'));
+        if ($request->ajax()) {
+            $data = $this->model->with( ['createds' => function($query) {
+                $query->select('id', 'username');
+            }, 'updatedBy' => function($query) {
+                $query->select('id', 'username');
+            }])->get();
+            return response()->json($data);
+        }
+        return view(parent::loadView($this->view_path . '.index'));
     }
     // Fetch data for the DataTable
     public function getData(Request $request)
