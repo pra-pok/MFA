@@ -28,6 +28,22 @@
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
+    {{--                        @foreach ($data['rows'] as $item)--}}
+    {{--                            <tr>--}}
+    {{--                                <td>{{ $loop->iteration }}</td>--}}
+    {{--                                <td>{{ $item->title }}</td>--}}
+    {{--                                <td>{{ $item->slug }}</td>--}}
+    {{--                                <td>{{ $item->rank }}</td>--}}
+    {{--                                <td>{{ $item->createdBy->name }}</td>--}}
+    {{--                                <td>--}}
+    {{--                                    @include('admin.includes.buttons.display_status',['status' => $item->status])--}}
+    {{--                                </td>--}}
+    {{--                                <td>--}}
+    {{--                                    @include('admin.includes.buttons.button-edit',['edit' => $item->id])--}}
+    {{--                                    @include('admin.includes.buttons.button-trash',['trash' => $item->id])--}}
+    {{--                                </td>--}}
+    {{--                            </tr>--}}
+    {{--                        @endforeach--}}
                         </tbody>
                     </table>
                 </div>

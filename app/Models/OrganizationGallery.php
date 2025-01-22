@@ -6,22 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class GalleryCategory extends Model
+class OrganizationGallery extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'name',
-        'slug',
+        'gallery_category_id',
+        'organization_id',
+        'caption',
         'rank',
-        'meta_title',
-        'meta_keywords',
-        'meta_description',
+        'type',
+        'media',
         'status',
         'created_by',
         'updated_by'
     ];
-    protected $table = 'gallery_categories';
+
+    protected $table = 'organization_galleries';
+
     public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
@@ -30,7 +32,11 @@ class GalleryCategory extends Model
         return $this->belongsTo(User::class,'updated_by','id');
     }
 
-    public function organizationGalleries(){
-        return $this->hasMany(OrganizationGallery::class,'gallery_category_id','id');
+    public function galleryCategory(){
+        return $this->belongsTo(GalleryCategory::class,'gallery_category_id','id');
+    }
+
+    public function organization(){
+        return $this->belongsTo(Organization::class,'organization_id','id');
     }
 }

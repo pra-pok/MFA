@@ -210,7 +210,7 @@
         </a>
         <ul class="menu-sub">
             <li class="menu-item ">
-                <a href="{{route('admin.organization.index')}}" class="menu-link">
+                <a href="{{route('organization.index')}}" class="menu-link">
                     <div class="text-truncate" data-i18n="Basic Inputs">College/School</div>
                 </a>
             </li>

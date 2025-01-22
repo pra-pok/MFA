@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\AdministrativeAreaController;
 use App\Http\Controllers\Admin\GalleryCategoryController;
+use App\Http\Controllers\Admin\OrganizationGalleryController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {
@@ -95,19 +96,7 @@ Route::group(['prefix' =>'administrative_area', 'as' => 'administrative_area.'],
     Route::get('/get-parents-by-country',[AdministrativeAreaController::class,'getParentsByCountry'])->name('get_parent');
 });
 //organization
-Route::group(['prefix' =>'organization', 'as' => 'organization.'], function() {
-    Route::get('trash',[OrganizationController::class,'trash'])->name('trash');
-    Route::get('restore/{id}',[OrganizationController::class,'restore'])->name('restore');
-    Route::delete('force-delete/{id}',[OrganizationController::class,'forceDeleteData'])->name('force_delete');
-    Route::get('create',[OrganizationController::class,'create'])->name('create');
-    Route::post('/',[OrganizationController::class,'store'])->name('store');
-    Route::get('/',[OrganizationController::class,'index'])->name('index');
-    Route::get('/all-data',[OrganizationController::class,'getData'])->name('getData');
-    Route::get('{id}/show',[OrganizationController::class,'show'])->name('show');
-    Route::delete('{id}',[OrganizationController::class,'destroy'])->name('destroy');
-    Route::get('{id}/edit',[OrganizationController::class,'edit'])->name('edit');
-    Route::put('{id}',[OrganizationController::class,'update'])->name('update');
-});
+
 Route::group(['prefix' =>'gallery_category', 'as' => 'gallery_category.'], function() {
     Route::get('trash',[GalleryCategoryController::class,'trash'])->name('trash');
     Route::get('restore/{id}',[GalleryCategoryController::class,'restore'])->name('restore');
@@ -121,3 +110,5 @@ Route::group(['prefix' =>'gallery_category', 'as' => 'gallery_category.'], funct
     Route::get('{id}/edit',[GalleryCategoryController::class,'edit'])->name('edit');
     Route::put('{id}',[GalleryCategoryController::class,'update'])->name('update');
 });
+
+

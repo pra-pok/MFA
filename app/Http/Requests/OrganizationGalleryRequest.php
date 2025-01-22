@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrganizationRequest extends FormRequest
+class OrganizationGalleryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,20 +22,13 @@ class OrganizationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-//            'address' => 'required',
-//            'phone' => 'required',
-//            'email' => 'required',
-//            'website' => 'required',
+            'gallery_category_id' => 'required',
         ];
     }
     function  messages(): array
     {
         return [
-            'name.required' => 'Please enter name',
-//            'address' => 'Please enter address',
-//            'phone' => 'Please enter phone',
-//            'email' => 'Please enter email',
+            'gallery_category_id.required' => 'Please select gallery_category name',
         ];
     }
 }

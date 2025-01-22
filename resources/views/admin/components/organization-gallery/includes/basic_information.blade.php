@@ -1,7 +1,6 @@
-{{--basic_information.blade.php--}}
 <form  action="{{route('organization.store')}}" method="POST" enctype="multipart/form-data">
     @csrf
-    <input type="hidden" name="organization_id" value="{{ old('organization_id', $organization_id ?? '') }}" />
+    <input  type="hidden" name="organization_id" value=" "  />
     <div class="mb-3">
         <label for="administrative_area_id" class="form-label">Select Administrative Area Name</label>
         <select class="form-select required" id="administrative_area_id" name="administrative_area_id"
@@ -82,5 +81,7 @@
 
     @include('admin.includes.create_meta')
     @include('admin.includes.create_status')
-
+    <div class="d-flex justify-content-between mt-3">
+        <button type="submit" class="btn btn-secondary" id="nextBtn" >Next</button>
+    </div>
 </form>

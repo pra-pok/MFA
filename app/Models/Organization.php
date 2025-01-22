@@ -50,4 +50,12 @@ class Organization extends Model
     public function level(){
         return $this->belongsTo(Level::class,'level_id','id');
     }
+
+    public function administrativeArea(){
+        return $this->belongsTo(AdministrativeArea::class,'administrative_area_id','id');
+    }
+
+    public function organizationGalleries(){
+        return $this->hasMany(OrganizationGallery::class,'organization_id','id');
+    }
 }

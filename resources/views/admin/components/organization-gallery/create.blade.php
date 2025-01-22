@@ -1,16 +1,4 @@
 @extends('admin.layouts.app')
-@section('css')
-    <style>
-        .btnPrev {
-            display: none;
-            box-shadow: none;
-        }
-        .btnSave {
-            display: none;
-            box-shadow: none;
-        }
-    </style>
-@endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row g-6">
@@ -47,18 +35,15 @@
                         <div class="tab-pane fade show active" id="navs-justified-profile" role="tabpanel">
                             @include('admin.components.organization.includes.basic_information')
                         </div>
+
                         <!-- Gallery Tab -->
                         <div class="tab-pane fade" id="navs-justified-gallery" role="tabpanel">
                             @include('admin.components.organization.includes.gallery')
                         </div>
+
                         <!-- Social Media Tab -->
                         <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
                             @include('admin.components.organization.includes.social')
-                        </div>
-                        <div class="d-flex justify-content-between mt-3">
-                            <button type="button" class="btnPrev btn-primary" id="prevBtn" >Previous</button>
-                            <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
-                            <button type="button" class="btnSave btn-success" id="saveBtn" >Save</button>
                         </div>
                     </div>
                 </div>
@@ -69,58 +54,38 @@
 @section('js')
     <script>
         $(document).ready(function () {
-
-            const updateButtonsVisibility = () => {
-                const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
-                const totalTabs = $('.nav-tabs .nav-link').length;
-                if (currentTabIndex > 0) {
-                    $('#prevBtn').show();
-                } else {
-                    $('#prevBtn').hide();
-                }
-
-                if (currentTabIndex === totalTabs - 1) {
-                    $('#saveBtn').show();
-                    $('#nextBtn').hide();
-                } else {
-                    $('#saveBtn').hide();
-                    $('#nextBtn').show();
-                }
-            };
-
             $('#nextBtn').on('click', function (e) {
                 e.preventDefault();
+
                 const currentPane = $(".tab-pane.fade.show.active");
                 const form = currentPane.find('form');
-                const formData = new FormData(form[0]);
 
-                if (!validateTab(form)) {
-                    alert('Please fill out all required fields.');
-                    return;
-                }
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
-                    data: formData,
+                    data: new FormData(form[0]),
                     processData: false,
                     contentType: false,
                     success: function (response) {
                         if (response.status === "success") {
+                            // Log the success response
                             console.log('Response:', response);
-                            if (response.data) {
-                                $('input[name="organization_id"]').val(response.data);
-                            }
-                            const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
-                            const nextTabIndex = currentTabIndex + 1;
-                            const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
-                            const nextTabPane = $('.tab-pane').eq(nextTabIndex);
 
-                            if (nextTabLink.length && nextTabPane.length) {
+                            // Update hidden input for organization_id
+                            $('input[name="organization_id"]').val(response.data);
+
+                            // Show success message
+                            alert(response.message);
+
+                            // Move to the next tab
+                            const nextTab = currentPane.next('.tab-pane.fade');
+                            if (nextTab.length) {
+                                currentPane.removeClass('show active'); // Hide current pane
+                                nextTab.addClass('show active'); // Show next pane
+
+                                // Update tab link styles
                                 $('.nav-tabs .nav-link.active').removeClass('active');
-                                nextTabLink.addClass('active');
-                                currentPane.removeClass('show active');
-                                nextTabPane.addClass('show active');
-                                updateButtonsVisibility();
+                                $('[data-bs-target="#' + nextTab.attr('id') + '"]').addClass('active');
                             } else {
                                 alert('This is the last tab.');
                             }
@@ -142,105 +107,6 @@
                     }
                 });
             });
-
-            $('#prevBtn').on('click', function (e) {
-                e.preventDefault();
-                const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
-                const prevTabIndex = currentTabIndex - 1;
-                const prevTabLink = $('.nav-tabs .nav-link').eq(prevTabIndex);
-                const prevTabPane = $('.tab-pane').eq(prevTabIndex);
-
-                if (prevTabLink.length && prevTabPane.length) {
-                    $('.nav-tabs .nav-link.active').removeClass('active');
-                    prevTabLink.addClass('active');
-                    $('.tab-pane.fade.show.active').removeClass('show active');
-                    prevTabPane.addClass('show active');
-                    updateButtonsVisibility();
-                }
-            });
-            updateButtonsVisibility();
-
-            function validateTab(form) {
-                let isValid = true;
-                form.find('.required').each(function () {
-                    if ($(this).val() === '') {
-                        isValid = false;
-                        $(this).addClass('is-invalid');
-                    } else {
-                        $(this).removeClass('is-invalid');
-                    }
-                });
-                return isValid;
-            }
-            // $('#nextBtn').on('click', function (e) {
-            //     e.preventDefault();
-            //
-            //     const currentPane = $(".tab-pane.fade.show.active");
-            //     const form = currentPane.find('form');
-            //     const formData = new FormData(form[0]);
-            //
-            //     if (!validateTab(form)) {
-            //         alert('Please fill out all required fields.');
-            //         return;
-            //     }
-            //     $.ajax({
-            //         url: form.attr('action'),
-            //         type: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function (response) {
-            //             if (response.status === "success") {
-            //                 console.log('Response:', response);
-            //                 if (response.data) {
-            //                     $('input[name="organization_id"]').val(response.data);
-            //                 }
-            //                 const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
-            //                 const nextTabIndex = currentTabIndex + 1;
-            //                 const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
-            //                 const nextTabPane = $('.tab-pane').eq(nextTabIndex);
-            //
-            //                 if (nextTabLink.length && nextTabPane.length) {
-            //                     $('.nav-tabs .nav-link.active').removeClass('active');
-            //                     nextTabLink.addClass('active');
-            //                     currentPane.removeClass('show active');
-            //                     nextTabPane.addClass('show active');
-            //                 } else {
-            //                     alert('This is the last tab.');
-            //                 }
-            //             } else {
-            //                 alert(response.message || 'An error occurred while saving data.');
-            //             }
-            //         },
-            //         error: function (xhr) {
-            //             if (xhr.status === 422) {
-            //                 const errors = xhr.responseJSON.errors;
-            //                 let errorMessages = '';
-            //                 for (const field in errors) {
-            //                     errorMessages += `${errors[field][0]}\n`;
-            //                 }
-            //                 alert(errorMessages);
-            //             } else {
-            //                 alert('An unexpected error occurred. Please try again.');
-            //             }
-            //         }
-            //     });
-            // });
-            //
-            // function validateTab(form) {
-            //     let isValid = true;
-            //     form.find('.required').each(function () {
-            //         if ($(this).val() === '') {
-            //             isValid = false;
-            //             $(this).addClass('is-invalid');
-            //         } else {
-            //             $(this).removeClass('is-invalid');
-            //         }
-            //     });
-            //     return isValid;
-            // }
-
-
             $('#name').on('input', function () {
                 var name = $(this).val();
                 var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');

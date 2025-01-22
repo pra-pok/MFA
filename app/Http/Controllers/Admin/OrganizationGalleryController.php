@@ -3,34 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
-use App\Http\Requests\OrganizationRequest;
+use App\Http\Requests\OrganizationGalleryRequest;
 use App\Models\AdministrativeArea;
 use App\Models\GalleryCategory;
+use App\Models\OrganizationGallery;
 use App\Models\Organization;
-use App\Models\Level;
-use App\Models\Stream;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
-
-class OrganizationController extends DM_BaseController
+class OrganizationGalleryController extends DM_BaseController
 {
-    protected $panel = 'College / School';
-    protected $base_route = 'organization';
-    protected $view_path = 'admin.components.organization';
+    protected $panel = 'Organization Gallery';
+    protected $base_route = 'organization_gallery';
+    protected $view_path = 'admin.components.organization-gallery';
     protected $model;
     protected $table;
-    protected $folder = 'organization';
+    protected $folder = 'organization-gallery';
 
 
 
-    public function __construct(Request $request, Organization $organization)
+    public function __construct(Request $request, OrganizationGallery $organization_gallery)
     {
-        $this->model = $organization;
+        $this->model = $organization_gallery;
     }
     /**
      * Display a listing of the resource.
@@ -59,20 +54,9 @@ class OrganizationController extends DM_BaseController
      */
     public function create(Request $request)
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
-        $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-       // $data['social'] = DB::table('social_medias')->get();
-        $data['social'] = [
-            'Facebook' => ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
-            'Instagram' => ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
-            'Twitter' => ['name' => 'Twitter', 'icon' => 'bx bxl-twitter'],
-            'Youtube' => ['name' => 'Youtube', 'icon' => 'bx bxl-youtube'],
-            'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
-            'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
-        ];
+        $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -83,31 +67,46 @@ class OrganizationController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(OrganizationRequest $request)
+    public function store(OrganizationGalleryRequest $request)
     {
         try {
-            $request->request->add(['created_by' => auth()->user()->id]);
-
-            if ($request->hasfile('logo_file')) {
-                $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
-                $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
-                $request->request->add(['logo' => $logo_file]);
+            $organization_id = $request->input('organization_id');
+            foreach ($request->input('gallery_category_id') as $index => $category_id) {
+                $type = $request->input('type')[$index];
+                if ($type == '1' && $request->hasFile('media_file')) {
+                    foreach ($request->file('media_file') as $fileIndex => $file) {
+                        $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                        $file->move(public_path('images/' . $this->folder . '/'), $media_file);
+                        $this->model::create([
+                            'gallery_category_id' => $category_id,
+                            'type' => $type,
+                            'caption' => $request->input('caption')[$index],
+                            'rank' => $request->input('rank')[$index],
+                            'media' => $media_file,
+                            'organization_id' => $organization_id,
+                            'created_by' => auth()->user()->id,
+                        ]);
+                    }
+                }
+                if ($type == '0') {
+                    $this->model::create([
+                        'gallery_category_id' => $category_id,
+                        'type' => $type,
+                        'caption' => $request->input('caption')[$index],
+                        'rank' => $request->input('rank')[$index],
+                        'media' => $request->input('media')[$index],
+                        'organization_id' => $organization_id,
+                        'created_by' => auth()->user()->id,
+                    ]);
+                }
             }
-
-            if ($request->hasfile('banner_file')) {
-                $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-                $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
-                $request->request->add(['banner_image' => $banner_file]);
-            }
-
-            $organization = $this->model->create($request->all());
-
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organization->id, 'Data retrieved successfully.', 'success'));
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving organization data', ['error' => $exception->getMessage()]);
-            return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
+            Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery items.', 'error'));
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -126,6 +125,7 @@ class OrganizationController extends DM_BaseController
         return view(parent::loadView($this->view_path . '.show'), compact('data'));
 
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -140,9 +140,9 @@ class OrganizationController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
-        $data['record'] = $this->model->find($id);
+        $data['gallery'] = GalleryCategory::pluck('name', 'id');
+        $data['organization'] = Organization::pluck('name', 'id');
+        $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
@@ -158,7 +158,7 @@ class OrganizationController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationRequest  $request, $id)
+    public function update(OrganizationGalleryRequest  $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {

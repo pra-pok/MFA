@@ -1,12 +1,29 @@
-
-                <div>
-                    <label for="name" class="form-label">Organization Name</label>
-                    <input
-                        type="text"
-                        name="social"
-                        class="form-control"
-                        id="name"
-                        placeholder="Enter The Organization Name"/>
-                </div>
-
+{{--social media--}}
+<form action="{{route('organization-social-media.store')}}" method="POST"  enctype="multipart/form-data">
+    @csrf
+    <input type="hidden" name="organization_id" value="{{ old('organization_id', $organization_id ?? '') }}" />
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th width="50">SN</th>
+            <th width="300">Social Media</th>
+            <th>Link</th>
+        </tr>
+        </thead>
+        <tbody class="table-border-bottom-0">
+        @foreach($data['social'] as $key => $item)
+            <tr>
+                <td>{{ $loop->iteration }}</td>
+                <td>
+                    <i class="icon-base {{ $item['icon'] }} icon-sm"></i>
+                    {{ $item['name'] }}
+                </td>
+                <td>
+                    <input type="text" name="url[{{ $key }}]" class="form-control"/>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
+</form>
 
