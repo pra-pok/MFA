@@ -39,13 +39,29 @@ class OrganizationController extends DM_BaseController
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = $this->model->with(['createds' => function($query) {
-                $query->select('id', 'username');
-            }, 'updatedBy' => function($query) {
-                $query->select('id', 'username');
-            }])->get();
-            return response()->json($data);
+        try {
+            if ($request->ajax()) {
+                $data = $this->model->with([
+                    'createds' => function ($query) {
+                        $query->select('id', 'username');
+                    },
+                    'updatedBy' => function ($query) {
+                        $query->select('id', 'username');
+                    }
+                ])->get();
+
+                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
+            }
+        } catch (\Exception $exception) {
+            \Log::error('Error in index method: ' . $exception->getMessage(), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving data.',
+                'status' => 'error'
+            ], 500);
         }
         return view(parent::loadView($this->view_path . '.index'));
     }
@@ -118,7 +134,10 @@ class OrganizationController extends DM_BaseController
      */
     public function show($id)
     {
-        $data['record'] = $this->model->find($id);
+//        $data['record'] = $this->model->find($id);
+        $data['record'] = $this->model->with(['createds', 'updatedBy', 'socialMediaLinks', 'organizationGalleries'])  // Eager load any relationships
+        ->find($id);
+
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
@@ -140,13 +159,33 @@ class OrganizationController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
+        // Load the record first
         $data['record'] = $this->model->find($id);
+
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
+
+        // Prepare other data
+        $data['area'] = AdministrativeArea::pluck('name', 'id');
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
+        $data['gallery'] = GalleryCategory::pluck('name', 'id');
+        $data['organization'] = Organization::pluck('name', 'id');
+        $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
+        // Prepare social media links
+        $data['social'] = collect([
+            ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
+            ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
+            ['name' => 'Twitter', 'icon' => 'bx bxl-twitter'],
+            ['name' => 'Youtube', 'icon' => 'bx bxl-youtube'],
+            ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
+            ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
+        ])->map(function ($social) use ($data) {
+            $existing = $data['record']->socialMediaLinks->firstWhere('name', $social['name']);
+            $social['url'] = $existing->url ?? null;
+            return $social;
+        });
 
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
@@ -165,7 +204,29 @@ class OrganizationController extends DM_BaseController
             $request->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . '.index');
         }
+        if ($request->hasfile('logo_file')) {
+            $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
 
+            $request->file('logo_file')->move('images/' . $this->folder . '/banner/', $logo_file);
+            $request->request->add(['logo' => $logo_file]);
+            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/banner/' . $data['record']->logo))) {
+                unlink(public_path('images/' . $this->folder . '/banner/' . $data['record']->logo));
+            }
+        } else {
+            $request->request->add(['logo' => $data['record']->logo]);
+        }
+
+        if ($request->hasfile('banner_file')) {
+            $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
+
+            $request->file('banner_file')->move('images/' . $this->folder . '/', $banner_file);
+            $request->request->add(['banner_image' => $banner_file]);
+            if ($data['record']->banner_image && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->banner_image))) {
+                unlink(public_path('images/' . $this->folder . '/' . $data['record']->banner_image));
+            }
+        } else {
+            $request->request->add(['banner_image' => $data['record']->banner_image]);
+        }
         $request->request->add(['updated_by' => auth()->user()->id]);
 
         try {
@@ -180,7 +241,8 @@ class OrganizationController extends DM_BaseController
                         'data' => $request->all(),
                     ]
                 );
-                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
+//                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
+                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data updated successfully.', 'success'));
             } else {
                 // Custom log for failure
                 logUserAction(
@@ -204,10 +266,10 @@ class OrganizationController extends DM_BaseController
                     'data' => $request->all(),
                 ]
             );
-            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+            return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
         }
 
-        return redirect()->route($this->base_route . '.index');
+//        return redirect()->route($this->base_route . '.index');
     }
 
 

@@ -1,97 +1,50 @@
 @extends('admin.layouts.app')
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                <li class="breadcrumb-item active">{{$_panel}}</li>
-            </ol>
-        </nav>
+        <div class="row g-6">
+            <div class="col-md-12">
+                <div class="card">
+                    <h5 class="card-header">View {{ $_panel }}</h5>
+                    @include('admin.includes.buttons.button-back')
+                    @include('admin.includes.flash_message_error')
+                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
+                                    aria-selected="true">
+                                Basic Information
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-gallery" aria-controls="navs-justified-gallery"
+                                    aria-selected="false">
+                                Gallery
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-social" aria-controls="navs-justified-social"
+                                    aria-selected="false">
+                                Social Media
+                            </button>
+                        </li>
+                    </ul>
 
-        <div class="card">
-            <h5 class="card-header">{{$_panel}}</h5>
-            @include('admin.includes.buttons.button-back')
-            <div class="card-body" >
-                <div >
-                    <table class="table table-bordered">
-                        <tr>
-                            <th>ID</th>
-                            <td>{{$data['record']->id}}</td>
-                        </tr>
-                        <tr>
-                            <th>Stream Name</th>
-                            <td>{{$data['record']->stream->title ?? 'No Stream'}}</td>
-                        </tr>
-                        <tr>
-                            <th>Level Name</th>
-                            <td>{{$data['record']->level->title ?? 'No Level'}}</td>
-                        </tr>
-                        <tr>
-                            <th>Course Name</th>
-                            <td>{{$data['record']->title}}</td>
-                        </tr>
-                        <tr>
-                            <th>Short Title</th>
-                            <td>{{$data['record']->short_title}}</td>
-                        <tr>
-                            <th>Slug</th>
-                            <td>{{$data['record']->slug}}</td>
-                        </tr>
-                        <tr>
-                            <th>Rank</th>
-                            <td>{{$data['record']->rank}}</td>
-                        </tr>
-                        <tr>
-                            <th>Description</th>
-                            <td>{!! $data['record']->description !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Job Prospects</th>
-                            <td>{!! $data['record']->job_prospects !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Eligibility</th>
-                            <td>{!! $data['record']->eligibility !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Syllabus</th>
-                            <td>{!! $data['record']->syllabus !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Meta Title</th>
-                            <td>{{$data['record']->meta_title}}</td>
-                        </tr>
-                        <tr>
-                            <th>Meta Description</th>
-                            <td>{{$data['record']->meta_description}}</td>
-                        </tr>
-                        <tr>
-                            <th>Meta Keyword</th>
-                            <td>{{$data['record']->meta_keywords}}</td>
-                        </tr>
-                        <tr>
-                            <th>Status</th>
-                            <td>@include('admin.includes.buttons.display_status',['status' => $data['record']->status])</td>
-                        </tr>
-                        <tr>
-                            <th>Created By</th>
-                            <td>{{$data['record']->createdBy->name}}</td>
-                        </tr>
-                        @if($data['record']->updated_by != null)
-                            <tr>
-                                <th>Updated By</th>
-                                <td>{{$data['record']->updatedBy->name}}</td>
-                            </tr>
-                        @endif
-                        <tr>
-                            <th>Created At</th>
-                            <td>{{$data['record']->created_at}}</td>
-                        </tr>
-                        <tr>
-                            <th>Updated At</th>
-                            <td>{{$data['record']->updated_at}}</td>
-                        </tr>
-                    </table>
+                    <div class="tab-content mt-3">
+                        <!-- Basic Information Tab -->
+                        <div class="tab-pane fade show active" id="navs-justified-profile" role="tabpanel">
+                            @include('admin.components.organization.includes.show-basic_information')
+                        </div>
+                        <!-- Gallery Tab -->
+                        <div class="tab-pane fade" id="navs-justified-gallery" role="tabpanel">
+                            @include('admin.components.organization.includes.show-gallery')
+                        </div>
+                        <!-- Social Media Tab -->
+                        <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
+                            @include('admin.components.organization.includes.show-social')
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

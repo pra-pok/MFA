@@ -81,23 +81,22 @@ class OrganizationSocialMediaController extends DM_BaseController
     {
         try {
             $organization_id = $request->input('organization_id');
-            $name = $request->input('name');
-            $url = $request->input('url');
-            $status = $request->input('status');
+            $names = $request->input('name');
+            $urls = $request->input('url');
             $created_by = auth()->user()->id;
 
-            $organizationSocialMedia = new OrganizationSocialMedia();
-            $organizationSocialMedia->organization_id = $organization_id;
-            $organizationSocialMedia->name = $name;
-            $organizationSocialMedia->url = $url;
-            $organizationSocialMedia->status = $status;
-            $organizationSocialMedia->created_by = $created_by;
-            $organizationSocialMedia->save();
-
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded successfully.', 'success'));
+            foreach ($urls as $index => $url) {
+                $organizationSocialMedia = new OrganizationSocialMedia();
+                $organizationSocialMedia->organization_id = $organization_id;
+                $organizationSocialMedia->name = $names[$index];
+                $organizationSocialMedia->url = $url;
+                $organizationSocialMedia->created_by = $created_by;
+                $organizationSocialMedia->save();
+            }
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia->id, 'Social Media items uploaded successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery items.', 'error'));
+            Log::error('Error saving organization Social Media data', ['error' => $exception->getMessage()]);
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving Social Media items.', 'error'));
         }
     }
 
@@ -134,9 +133,23 @@ class OrganizationSocialMediaController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
+        $data['area'] = AdministrativeArea::pluck('name', 'id');
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
-        $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
+        $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
+        $data['social'] = collect([
+            ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
+            ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
+            ['name' => 'Twitter', 'icon' => 'bx bxl-twitter'],
+            ['name' => 'Youtube', 'icon' => 'bx bxl-youtube'],
+            ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
+            ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
+        ])->map(function ($social) use ($data) {
+            $existing = $data['record']->socialMediaLinks->firstWhere('name', $social['name']);
+            $social['url'] = $existing->url ?? null;
+            return $social;
+        });
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');

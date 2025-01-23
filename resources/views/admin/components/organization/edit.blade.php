@@ -1,4 +1,16 @@
 @extends('admin.layouts.app')
+@section('css')
+    <style>
+        .btnPrev {
+            display: none;
+            box-shadow: none;
+        }
+        .btnSave {
+            display: none;
+            box-shadow: none;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row g-6">
@@ -7,130 +19,48 @@
                     <h5 class="card-header">Edit {{ $_panel }}</h5>
                     @include('admin.includes.buttons.button-back')
                     @include('admin.includes.flash_message_error')
-                    <div class="card-body">
-                        <form action="{{ route($_base_route . '.update', $data['record']->id) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div>
-                                <label for="stream_id" class="form-label">Select Stream Name</label>
-                                <select class="form-select" id="stream_id" name="stream_id" aria-label="Select Stream Name">
-                                    <option selected disabled>Select Stream Name</option>
-                                    @foreach ($data['stream'] as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ $data['record']->stream_id === $key ? 'selected' : '' }}>
-                                            {{ $value }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="level_id" class="form-label">Select Level Name</label>
-                                <select class="form-select" id="level_id" name="level_id" aria-label="Select Level Name">
-                                    <option selected disabled>Select Level Name</option>
-                                    @foreach ($data['level'] as $key => $value)
-                                        <option value="{{ $key }}"
-                                            {{ $data['record']->level_id === $key ? 'selected' : '' }}>
-                                            {{ $value }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="title" class="form-label">Title</label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    class="form-control"
-                                    id="title"
-                                    value="{{$data['record']->title}}"/>
-                            </div>
-                            <div>
-                                <label for="slug" class="form-label">Slug</label>
-                                <input
-                                    type="text"
-                                    name="slug"
-                                    class="form-control"
-                                    id="slug" value="{{$data['record']->slug}}"  />
-                            </div>
-                            <div>
-                                <label for="rank" class="form-label">Rank</label>
-                                <input
-                                    type="number"
-                                    name="rank"
-                                    class="form-control"
-                                    id="rank" value="{{$data['record']->rank}}" />
-                            </div>
-                            <div>
-                                <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="des" rows="3">{!! $data['record']->description !!}</textarea>
-                            </div>
-                            <div>
-                                <label for="eligibility" class="form-label">Eligibility</label>
-                                <textarea class="form-control" name="eligibility" id="eligibility" rows="3">{!! $data['record']->eligibility !!}</textarea>
-                            </div>
-                            <div>
-                                <label for="job_prospects" class="form-label">Job Prospects</label>
-                                <textarea class="form-control" name="job_prospects" id="job_prospects" rows="3">{!! $data['record']->job_prospects !!}</textarea>
-                            </div>
-                            <div>
-                                <label for="syllabus" class="form-label">Syllabus</label>
-                                <textarea class="form-control" name="syllabus" id="syllabus" rows="3">{!! $data['record']->syllabus !!}</textarea>
-                            </div>
-                            <div>
-                                <label for="meta_title" class="form-label">Meta Title</label>
-                                <input
-                                    type="text"
-                                    name="meta_title"
-                                    class="form-control"
-                                    id="meta_title"
-                                    value="{{$data['record']->meta_title}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_keywords" class="form-label">Meta Keyword</label>
-                                <input
-                                    type="text"
-                                    name="meta_keywords"
-                                    class="form-control"
-                                    id="meta_keywords"
-                                    value="{{$data['record']->meta_keywords}}"/>
-                            </div>
-                            <div>
-                                <label for="meta_description" class="form-label">Meta Description</label>
-                                <input
-                                    type="text"
-                                    name="meta_description"
-                                    class="form-control"
-                                    id="meta_description"
-                                    value="{{$data['record']->meta_description}}"/>
-                            </div><br>
-                            <div>
-                                <label for="status" class="form-label">Status</label>
+                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                        <li class="nav-item">
+                            <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
+                                    aria-selected="true">
+                                Basic Information
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-gallery" aria-controls="navs-justified-gallery"
+                                    aria-selected="false">
+                                Gallery
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-social" aria-controls="navs-justified-social"
+                                    aria-selected="false">
+                                Social Media
+                            </button>
+                        </li>
+                    </ul>
 
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 1 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 0 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> De-Active </label>
-
-                            </div>
-                            <div class="mt-3">
-                                <button type="submit" class="btn btn-primary">Update</button>
-                            </div>
-                        </form>
+                    <div class="tab-content mt-3">
+                        <!-- Basic Information Tab -->
+                        <div class="tab-pane fade show active" id="navs-justified-profile" role="tabpanel">
+                            @include('admin.components.organization.includes.edit-basic_information')
+                        </div>
+                        <!-- Gallery Tab -->
+                        <div class="tab-pane fade" id="navs-justified-gallery" role="tabpanel">
+                            @include('admin.components.organization.includes.edit-gallery')
+                        </div>
+                        <!-- Social Media Tab -->
+                        <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
+                            @include('admin.components.organization.includes.edit-social')
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <button type="button" class="btnPrev btn-primary" id="prevBtn" >Previous</button>
+                            <button type="button" class="btn btn-primary" id="nextBtn-edit">Next</button>
+                            <button type="button" class="btnSave btn-success" id="saveBtn" >Save</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -138,6 +68,172 @@
     </div>
 @endsection
 @section('js')
-    @include('admin.includes.slug')
-@endsection
+    <script>
+        $(document).ready(function () {
 
+            const updateButtonsVisibility = () => {
+                const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+                const totalTabs = $('.nav-tabs .nav-link').length;
+                if (currentTabIndex > 0) {
+                    $('#prevBtn').show();
+                } else {
+                    $('#prevBtn').hide();
+                }
+
+                if (currentTabIndex === totalTabs - 1) {
+                    $('#saveBtn').show();
+                    $('#nextBtn-edit').hide();
+                } else {
+                    $('#saveBtn').hide();
+                    $('#nextBtn-edit').show();
+                }
+            };
+
+            $('#nextBtn-edit').on('click', function (e) {
+                e.preventDefault();
+                const currentPane = $(".tab-pane.fade.show.active");
+                const form = currentPane.find('form');
+                const formData = new FormData(form[0]);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === "success") {
+                            console.log('Response:', response);
+                            if (response.data) {
+                                $('input[name="organization_id"]').val(response.data);
+                            }
+                            const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+                            const nextTabIndex = currentTabIndex + 1;
+                            const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
+                            const nextTabPane = $('.tab-pane').eq(nextTabIndex);
+
+                            if (nextTabLink.length && nextTabPane.length) {
+                                $('.nav-tabs .nav-link.active').removeClass('active');
+                                nextTabLink.addClass('active');
+                                currentPane.removeClass('show active');
+                                nextTabPane.addClass('show active');
+                                updateButtonsVisibility();
+                            } else {
+                                alert('This is the last tab.');
+                            }
+                        } else {
+                            alert(response.message || 'An error occurred while saving data.');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorMessages = '';
+                            for (const field in errors) {
+                                errorMessages += `${errors[field][0]}\n`;
+                            }
+                            alert(errorMessages);
+                        } else {
+                            alert('An unexpected error occurred. Please try again.');
+                        }
+                    }
+                });
+            });
+
+            $('#prevBtn').on('click', function (e) {
+                e.preventDefault();
+                const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+                const prevTabIndex = currentTabIndex - 1;
+                const prevTabLink = $('.nav-tabs .nav-link').eq(prevTabIndex);
+                const prevTabPane = $('.tab-pane').eq(prevTabIndex);
+
+                if (prevTabLink.length && prevTabPane.length) {
+                    $('.nav-tabs .nav-link.active').removeClass('active');
+                    prevTabLink.addClass('active');
+                    $('.tab-pane.fade.show.active').removeClass('show active');
+                    prevTabPane.addClass('show active');
+                    updateButtonsVisibility();
+                }
+            });
+            updateButtonsVisibility();
+
+            $('#name').on('input', function () {
+                var name = $(this).val();
+                var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+                $('#slug').val(slug);
+            });
+
+            const tableBody = $("#datatable tbody");
+
+            tableBody.on("click", ".add-row", function (e) {
+                e.preventDefault();
+                const lastRow = tableBody.find("tr:last");
+                const newRow = lastRow.clone();
+                const rowCount = tableBody.find("tr").length + 1;
+
+                newRow.find("td:first").text(rowCount);
+                newRow.find("input, select").each(function () {
+                    const input = $(this);
+                    if (input.is("select")) {
+                        const originalValue = tableBody.find("tr:first select").val();
+                        input.val(originalValue);
+                    } else if (input.is(":text") || input.is(":file")) {
+                        input.val("");
+                    } else if (input.is(":radio")) {
+                        const baseName = input.attr("name").split("-")[0];
+                        input.attr("name", `${baseName}-${rowCount}`);
+                        input.attr("id", input.attr("id").split("-")[0] + `-${rowCount}`);
+                        input.prop("checked", input.is("[defaultChecked]"));
+                    }
+                });
+                tableBody.append(newRow);
+            });
+
+            tableBody.on("click", ".remove-row", function (e) {
+                e.preventDefault();
+                const rows = tableBody.find("tr");
+                if (rows.length > 1) {
+                    $(this).closest("tr").remove();
+                    tableBody.find("tr").each(function (index) {
+                        const row = $(this);
+                        row.find("td:first").text(index + 1);
+                        row.find("input, select").each(function () {
+                            const input = $(this);
+                            if (input.is(":radio")) {
+                                const baseName = input.attr("name").split("-")[0];
+                                input.attr("name", `${baseName}-${index + 1}`);
+                                input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
+                            }
+                        });
+                    });
+                } else {
+                    alert("At least one row must remain in the table.");
+                }
+            });
+
+            tableBody.on("change", "input[type='radio'][name^='type']", function () {
+                const row = $(this).closest("tr");
+                const mediaText = row.find(".media-text");
+                const mediaFile = row.find(".media-file");
+
+                if ($(this).val() === "1") {
+                    mediaText.hide();
+                    mediaFile.show();
+                } else if ($(this).val() === "0") {
+                    mediaText.show();
+                    mediaFile.hide();
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('fullSizeImage');
+
+            document.querySelectorAll('.clickable-image').forEach(image => {
+                image.addEventListener('click', function () {
+                    const fullImageSrc = this.getAttribute('data-bs-image');
+                    modalImage.src = fullImageSrc;
+                });
+            });
+        });
+    </script>
+@endsection

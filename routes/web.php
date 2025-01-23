@@ -74,7 +74,20 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/edit',[OrganizationGalleryController::class,'edit'])->name('edit');
         Route::put('{id}',[OrganizationGalleryController::class,'update'])->name('update');
     });
-    Route::resource('organization-social-media', OrganizationSocialMediaController::class);
+//    Route::resource('organization-social-media', OrganizationSocialMediaController::class);
+    Route::group(['prefix' =>'organization-social-media', 'as' => 'organization-social-media.'], function() {
+        Route::get('trash',[OrganizationSocialMediaController::class,'trash'])->name('trash');
+        Route::get('restore/{id}',[OrganizationSocialMediaController::class,'restore'])->name('restore');
+        Route::delete('force-delete/{id}',[OrganizationSocialMediaController::class,'forceDeleteData'])->name('force_delete');
+        Route::get('create',[OrganizationSocialMediaController::class,'create'])->name('create');
+        Route::post('/',[OrganizationSocialMediaController::class,'store'])->name('store');
+        Route::get('/',[OrganizationSocialMediaController::class,'index'])->name('index');
+        Route::get('/all-data',[OrganizationSocialMediaController::class,'getData'])->name('getData');
+        Route::get('{id}/show',[OrganizationSocialMediaController::class,'show'])->name('show');
+        Route::delete('{id}',[OrganizationSocialMediaController::class,'destroy'])->name('destroy');
+        Route::get('{id}/edit',[OrganizationSocialMediaController::class,'edit'])->name('edit');
+        Route::put('{id}',[OrganizationSocialMediaController::class,'update'])->name('update');
+    });
 });
 
 require __DIR__ . '/auth.php';

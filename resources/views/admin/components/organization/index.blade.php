@@ -13,19 +13,18 @@
             @include('admin.includes.buttons.button-create')
             @include('admin.includes.buttons.button_display_trash')
             @include('admin.includes.flash_message')
-            <div class="card-body" >
+            <div class="card-body">
                 <div class=" text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
-                            <tr>
-                                <th>SN</th>
-                                <th>Stream Name</th>
-                                <th>Level Name</th>
-                                <th>Title</th>
-                                <th>Slug</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th width="8%" class="text-center">SN</th>
+                            <th>College/School Name</th>
+                            <th>Address</th>
+                            <th>Email/Phone No.</th>
+                            <th class="text-center">Status</th>
+                            <th>Modified By/At</th>
+                        </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
                         </tbody>
@@ -36,37 +35,93 @@
     </div>
 @endsection
 @section('js')
-<script>
-    $(document).ready(function () {
+    <script>
         $('#datatable').DataTable({
-            processing: true,
-            serverSide: true,
-            ajax: "{{ route($_base_route . '.getData') }}",
-            columns: [
-            {
-                data: null,
-                name: 'id',
-                render: function (data, type, row, meta) {
-                    return meta.row + 1;
+            ajax: {
+                url: '{{ route($_base_route . '.index') }}',
+                dataSrc: 'data',
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading data: " + error);
+                    alert("Failed to load data. Please check your console for details.");
                 }
             },
-                { data: 'stream', name: 'stream' },
-                { data: 'level', name: 'level' },
-                { data: 'title', name: 'title' },
-                { data: 'slug', name: 'slug' },
+            columns: [
+                {data: null},
+                {data: 'name'},
+                {data: 'address'},
+                {data: 'email'},
+                {data: 'status'},
+                {data: 'createds.username'},
+            ],
+            rowCallback: function (row, data, index) {
+                const pageInfo = $('#datatable').DataTable().page.info();
+                const pageIndex = pageInfo.page;
+                const pageLength = pageInfo.length;
 
-                {
-                    data: 'status',
-                    name: 'status',
-                    render: function (data, type, row) {
-                        return data === 1
-                            ? '<span class="badge bg-label-primary me-1">Active</span>'
-                            : '<span class="badge bg-label-danger">De-Active</span>';
-                    }
-                },
-            { data: 'action', name: 'action', orderable: false, searchable: false }
-            ]
+                const serialNumber = (pageIndex * pageLength) + (index + 1);
+                const statusBadge = data.status === 1
+                    ? '<span class="badge bg-label-primary me-1">Active</span>'
+                    : '<span class="badge bg-label-danger">In-Active</span>';
+
+                const editUrl = `{{ url('organization/${data.id}/edit') }}`;
+                const showUrl = `{{ url('organization/${data.id}/show') }}`;
+                const deleteUrl = `{{ url('organization/${data.id}') }}`;
+                const modifiedByName = data.updatedBy && data.updatedBy.username
+                    ? data.updatedBy.username
+                    : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
+                const logoUrl = data.logo
+                    ? `{{ asset('images/organization') }}/${data.logo}`
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png";
+                const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
+                const rowContent = `
+            <td class="text-center" >${serialNumber}</td>
+            <td>
+            <img src="${logoUrl}" alt="logo" class="img-thumbnail" style="width: 20px; height: 20px; object-fit: cover; border-radius: 50%; margin-bottom: -19px;">
+               <span style="margin-left: 32px;" > ${data.name}  </span>
+               <a href="${data.website}" target="blank" >
+                   <i class="bx bx-right-top-arrow-circle "></i>
+               </a>
+                <div class="dropdown" style="  margin-left: 300px; margin-top: -22px; position: relative;">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded"></i>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="${editUrl}">
+                            <i class="bx bx-edit-alt me-1"></i> Edit
+                        </a>
+                        <a class="dropdown-item" href="${showUrl}">
+                            <i class="bx bx-show"></i> Show
+                        </a>
+                        <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="dropdown-item">
+                                <i class="bx bx-trash me-1"></i> Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+            <td>${data.address}</td>
+            <td>
+               ${data.email}
+                <br> <span style="font-size: 13px;"> ${data.phone || '-'} </span>
+            </td>
+            <td class="text-center">${statusBadge}</td>
+            <td>
+                ${modifiedByName}<br>
+                ${modifiedDate}
+            </td>
+        `;
+                $(row).html(rowContent);
+            },
+            pageLength: 10,
+            lengthMenu: [10, 25, 50],
+            responsive: true
         });
-    });
-</script>
+    </script>
 @endsection

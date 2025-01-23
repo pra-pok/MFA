@@ -158,56 +158,144 @@ class OrganizationGalleryController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationGalleryRequest  $request, $id)
+//    public function update(OrganizationGalleryRequest  $request, $id)
+//    {
+//        $data['record'] = $this->model->find($id);
+//        if (!$data['record']) {
+//            $request->session()->flash('alert-danger', 'Invalid Request');
+//            return redirect()->route($this->base_route . '.index');
+//        }
+//
+//     //   $request->request->add(['updated_by' => auth()->user()->id]);
+//
+////        try {
+////            $category = $data['record']->update($request->all());
+////            if ($category) {
+////                // Custom log for success
+////                logUserAction(
+////                    auth()->user()->id, // User ID
+////                    auth()->user()->team_id, // Team ID
+////                    $this->panel . ' updated successfully!',
+////                    [
+////                        'data' => $request->all(),
+////                    ]
+////                );
+////                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
+////            } else {
+////                // Custom log for failure
+////                logUserAction(
+////                    auth()->user()->id,
+////                    auth()->user()->team_id,
+////                    $this->panel . ' update failed.',
+////                    [
+////                        'data' => $request->all(),
+////                    ]
+////                );
+////                $request->session()->flash('alert-danger', $this->panel . ' update failed!');
+////            }
+////        } catch (\Exception $exception) {
+////            // Custom log for errors
+////            logUserAction(
+////                auth()->user()->id,
+////                auth()->user()->team_id,
+////                'Database Error during ' . $this->panel . ' update',
+////                [
+////                    'error' => $exception->getMessage(),
+////                    'data' => $request->all(),
+////                ]
+////            );
+////            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+////        }
+////
+//
+//        try {
+//            $organization_id = $request->input('organization_id');
+//            foreach ($request->input('gallery_category_id') as $index => $category_id) {
+//                $type = $request->input('type')[$index];
+//                if ($type == '1' && $request->hasFile('media_file')) {
+//                    foreach ($request->file('media_file') as $fileIndex => $file) {
+//                        $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                        $file->move(public_path('images/' . $this->folder . '/'), $media_file);
+//                        $this->model::create([
+//                            'gallery_category_id' => $category_id,
+//                            'type' => $type,
+//                            'caption' => $request->input('caption')[$index],
+//                            'rank' => $request->input('rank')[$index],
+//                            'media' => $media_file,
+//                            'organization_id' => $organization_id,
+//                            'updated_by' => auth()->user()->id,
+//                        ]);
+//                    }
+//                }
+//                if ($type == '0') {
+//                    $this->model::create([
+//                        'gallery_category_id' => $category_id,
+//                        'type' => $type,
+//                        'caption' => $request->input('caption')[$index],
+//                        'rank' => $request->input('rank')[$index],
+//                        'media' => $request->input('media')[$index],
+//                        'organization_id' => $organization_id,
+//                        'updated_by' => auth()->user()->id,
+//                    ]);
+//                }
+//            }
+//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded uploads successfully.', 'success'));
+//        } catch (\Exception $exception) {
+//            Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
+//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery uploads items.', 'error'));
+//        }
+//    }
+
+    public function update(OrganizationGalleryRequest $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
-            $request->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . '.index');
+            request()->session()->flash('failed', 'Invalid Request');
+            return redirect()->route($this->base_route . 'index');
         }
-
         $request->request->add(['updated_by' => auth()->user()->id]);
+        if ($request->hasfile('image_file')) {
+            $existingDocuments = $data['record']->organizationGalleries()->get();
+            foreach ($request->file('image_file') as $index => $images) {
+                $fileName = time() . '_' . $images->getClientOriginalName();
+                $images->move('images/' . $this->folder . '/', $fileName);
 
+                if (isset($existingDocuments[$index])) {
+                    if ($existingDocuments[$index]->image && file_exists(public_path('images/' . $this->folder . '/' . $existingDocuments[$index]->image))) {
+                        unlink(public_path('images/' . $this->folder . '/' . $existingDocuments[$index]->image));
+                    }
+                    $existingDocuments[$index]->update([
+                        'image_title' => $request->image_title[$index] ?? null,
+                        'image_title_np' => $request->image_title_np[$index] ?? null,
+                        'image' => $fileName,
+                        'status' => 1,
+                        'updated_by' => auth()->user()->id,
+
+                    ]);
+                } else {
+                    $data['record']->organizationGalleries()->create([
+                        'buddha_id ' => $data['record']->id,
+                        'image_title' => $request->image_title[$index] ?? null,
+                        'image_title_np' => $request->image_title_np[$index] ?? null,
+                        'image' => $fileName,
+                        'status' => 1,
+                        'created_by' => auth()->user()->id,
+                        'updated_by' => auth()->user()->id,
+                    ]);
+                }
+            }
+        }
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                // Custom log for success
-                logUserAction(
-                    auth()->user()->id, // User ID
-                    auth()->user()->team_id, // Team ID
-                    $this->panel . ' updated successfully!',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
-                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
+                $request->session()->flash('success', $this->panel . ' updated successfully!');
             } else {
-                // Custom log for failure
-                logUserAction(
-                    auth()->user()->id,
-                    auth()->user()->team_id,
-                    $this->panel . ' update failed.',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
-                $request->session()->flash('alert-danger', $this->panel . ' update failed!');
+                $request->session()->flash('failed', $this->panel . ' update failed!');
             }
         } catch (\Exception $exception) {
-            // Custom log for errors
-            logUserAction(
-                auth()->user()->id,
-                auth()->user()->team_id,
-                'Database Error during ' . $this->panel . ' update',
-                [
-                    'error' => $exception->getMessage(),
-                    'data' => $request->all(),
-                ]
-            );
-            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+            $request->session()->flash('failed', 'Database Error:' . $exception->getMessage());
         }
-
-        return redirect()->route($this->base_route . '.index');
+        return redirect()->route($this->base_route . 'index');
     }
 
 

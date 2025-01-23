@@ -22,13 +22,13 @@ class OrganizationGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'gallery_category_id' => 'required',
+//            'gallery_category_id' => 'required',
         ];
     }
     function  messages(): array
     {
         return [
-            'gallery_category_id.required' => 'Please select gallery_category name',
+         //   'gallery_category_id.required' => 'Please select gallery_category name',
         ];
     }
 }

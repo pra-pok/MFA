@@ -26,4 +26,7 @@ class OrganizationSocialMedia extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
     }
+    public function organization(){
+        return $this->belongsTo(Organization::class,'organization_id','id');
+    }
 }

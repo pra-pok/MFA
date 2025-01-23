@@ -58,4 +58,13 @@ class Organization extends Model
     public function organizationGalleries(){
         return $this->hasMany(OrganizationGallery::class,'organization_id','id');
     }
+    public function socialMediaLinks()
+    {
+        return $this->hasMany(OrganizationSocialMedia::class);
+    }
+
+    public function galleryCategory(){
+        return $this->hasMany(GalleryCategory::class,'organization_id','id');
+    }
+
 }
