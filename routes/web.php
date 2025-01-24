@@ -72,7 +72,7 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/show',[OrganizationGalleryController::class,'show'])->name('show');
         Route::delete('{id}',[OrganizationGalleryController::class,'destroy'])->name('destroy');
         Route::get('{id}/edit',[OrganizationGalleryController::class,'edit'])->name('edit');
-        Route::put('{id}',[OrganizationGalleryController::class,'update'])->name('update');
+        Route::put('{organization_id}',[OrganizationGalleryController::class,'update'])->name('update');
     });
 //    Route::resource('organization-social-media', OrganizationSocialMediaController::class);
     Route::group(['prefix' =>'organization-social-media', 'as' => 'organization-social-media.'], function() {

@@ -60,23 +60,23 @@
                                     min="0"
                                     max="100"
                                     class="form-control"
-                                    id="rank" value="{{$data['record']->rank}}"  required/>
+                                    id="rank" value="{{$data['record']->rank}}"  />
                             </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="des" rows="3" required>{!! $data['record']->description !!}</textarea>
+                                <textarea class="form-control" name="description" id="des" rows="3" >{!! $data['record']->description !!}</textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="eligibility" class="form-label">Eligibility</label>
-                                <textarea class="form-control" name="eligibility" id="eligibility" rows="3" required>{!! $data['record']->eligibility !!}</textarea>
+                                <textarea class="form-control" name="eligibility" id="elig" rows="3" >{!! $data['record']->eligibility !!}</textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="job_prospects" class="form-label">Job Prospects</label>
-                                <textarea class="form-control" name="job_prospects" id="job_prospects" rows="3" required>{!! $data['record']->job_prospects !!}</textarea>
+                                <textarea class="form-control" name="job_prospects" id="job" rows="3" >{!! $data['record']->job_prospects !!}</textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="syllabus" class="form-label">Syllabus</label>
-                                <textarea class="form-control" name="syllabus" id="syllabus" rows="3" required>{!! $data['record']->syllabus !!}</textarea>
+                                <textarea class="form-control" name="syllabus" id="syllabu" rows="3" >{!! $data['record']->syllabus !!}</textarea>
                             </div>
                             @include('admin.includes.edit_meta')
                             @include('admin.includes.edit_status')

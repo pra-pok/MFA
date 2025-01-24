@@ -116,7 +116,7 @@
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control " name="description" id="des">{{$data['record']->description}}</textarea>
+        <textarea class="form-control" name="description" id="des">{{$data['record']->description}}</textarea>
     </div>
 
     <div class="mb-3">

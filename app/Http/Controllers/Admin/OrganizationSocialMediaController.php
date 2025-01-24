@@ -84,23 +84,36 @@ class OrganizationSocialMediaController extends DM_BaseController
             $names = $request->input('name');
             $urls = $request->input('url');
             $created_by = auth()->user()->id;
+            $updated_by = auth()->user()->id;
 
             foreach ($urls as $index => $url) {
-                $organizationSocialMedia = new OrganizationSocialMedia();
-                $organizationSocialMedia->organization_id = $organization_id;
-                $organizationSocialMedia->name = $names[$index];
-                $organizationSocialMedia->url = $url;
-                $organizationSocialMedia->created_by = $created_by;
-                $organizationSocialMedia->save();
+                // Check if the social media entry already exists based on organization_id and name
+                $organizationSocialMedia = OrganizationSocialMedia::where('organization_id', $organization_id)
+                    ->where('name', $names[$index])
+                    ->first();
+
+                // If entry exists, update it; otherwise, create a new one
+                if ($organizationSocialMedia) {
+                    $organizationSocialMedia->url = $url;
+                    $organizationSocialMedia->updated_by = $updated_by;
+                    $organizationSocialMedia->save();
+                } else {
+                    $organizationSocialMedia = new OrganizationSocialMedia();
+                    $organizationSocialMedia->organization_id = $organization_id;
+                    $organizationSocialMedia->name = $names[$index];
+                    $organizationSocialMedia->url = $url;
+                    $organizationSocialMedia->created_by = $created_by;
+                    $organizationSocialMedia->updated_by = $updated_by;
+                    $organizationSocialMedia->save();
+                }
             }
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia->id, 'Social Media items uploaded successfully.', 'success'));
+
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'Social Media items stored/updated successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving organization Social Media data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving Social Media items.', 'error'));
+            Log::error('Error saving/updating organization Social Media data', ['error' => $exception->getMessage()]);
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'An error occurred while saving/updating Social Media items.', 'error'));
         }
     }
-
-
     /**
      * Display the specified resource.
      *
@@ -118,7 +131,6 @@ class OrganizationSocialMediaController extends DM_BaseController
         return view(parent::loadView($this->view_path . '.show'), compact('data'));
 
     }
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -154,10 +166,8 @@ class OrganizationSocialMediaController extends DM_BaseController
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
-
     /**
      * Update the specified resource in storage.
      *

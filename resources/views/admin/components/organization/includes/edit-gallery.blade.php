@@ -3,7 +3,7 @@
       enctype="multipart/form-data">
     @csrf
     @method('PUT')
-    <input type="hidden" name="organization_id" value="{{ $data['record']->id ?? '' }}"/>
+    <input type="hidden" name="organization_id" value="{{ $data['record']->id ?? 'default_value' }} "/>
     <table id="datatable" class="table table-bordered">
         <thead>
         <tr>
@@ -19,10 +19,10 @@
         <tbody class="table-border-bottom-0">
         @if(isset($data['record']) && $data['record']->organizationGalleries()->count() > 0)
             @foreach ($data['record']->organizationGalleries as $index => $gallery)
-                {{--        @foreach($data['record']->organizationGalleries as $index => $gallery)--}}
                 <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>
+                        <input type="hidden" name="id" value="{{$gallery->id}} "/>
                         <select class="form-select required" name="gallery_category_id[{{ $index }}]"
                                 aria-label="Select Category">
                             <option selected disabled>Select Category Name</option>
@@ -81,8 +81,9 @@
             @endforeach
         @else
             <tr>
-                <td>1</td>
+                <td></td>
                 <td>
+                    <input type="hidden" name="id" value=" "/>
                     <select class="form-select required" name="gallery_category_id[]" aria-label="Select Category">
                         <option selected disabled>Select Category Name</option>
                         @foreach ($data['gallery'] as $key => $value)

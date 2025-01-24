@@ -160,8 +160,8 @@ class OrganizationController extends DM_BaseController
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
         // Load the record first
-        $data['record'] = $this->model->find($id);
-
+        $data['record'] = $this->model->with(['organizationGalleries'])
+        ->find($id);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
@@ -207,10 +207,10 @@ class OrganizationController extends DM_BaseController
         if ($request->hasfile('logo_file')) {
             $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
 
-            $request->file('logo_file')->move('images/' . $this->folder . '/banner/', $logo_file);
+            $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
             $request->request->add(['logo' => $logo_file]);
-            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/banner/' . $data['record']->logo))) {
-                unlink(public_path('images/' . $this->folder . '/banner/' . $data['record']->logo));
+            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->logo))) {
+                unlink(public_path('images/' . $this->folder . '/' . $data['record']->logo));
             }
         } else {
             $request->request->add(['logo' => $data['record']->logo]);
@@ -219,10 +219,10 @@ class OrganizationController extends DM_BaseController
         if ($request->hasfile('banner_file')) {
             $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
 
-            $request->file('banner_file')->move('images/' . $this->folder . '/', $banner_file);
+            $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
             $request->request->add(['banner_image' => $banner_file]);
-            if ($data['record']->banner_image && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->banner_image))) {
-                unlink(public_path('images/' . $this->folder . '/' . $data['record']->banner_image));
+            if ($data['record']->banner_image && file_exists(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image))) {
+                unlink(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image));
             }
         } else {
             $request->request->add(['banner_image' => $data['record']->banner_image]);

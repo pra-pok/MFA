@@ -39,4 +39,11 @@ class OrganizationGallery extends Model
     public function organization(){
         return $this->belongsTo(Organization::class,'organization_id','id');
     }
+
+    public function organizationGalleries()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+
 }

@@ -23,12 +23,14 @@ class OrganizationGalleryRequest extends FormRequest
     {
         return [
 //            'gallery_category_id' => 'required',
+            'media_file.*' => 'nullable',
         ];
     }
     function  messages(): array
     {
         return [
          //   'gallery_category_id.required' => 'Please select gallery_category name',
+            'media_file.*' => 'mimes:jpg,jpeg,png,gif,mp4|max:102400',
         ];
     }
 }

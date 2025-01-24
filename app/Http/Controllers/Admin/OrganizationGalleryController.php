@@ -71,43 +71,46 @@ class OrganizationGalleryController extends DM_BaseController
     {
         try {
             $organization_id = $request->input('organization_id');
+
             foreach ($request->input('gallery_category_id') as $index => $category_id) {
                 $type = $request->input('type')[$index];
-                if ($type == '1' && $request->hasFile('media_file')) {
-                    foreach ($request->file('media_file') as $fileIndex => $file) {
-                        $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                        $file->move(public_path('images/' . $this->folder . '/'), $media_file);
-                        $this->model::create([
-                            'gallery_category_id' => $category_id,
-                            'type' => $type,
-                            'caption' => $request->input('caption')[$index],
-                            'rank' => $request->input('rank')[$index],
-                            'media' => $media_file,
-                            'organization_id' => $organization_id,
-                            'created_by' => auth()->user()->id,
-                        ]);
-                    }
+                $caption = $request->input('caption')[$index];
+                $rank = $request->input('rank')[$index];
+                $media = null;
+
+                // Handle image file upload (type == 1)
+                if ($type == '1' && $request->hasFile("media_file.$index")) {
+                    $file = $request->file("media_file.$index");
+                    $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+                    // Move file to the appropriate directory
+                    $file->move(public_path('images/' . $this->folder . '/'), $media_file);
+                    $media = $media_file;
                 }
-                if ($type == '0') {
-                    $this->model::create([
-                        'gallery_category_id' => $category_id,
-                        'type' => $type,
-                        'caption' => $request->input('caption')[$index],
-                        'rank' => $request->input('rank')[$index],
-                        'media' => $request->input('media')[$index],
-                        'organization_id' => $organization_id,
-                        'created_by' => auth()->user()->id,
-                    ]);
+                // Handle video media (type == 0)
+                elseif ($type == '0') {
+                    $media = $request->input('media')[$index] ?? null;
                 }
+
+                // Save each gallery item
+                $this->model::create([
+                    'gallery_category_id' => $category_id,
+                    'type' => $type,
+                    'caption' => $caption,
+                    'rank' => $rank,
+                    'media' => $media,
+                    'organization_id' => $organization_id,
+                    'created_by' => auth()->user()->id,
+                    'updated_by' => auth()->user()->id,
+                ]);
             }
+
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded successfully.', 'success'));
         } catch (\Exception $exception) {
             Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery items.', 'error'));
         }
     }
-
-
     /**
      * Display the specified resource.
      *
@@ -143,11 +146,12 @@ class OrganizationGalleryController extends DM_BaseController
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
+        $data['record'] = $this->model->find($id);
+       // dd($data['record']);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 
@@ -158,144 +162,81 @@ class OrganizationGalleryController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-//    public function update(OrganizationGalleryRequest  $request, $id)
-//    {
-//        $data['record'] = $this->model->find($id);
-//        if (!$data['record']) {
-//            $request->session()->flash('alert-danger', 'Invalid Request');
-//            return redirect()->route($this->base_route . '.index');
-//        }
-//
-//     //   $request->request->add(['updated_by' => auth()->user()->id]);
-//
-////        try {
-////            $category = $data['record']->update($request->all());
-////            if ($category) {
-////                // Custom log for success
-////                logUserAction(
-////                    auth()->user()->id, // User ID
-////                    auth()->user()->team_id, // Team ID
-////                    $this->panel . ' updated successfully!',
-////                    [
-////                        'data' => $request->all(),
-////                    ]
-////                );
-////                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
-////            } else {
-////                // Custom log for failure
-////                logUserAction(
-////                    auth()->user()->id,
-////                    auth()->user()->team_id,
-////                    $this->panel . ' update failed.',
-////                    [
-////                        'data' => $request->all(),
-////                    ]
-////                );
-////                $request->session()->flash('alert-danger', $this->panel . ' update failed!');
-////            }
-////        } catch (\Exception $exception) {
-////            // Custom log for errors
-////            logUserAction(
-////                auth()->user()->id,
-////                auth()->user()->team_id,
-////                'Database Error during ' . $this->panel . ' update',
-////                [
-////                    'error' => $exception->getMessage(),
-////                    'data' => $request->all(),
-////                ]
-////            );
-////            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
-////        }
-////
-//
-//        try {
-//            $organization_id = $request->input('organization_id');
-//            foreach ($request->input('gallery_category_id') as $index => $category_id) {
-//                $type = $request->input('type')[$index];
-//                if ($type == '1' && $request->hasFile('media_file')) {
-//                    foreach ($request->file('media_file') as $fileIndex => $file) {
-//                        $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-//                        $file->move(public_path('images/' . $this->folder . '/'), $media_file);
-//                        $this->model::create([
-//                            'gallery_category_id' => $category_id,
-//                            'type' => $type,
-//                            'caption' => $request->input('caption')[$index],
-//                            'rank' => $request->input('rank')[$index],
-//                            'media' => $media_file,
-//                            'organization_id' => $organization_id,
-//                            'updated_by' => auth()->user()->id,
-//                        ]);
-//                    }
-//                }
-//                if ($type == '0') {
-//                    $this->model::create([
-//                        'gallery_category_id' => $category_id,
-//                        'type' => $type,
-//                        'caption' => $request->input('caption')[$index],
-//                        'rank' => $request->input('rank')[$index],
-//                        'media' => $request->input('media')[$index],
-//                        'organization_id' => $organization_id,
-//                        'updated_by' => auth()->user()->id,
-//                    ]);
-//                }
-//            }
-//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded uploads successfully.', 'success'));
-//        } catch (\Exception $exception) {
-//            Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
-//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery uploads items.', 'error'));
-//        }
-//    }
 
-    public function update(OrganizationGalleryRequest $request, $id)
+    public function update(OrganizationGalleryRequest $request, $organization_id)
     {
-        $data['record'] = $this->model->find($id);
+        $data['record'] = $this->model->find($organization_id);
+        dd($data['record']);
         if (!$data['record']) {
-            request()->session()->flash('failed', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO(null, 'Invalid Request', 'error')
+            );
         }
         $request->request->add(['updated_by' => auth()->user()->id]);
-        if ($request->hasfile('image_file')) {
-            $existingDocuments = $data['record']->organizationGalleries()->get();
-            foreach ($request->file('image_file') as $index => $images) {
-                $fileName = time() . '_' . $images->getClientOriginalName();
-                $images->move('images/' . $this->folder . '/', $fileName);
+//        $organization_id = $data['record']->organization_id;
+        $existingDocuments = $data['record']->organizationGalleries()->get()->keyBy('id');
+        foreach ($request->input('gallery_category_id', []) as $index => $category_id) {
+            $type = $request->input('type')[$index];
+            $caption = $request->input('caption')[$index] ?? null;
+            $rank = $request->input('rank')[$index] ?? null;
+            $media_text = $request->input('media')[$index] ?? null;
+            $existingDocument = $existingDocuments->get($index);
+            // Handle Image
+            if ($type == '1' && $request->hasFile("media_file.$index")) {
+                $file = $request->file("media_file.$index");
+                $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('images/' . $this->folder . '/'), $media_file);
 
-                if (isset($existingDocuments[$index])) {
-                    if ($existingDocuments[$index]->image && file_exists(public_path('images/' . $this->folder . '/' . $existingDocuments[$index]->image))) {
-                        unlink(public_path('images/' . $this->folder . '/' . $existingDocuments[$index]->image));
+                if ($existingDocument) {
+                    // Delete old file if exists
+                    if ($existingDocument->media && file_exists(public_path('images/' . $this->folder . '/' . $existingDocument->media))) {
+                        unlink(public_path('images/' . $this->folder . '/' . $existingDocument->media));
                     }
-                    $existingDocuments[$index]->update([
-                        'image_title' => $request->image_title[$index] ?? null,
-                        'image_title_np' => $request->image_title_np[$index] ?? null,
-                        'image' => $fileName,
-                        'status' => 1,
-                        'updated_by' => auth()->user()->id,
-
-                    ]);
-                } else {
-                    $data['record']->organizationGalleries()->create([
-                        'buddha_id ' => $data['record']->id,
-                        'image_title' => $request->image_title[$index] ?? null,
-                        'image_title_np' => $request->image_title_np[$index] ?? null,
-                        'image' => $fileName,
-                        'status' => 1,
-                        'created_by' => auth()->user()->id,
-                        'updated_by' => auth()->user()->id,
-                    ]);
                 }
+            } else {
+                $media_file = $existingDocument->media ?? null;
+            }
+            // Update or Create
+            if ($existingDocument) {
+                $existingDocument->update([
+                    'gallery_category_id' => $category_id,
+                    'type' => $type,
+                    'caption' => $caption,
+                    'rank' => $rank,
+                    'media' => $type == '1' ? $media_file : $media_text,
+//                    'organization_id' => $organization_id,
+                    'updated_by' => auth()->user()->id,
+                ]);
+            } else {
+                $data['record']->organizationGalleries()->create([
+                    'gallery_category_id' => $category_id,
+                    'type' => $type,
+                    'caption' => $caption,
+                    'rank' => $rank,
+                    'media' => $type == '1' ? $media_file : $media_text,
+                    'organization_id' => $organization_id,
+                    'created_by' => auth()->user()->id,
+                    'updated_by' => auth()->user()->id,
+                ]);
             }
         }
         try {
-            $category = $data['record']->update($request->all());
-            if ($category) {
-                $request->session()->flash('success', $this->panel . ' updated successfully!');
+            $data = $data['record']->update($request->all());
+            if ($data) {
+                return Utils\ResponseUtil::wrapResponse(
+                    new ResponseDTO($data, 'Gallery items updated successfully.', 'success')
+                );
             } else {
-                $request->session()->flash('failed', $this->panel . ' update failed!');
+                return Utils\ResponseUtil::wrapResponse(
+                    new ResponseDTO(null, 'No changes made to the gallery.', 'error')
+                );
             }
         } catch (\Exception $exception) {
-            $request->session()->flash('failed', 'Database Error:' . $exception->getMessage());
+            Log::error('Error updating organization gallery data', ['error' => $exception->getMessage()]);
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO($data, 'An error occurred while updating gallery items.', 'error')
+            );
         }
-        return redirect()->route($this->base_route . 'index');
     }
 
 

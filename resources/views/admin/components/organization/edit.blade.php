@@ -50,15 +50,15 @@
                         </div>
                         <!-- Gallery Tab -->
                         <div class="tab-pane fade" id="navs-justified-gallery" role="tabpanel">
-                            @include('admin.components.organization.includes.edit-gallery')
+                            @include('admin.components.organization.includes.gallery')
                         </div>
                         <!-- Social Media Tab -->
                         <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
-                            @include('admin.components.organization.includes.edit-social')
+                            @include('admin.components.organization.includes.social')
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <button type="button" class="btnPrev btn-primary" id="prevBtn" >Previous</button>
-                            <button type="button" class="btn btn-primary" id="nextBtn-edit">Next</button>
+                            <button type="button" class=" btn-primary" id="nextBtn">Next</button>
                             <button type="button" class="btnSave btn-success" id="saveBtn" >Save</button>
                         </div>
                     </div>
@@ -74,26 +74,31 @@
             const updateButtonsVisibility = () => {
                 const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
                 const totalTabs = $('.nav-tabs .nav-link').length;
+
+                // Show the Previous button if we're not on the first tab
                 if (currentTabIndex > 0) {
                     $('#prevBtn').show();
                 } else {
                     $('#prevBtn').hide();
                 }
 
+                // Show the Save button only on the last tab and hide the Next button
                 if (currentTabIndex === totalTabs - 1) {
                     $('#saveBtn').show();
-                    $('#nextBtn-edit').hide();
+                    $('#nextBtn').hide();
                 } else {
                     $('#saveBtn').hide();
-                    $('#nextBtn-edit').show();
+                    $('#nextBtn').show();
                 }
             };
 
-            $('#nextBtn-edit').on('click', function (e) {
+            $('#nextBtn').on('click', function (e) {
                 e.preventDefault();
+
                 const currentPane = $(".tab-pane.fade.show.active");
                 const form = currentPane.find('form');
                 const formData = new FormData(form[0]);
+
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
@@ -102,10 +107,6 @@
                     contentType: false,
                     success: function (response) {
                         if (response.status === "success") {
-                            console.log('Response:', response);
-                            if (response.data) {
-                                $('input[name="organization_id"]').val(response.data);
-                            }
                             const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
                             const nextTabIndex = currentTabIndex + 1;
                             const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
@@ -154,6 +155,42 @@
                     updateButtonsVisibility();
                 }
             });
+
+            $('#saveBtn').on('click', function (e) {
+                e.preventDefault();
+
+                const currentPane = $(".tab-pane.fade.show.active");
+                const form = currentPane.find('form');
+                const formData = new FormData(form[0]);
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === "success") {
+                            alert('Data saved successfully!');
+                        } else {
+                            alert(response.message || 'An error occurred while saving data.');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorMessages = '';
+                            for (const field in errors) {
+                                errorMessages += `${errors[field][0]}\n`;
+                            }
+                            alert(errorMessages);
+                        } else {
+                            alert('An unexpected error occurred. Please try again.');
+                        }
+                    }
+                });
+            });
+
             updateButtonsVisibility();
 
             $('#name').on('input', function () {
@@ -223,17 +260,15 @@
                     mediaFile.hide();
                 }
             });
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('fullSizeImage');
 
-            document.querySelectorAll('.clickable-image').forEach(image => {
-                image.addEventListener('click', function () {
-                    const fullImageSrc = this.getAttribute('data-bs-image');
-                    modalImage.src = fullImageSrc;
-                });
+            const modal = $('#imageModal');
+            const modalImage = $('#fullSizeImage');
+
+            $('.clickable-image').on('click', function () {
+                const fullImageSrc = $(this).data('bs-image');
+                modalImage.attr('src', fullImageSrc);
             });
         });
+
     </script>
 @endsection

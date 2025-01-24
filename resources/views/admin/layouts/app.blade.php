@@ -204,10 +204,9 @@
 <script>
     const editorIds = [
         'des',
-        'desc',
-        'syllabus',
-        'eligibility',
-        'job_prospects',
+        'syllabu',
+        'elig',
+        'job',
     ];
     editorIds.forEach(id => {
         CKEDITOR.ClassicEditor.create(document.getElementById(id), {
@@ -228,7 +227,7 @@
                     'htmlEmbed', '|',
                     'specialCharacters', 'horizontalLine', 'pageBreak', '|',
                     'textPartLanguage', '|',
-                    'sourceEditing',  '|',
+                    'sourceEditing', '|',
                     'fullScreen', '|',
                 ],
                 shouldNotGroupWhenFull: true
@@ -317,10 +316,6 @@
                 'WProofreader', 'MathType', 'SlashCommand', 'Template', 'DocumentOutline',
                 'FormatPainter', 'TableOfContents', 'PasteFromOfficeEnhanced', 'CaseChange'
             ]
-        }).then(editor => {
-            editor.ui.view.editable.element.style.height = '200px';
-        }).catch(error => {
-            console.error(error);
         });
     });
 </script>
