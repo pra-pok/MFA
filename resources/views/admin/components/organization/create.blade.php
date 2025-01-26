@@ -1,15 +1,6 @@
 @extends('admin.layouts.app')
 @section('css')
-    <style>
-        .btnPrev {
-            display: none;
-            box-shadow: none;
-        }
-        .btnSave {
-            display: none;
-            box-shadow: none;
-        }
-    </style>
+
 @endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -41,6 +32,13 @@
                                 Social Media
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-course" aria-controls="navs-justified-course"
+                                    aria-selected="false">
+                                Course
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content mt-3">
@@ -56,9 +54,13 @@
                         <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
                             @include('admin.components.organization.includes.social')
                         </div>
+                        <!-- Course Tab -->
+                        <div class="tab-pane fade" id="navs-justified-course" role="tabpanel">
+                            @include('admin.components.organization.includes.course')
+                        </div>
                         <div class="d-flex justify-content-between mt-3">
                             <button type="button" class="btnPrev btn-primary" id="prevBtn" >Previous</button>
-                            <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+                            <button type="button" class=" btn-primary" id="nextBtn">Next</button>
                             <button type="button" class="btnSave btn-success" id="saveBtn" >Save</button>
                         </div>
                     </div>
@@ -93,6 +95,14 @@
                 e.preventDefault();
                 const currentPane = $(".tab-pane.fade.show.active");
                 const form = currentPane.find('form');
+                if (typeof CKEDITOR !== 'undefined') {
+                    Object.keys(editors).forEach(id => {
+                        if (editors[id]) {
+                            const editorData = editors[id].getData();
+                            $(`#${id}`).val(editorData);
+                        }
+                    });
+                }
                 const formData = new FormData(form[0]);
 
                 if (!validateTab(form)) {
@@ -159,6 +169,38 @@
                     updateButtonsVisibility();
                 }
             });
+            $('#saveBtn').on('click', function (e) {
+                e.preventDefault();
+                const currentPane = $(".tab-pane.fade.show.active");
+                const form = currentPane.find('form');
+                const formData = new FormData(form[0]);
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.status === "success") {
+                            alert('Data saved successfully!');
+                        } else {
+                            alert(response.message || 'An error occurred while saving data.');
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            let errorMessages = '';
+                            for (const field in errors) {
+                                errorMessages += `${errors[field][0]}\n`;
+                            }
+                            alert(errorMessages);
+                        } else {
+                            alert('An unexpected error occurred. Please try again.');
+                        }
+                    }
+                });
+            });
             updateButtonsVisibility();
 
             function validateTab(form) {
@@ -173,74 +215,6 @@
                 });
                 return isValid;
             }
-            // $('#nextBtn').on('click', function (e) {
-            //     e.preventDefault();
-            //
-            //     const currentPane = $(".tab-pane.fade.show.active");
-            //     const form = currentPane.find('form');
-            //     const formData = new FormData(form[0]);
-            //
-            //     if (!validateTab(form)) {
-            //         alert('Please fill out all required fields.');
-            //         return;
-            //     }
-            //     $.ajax({
-            //         url: form.attr('action'),
-            //         type: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function (response) {
-            //             if (response.status === "success") {
-            //                 console.log('Response:', response);
-            //                 if (response.data) {
-            //                     $('input[name="organization_id"]').val(response.data);
-            //                 }
-            //                 const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
-            //                 const nextTabIndex = currentTabIndex + 1;
-            //                 const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
-            //                 const nextTabPane = $('.tab-pane').eq(nextTabIndex);
-            //
-            //                 if (nextTabLink.length && nextTabPane.length) {
-            //                     $('.nav-tabs .nav-link.active').removeClass('active');
-            //                     nextTabLink.addClass('active');
-            //                     currentPane.removeClass('show active');
-            //                     nextTabPane.addClass('show active');
-            //                 } else {
-            //                     alert('This is the last tab.');
-            //                 }
-            //             } else {
-            //                 alert(response.message || 'An error occurred while saving data.');
-            //             }
-            //         },
-            //         error: function (xhr) {
-            //             if (xhr.status === 422) {
-            //                 const errors = xhr.responseJSON.errors;
-            //                 let errorMessages = '';
-            //                 for (const field in errors) {
-            //                     errorMessages += `${errors[field][0]}\n`;
-            //                 }
-            //                 alert(errorMessages);
-            //             } else {
-            //                 alert('An unexpected error occurred. Please try again.');
-            //             }
-            //         }
-            //     });
-            // });
-            //
-            // function validateTab(form) {
-            //     let isValid = true;
-            //     form.find('.required').each(function () {
-            //         if ($(this).val() === '') {
-            //             isValid = false;
-            //             $(this).addClass('is-invalid');
-            //         } else {
-            //             $(this).removeClass('is-invalid');
-            //         }
-            //     });
-            //     return isValid;
-            // }
-
 
             $('#name').on('input', function () {
                 var name = $(this).val();
@@ -300,7 +274,6 @@
                 const row = $(this).closest("tr");
                 const mediaText = row.find(".media-text");
                 const mediaFile = row.find(".media-file");
-
                 if ($(this).val() === "1") {
                     mediaText.hide();
                     mediaFile.show();
@@ -308,6 +281,22 @@
                     mediaText.show();
                     mediaFile.hide();
                 }
+            });
+            $('.select-course').select2();
+            $('.add-row').click(function() {
+                var newRow = $('.form-row:first').clone();
+                newRow.find('input').val('');
+                newRow.find('select').prop('selectedIndex', 0);
+                newRow.find('textarea').val('');
+                var rowCount = $('#form-rows .form-row').length + 1;
+                newRow.find('.row-number').text(rowCount);
+                $('#form-rows').append(newRow);
+                newRow.find('.select-course').select2();
+                newRow.find('.remove-row').click(function() {
+                    if ($('#form-rows .form-row').length > 1) {
+                        $(this).closest('.form-row').remove();
+                    }
+                });
             });
         });
     </script>

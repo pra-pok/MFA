@@ -116,7 +116,7 @@
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" name="description" id="des">{{$data['record']->description}}</textarea>
+        <textarea class="form-control" name="description" id="description">{{$data['record']->description}}</textarea>
     </div>
 
     <div class="mb-3">
@@ -127,17 +127,17 @@
 
     @include('admin.includes.edit_meta')
     @include('admin.includes.edit_status')
-
-</form>
-
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <img id="fullSizeImage" src="" alt="Full Size" class="img-fluid">
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img id="fullSizeImage" src="" alt="Full Size" class="img-fluid">
+                </div>
             </div>
         </div>
     </div>
-</div>
+</form>
+
+
 
 

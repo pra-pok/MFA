@@ -21,23 +21,21 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet" />
-
     <link rel="stylesheet" href="{{ asset('assets/vendor/fonts/boxicons.css') }}" />
-
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/core.css') }}" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/theme-default.css') }}"
           class="template-customizer-theme-css" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
-
     <!-- Vendors CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css">
     <!--toastr-->
-
 {{--    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">--}}
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.0/css/dataTables.bootstrap5.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet" type="text/css" />
+{{--    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />--}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
     <!-- Page CSS -->
     @yield('css')
     <!-- Helpers -->
@@ -199,125 +197,325 @@
 <script src="https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script src="{{asset('assets/js/helper.js')}}"></script>
-
+{{--<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 {{--@include('admin.includes.flash_message')--}}
+{{--<script>--}}
+{{--    const editorIds = [--}}
+{{--        'des',--}}
+{{--        'syllabu',--}}
+{{--        'elig',--}}
+{{--        'job',--}}
+{{--        'description',--}}
+{{--    ];--}}
+{{--    const editorValue = CKEDITOR.instances['description'].getData();--}}
+{{--    console.log(editorValue);--}}
+{{--    editorIds.forEach(id => {--}}
+{{--        CKEDITOR.ClassicEditor.create(document.getElementById(id), {--}}
+{{--            toolbar: {--}}
+{{--                items: [--}}
+{{--                    'exportPDF','exportWord', '|',--}}
+{{--                    'findAndReplace', 'selectAll', '|',--}}
+{{--                    'heading', '|',--}}
+{{--                    'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',--}}
+{{--                    'bulletedList', 'numberedList', 'todoList', '|',--}}
+{{--                    'outdent', 'indent', '|',--}}
+{{--                    'undo', 'redo',--}}
+{{--                    '-',--}}
+{{--                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',--}}
+{{--                    'alignment', '|',--}}
+{{--                    'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',--}}
+{{--                    'specialCharacters', 'horizontalLine', 'pageBreak', '|',--}}
+{{--                    'textPartLanguage', '|',--}}
+{{--                    'sourceEditing'--}}
+{{--                ],--}}
+{{--                shouldNotGroupWhenFull: true--}}
+{{--            },--}}
+{{--            list: {--}}
+{{--                properties: {--}}
+{{--                    styles: true,--}}
+{{--                    startIndex: true,--}}
+{{--                    reversed: true--}}
+{{--                }--}}
+{{--            },--}}
+{{--            heading: {--}}
+{{--                options: [--}}
+{{--                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },--}}
+{{--                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },--}}
+{{--                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },--}}
+{{--                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },--}}
+{{--                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },--}}
+{{--                    { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },--}}
+{{--                    { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }--}}
+{{--                ]--}}
+{{--            },--}}
+{{--            placeholder: ' ',--}}
+{{--            fontFamily: {--}}
+{{--                options: [--}}
+{{--                    'default',--}}
+{{--                    'Arial, Helvetica, sans-serif',--}}
+{{--                    'Courier New, Courier, monospace',--}}
+{{--                    'Georgia, serif',--}}
+{{--                    'Lucida Sans Unicode, Lucida Grande, sans-serif',--}}
+{{--                    'Tahoma, Geneva, sans-serif',--}}
+{{--                    'Times New Roman, Times, serif',--}}
+{{--                    'Trebuchet MS, Helvetica, sans-serif',--}}
+{{--                    'Verdana, Geneva, sans-serif'--}}
+{{--                ],--}}
+{{--                supportAllValues: true--}}
+{{--            },--}}
+{{--            fontSize: {--}}
+{{--                options: [ 10, 12, 14, 'default', 18, 20, 22 ],--}}
+{{--                supportAllValues: true--}}
+{{--            },--}}
+{{--            htmlSupport: {--}}
+{{--                allow: [--}}
+{{--                    {--}}
+{{--                        name: /.*/,--}}
+{{--                        attributes: true,--}}
+{{--                        classes: true,--}}
+{{--                        styles: true--}}
+{{--                    }--}}
+{{--                ]--}}
+{{--            },--}}
+{{--            htmlEmbed: {--}}
+{{--                showPreviews: true--}}
+{{--            },--}}
+{{--            link: {--}}
+{{--                decorators: {--}}
+{{--                    addTargetToExternalLinks: true,--}}
+{{--                    defaultProtocol: 'https://',--}}
+{{--                    toggleDownloadable: {--}}
+{{--                        mode: 'manual',--}}
+{{--                        label: 'Downloadable',--}}
+{{--                        attributes: {--}}
+{{--                            download: 'file'--}}
+{{--                        }--}}
+{{--                    }--}}
+{{--                }--}}
+{{--            },--}}
+{{--            mention: {--}}
+{{--                feeds: [--}}
+{{--                    {--}}
+{{--                        marker: '@',--}}
+{{--                        feed: [--}}
+{{--                            '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',--}}
+{{--                            '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',--}}
+{{--                            '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',--}}
+{{--                            '@sugar', '@sweet', '@topping', '@wafer'--}}
+{{--                        ],--}}
+{{--                        minimumCharacters: 1--}}
+{{--                    }--}}
+{{--                ]--}}
+{{--            },--}}
+{{--            removePlugins: [--}}
+{{--                'AIAssistant',--}}
+{{--                'CKBox',--}}
+{{--                'CKFinder',--}}
+{{--                'EasyImage',--}}
+{{--                'MultiLevelList',--}}
+{{--                'RealTimeCollaborativeComments',--}}
+{{--                'RealTimeCollaborativeTrackChanges',--}}
+{{--                'RealTimeCollaborativeRevisionHistory',--}}
+{{--                'PresenceList',--}}
+{{--                'Comments',--}}
+{{--                'TrackChanges',--}}
+{{--                'TrackChangesData',--}}
+{{--                'RevisionHistory',--}}
+{{--                'Pagination',--}}
+{{--                'WProofreader',--}}
+{{--                'MathType',--}}
+{{--                'SlashCommand',--}}
+{{--                'Template',--}}
+{{--                'DocumentOutline',--}}
+{{--                'FormatPainter',--}}
+{{--                'TableOfContents',--}}
+{{--                'PasteFromOfficeEnhanced',--}}
+{{--                'CaseChange'--}}
+{{--            ]--}}
+{{--        });--}}
+{{--    });--}}
+{{--</script>--}}
 <script>
-    const editorIds = [
-        'des',
-        'syllabu',
-        'elig',
-        'job',
-    ];
+    const editorIds = ['des', 'syllabu', 'elig', 'job', 'description' ,'desc'];
+    const editors = {};
     editorIds.forEach(id => {
-        CKEDITOR.ClassicEditor.create(document.getElementById(id), {
-            toolbar: {
-                items: [
-                    'exportPDF', 'exportWord', '|',
-                    'findAndReplace', 'selectAll', '|',
-                    'heading', '|',
-                    'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript',
-                    'superscript', 'removeFormat', '|',
-                    'bulletedList', 'numberedList', 'todoList', '|',
-                    'outdent', 'indent', '|',
-                    'undo', 'redo',
-                    '-',
-                    'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
-                    'alignment', '|',
-                    'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock',
-                    'htmlEmbed', '|',
-                    'specialCharacters', 'horizontalLine', 'pageBreak', '|',
-                    'textPartLanguage', '|',
-                    'sourceEditing', '|',
-                    'fullScreen', '|',
-                ],
-                shouldNotGroupWhenFull: true
-            },
-            list: {
-                properties: {
-                    styles: true,
-                    startIndex: true,
-                    reversed: true
-                }
-            },
-            heading: {
-                options: [
-                    { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-                    { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-                    { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-                    { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-                    { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-                    { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-                    { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
-                ]
-            },
-            placeholder: '',
-            height: '500px',
-            fontFamily: {
-                options: [
-                    'default',
-                    'Arial, Helvetica, sans-serif',
-                    'Courier New, Courier, monospace',
-                    'Georgia, serif',
-                    'Lucida Sans Unicode, Lucida Grande, sans-serif',
-                    'Tahoma, Geneva, sans-serif',
-                    'Times New Roman, Times, serif',
-                    'Trebuchet MS, Helvetica, sans-serif',
-                    'Verdana, Geneva, sans-serif'
-                ],
-                supportAllValues: true
-            },
-            fontSize: {
-                options: [10, 12, 14, 'default', 18, 20, 22],
-                supportAllValues: true
-            },
-            htmlSupport: {
-                allow: [
-                    { name: /.*/, attributes: true, classes: true, styles: true }
-                ]
-            },
-            htmlEmbed: {
-                showPreviews: true
-            },
-            link: {
-                decorators: {
-                    addTargetToExternalLinks: true,
-                    defaultProtocol: 'https://',
-                    toggleDownloadable: {
-                        mode: 'manual',
-                        label: 'Downloadable',
-                        attributes: {
-                            download: 'file'
-                        }
-                    }
-                }
-            },
-            mention: {
-                feeds: [
-                    {
-                        marker: '@',
-                        feed: [
-                            '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy',
-                            '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
-                            '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake',
-                            '@gingerbread', '@gummi', '@ice', '@jelly-o',
-                            '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum',
-                            '@pudding', '@sesame', '@snaps', '@soufflé',
-                            '@sugar', '@sweet', '@topping', '@wafer'
-                        ],
-                        minimumCharacters: 1
-                    }
-                ]
-            },
-            removePlugins: [
-                'AIAssistant', 'CKBox', 'CKFinder', 'EasyImage', 'MultiLevelList',
-                'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges',
-                'RealTimeCollaborativeRevisionHistory', 'PresenceList', 'Comments',
-                'TrackChanges', 'TrackChangesData', 'RevisionHistory', 'Pagination',
-                'WProofreader', 'MathType', 'SlashCommand', 'Template', 'DocumentOutline',
-                'FormatPainter', 'TableOfContents', 'PasteFromOfficeEnhanced', 'CaseChange'
-            ]
-        });
+        const element = document.getElementById(id);
+        if (element) {
+            initializeCKEditor(id);
+        }
     });
+
+    // Initialize CKEditor dynamically for new textareas
+    function initializeCKEditor(id) {
+        const element = document.getElementById(id);
+        if (element) {
+            CKEDITOR.ClassicEditor.create(element, {
+                toolbar: {
+                    items: [
+                        'exportPDF', 'exportWord', '|',
+                        'findAndReplace', 'selectAll', '|',
+                        'heading', '|',
+                        'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+                        'bulletedList', 'numberedList', 'todoList', '|',
+                        'outdent', 'indent', '|',
+                        'undo', 'redo',
+                        '-',
+                        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+                        'alignment', '|',
+                        'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+                        'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+                        'textPartLanguage', '|',
+                        'sourceEditing'
+                    ],
+                    shouldNotGroupWhenFull: true
+                },
+                placeholder: ' ',
+                removePlugins: [
+                    'AIAssistant', 'CKBox', 'CKFinder', 'EasyImage', 'MultiLevelList',
+                    'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges',
+                    'RealTimeCollaborativeRevisionHistory', 'PresenceList', 'Comments', 'TrackChanges',
+                    'TrackChangesData', 'RevisionHistory', 'Pagination', 'WProofreader', 'MathType',
+                    'SlashCommand', 'Template', 'DocumentOutline', 'FormatPainter', 'TableOfContents',
+                    'PasteFromOfficeEnhanced', 'CaseChange'
+                ]
+            }).then(editor => {
+                editors[id] = editor;
+            }).catch(error => {
+                console.error(`Error initializing editor for #${id}:`, error);
+            });
+        }
+    }
+    // editorIds.forEach(id => {
+    //     const element = document.getElementById(id);
+    //     if (element) {
+    //         CKEDITOR.ClassicEditor.create(element, {
+    //             toolbar: {
+    //                 items: [
+    //                     'exportPDF', 'exportWord', '|',
+    //                     'findAndReplace', 'selectAll', '|',
+    //                     'heading', '|',
+    //                     'bold', 'italic', 'strikethrough', 'underline', 'code', 'subscript', 'superscript', 'removeFormat', '|',
+    //                     'bulletedList', 'numberedList', 'todoList', '|',
+    //                     'outdent', 'indent', '|',
+    //                     'undo', 'redo',
+    //                     '-',
+    //                     'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', 'highlight', '|',
+    //                     'alignment', '|',
+    //                     'link', 'uploadImage', 'blockQuote', 'insertTable', 'mediaEmbed', 'codeBlock', 'htmlEmbed', '|',
+    //                     'specialCharacters', 'horizontalLine', 'pageBreak', '|',
+    //                     'textPartLanguage', '|',
+    //                     'sourceEditing'
+    //                 ],
+    //                 shouldNotGroupWhenFull: true
+    //             },
+    //             list: {
+    //                 properties: {
+    //                     styles: true,
+    //                     startIndex: true,
+    //                     reversed: true
+    //                 }
+    //             },
+    //             heading: {
+    //                 options: [
+    //                     { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+    //                     { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+    //                     { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+    //                     { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+    //                     { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+    //                     { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+    //                     { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+    //                 ]
+    //             },
+    //             placeholder: ' ',
+    //             fontFamily: {
+    //                 options: [
+    //                     'default',
+    //                     'Arial, Helvetica, sans-serif',
+    //                     'Courier New, Courier, monospace',
+    //                     'Georgia, serif',
+    //                     'Lucida Sans Unicode, Lucida Grande, sans-serif',
+    //                     'Tahoma, Geneva, sans-serif',
+    //                     'Times New Roman, Times, serif',
+    //                     'Trebuchet MS, Helvetica, sans-serif',
+    //                     'Verdana, Geneva, sans-serif'
+    //                 ],
+    //                 supportAllValues: true
+    //             },
+    //             fontSize: {
+    //                 options: [10, 12, 14, 'default', 18, 20, 22],
+    //                 supportAllValues: true
+    //             },
+    //             htmlSupport: {
+    //                 allow: [
+    //                     {
+    //                         name: /.*/,
+    //                         attributes: true,
+    //                         classes: true,
+    //                         styles: true
+    //                     }
+    //                 ]
+    //             },
+    //             htmlEmbed: {
+    //                 showPreviews: true
+    //             },
+    //             link: {
+    //                 decorators: {
+    //                     addTargetToExternalLinks: true,
+    //                     defaultProtocol: 'https://',
+    //                     toggleDownloadable: {
+    //                         mode: 'manual',
+    //                         label: 'Downloadable',
+    //                         attributes: {
+    //                             download: 'file'
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             mention: {
+    //                 feeds: [
+    //                     {
+    //                         marker: '@',
+    //                         feed: [
+    //                             '@apple', '@bears', '@brownie', '@cake', '@cake', '@candy', '@canes', '@chocolate', '@cookie', '@cotton', '@cream',
+    //                             '@cupcake', '@danish', '@donut', '@dragée', '@fruitcake', '@gingerbread', '@gummi', '@ice', '@jelly-o',
+    //                             '@liquorice', '@macaroon', '@marzipan', '@oat', '@pie', '@plum', '@pudding', '@sesame', '@snaps', '@soufflé',
+    //                             '@sugar', '@sweet', '@topping', '@wafer'
+    //                         ],
+    //                         minimumCharacters: 1
+    //                     }
+    //                 ]
+    //             },
+    //             removePlugins: [
+    //                 'AIAssistant', 'CKBox', 'CKFinder', 'EasyImage', 'MultiLevelList',
+    //                 'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges',
+    //                 'RealTimeCollaborativeRevisionHistory', 'PresenceList', 'Comments', 'TrackChanges',
+    //                 'TrackChangesData', 'RevisionHistory', 'Pagination', 'WProofreader', 'MathType',
+    //                 'SlashCommand', 'Template', 'DocumentOutline', 'FormatPainter', 'TableOfContents',
+    //                 'PasteFromOfficeEnhanced', 'CaseChange'
+    //             ]
+    //         })
+    //             .then(editor => {
+    //                 editors[id] = editor;
+    //             })
+    //             .catch(error => {
+    //                 console.error(`Error initializing editor for #${id}:`, error);
+    //             });
+    //     }
+    // });
+    function getEditorData(id) {
+        if (editors[id]) {
+            return editors[id].getData();
+        } else {
+            console.error(`Editor instance for #${id} not found.`);
+            return null;
+        }
+    }
+    setTimeout(() => {
+        const descriptionData = getEditorData('description');
+        console.log('Description Editor Data:', descriptionData);
+    }, 2000);
+
 </script>
 
 <!-- Page JS -->

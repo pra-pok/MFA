@@ -1,16 +1,4 @@
 @extends('admin.layouts.app')
-@section('css')
-    <style>
-        .btnPrev {
-            display: none;
-            box-shadow: none;
-        }
-        .btnSave {
-            display: none;
-            box-shadow: none;
-        }
-    </style>
-@endsection
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="row g-6">
@@ -41,6 +29,13 @@
                                 Social Media
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-course" aria-controls="navs-justified-course"
+                                    aria-selected="false">
+                                Course
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content mt-3">
@@ -55,6 +50,10 @@
                         <!-- Social Media Tab -->
                         <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
                             @include('admin.components.organization.includes.social')
+                        </div>
+                        <!-- Course Tab -->
+                        <div class="tab-pane fade" id="navs-justified-course" role="tabpanel">
+                            @include('admin.components.organization.includes.course')
                         </div>
                         <div class="d-flex justify-content-between mt-3">
                             <button type="button" class="btnPrev btn-primary" id="prevBtn" >Previous</button>
@@ -74,15 +73,11 @@
             const updateButtonsVisibility = () => {
                 const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
                 const totalTabs = $('.nav-tabs .nav-link').length;
-
-                // Show the Previous button if we're not on the first tab
                 if (currentTabIndex > 0) {
                     $('#prevBtn').show();
                 } else {
                     $('#prevBtn').hide();
                 }
-
-                // Show the Save button only on the last tab and hide the Next button
                 if (currentTabIndex === totalTabs - 1) {
                     $('#saveBtn').show();
                     $('#nextBtn').hide();
@@ -91,14 +86,19 @@
                     $('#nextBtn').show();
                 }
             };
-
             $('#nextBtn').on('click', function (e) {
                 e.preventDefault();
-
                 const currentPane = $(".tab-pane.fade.show.active");
                 const form = currentPane.find('form');
+                if (typeof CKEDITOR !== 'undefined') {
+                    Object.keys(editors).forEach(id => {
+                        if (editors[id]) {
+                            const editorData = editors[id].getData();
+                            $(`#${id}`).val(editorData);
+                        }
+                    });
+                }
                 const formData = new FormData(form[0]);
-
                 $.ajax({
                     url: form.attr('action'),
                     type: 'POST',
@@ -139,7 +139,6 @@
                     }
                 });
             });
-
             $('#prevBtn').on('click', function (e) {
                 e.preventDefault();
                 const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
@@ -155,58 +154,18 @@
                     updateButtonsVisibility();
                 }
             });
-
-            $('#saveBtn').on('click', function (e) {
-                e.preventDefault();
-
-                const currentPane = $(".tab-pane.fade.show.active");
-                const form = currentPane.find('form');
-                const formData = new FormData(form[0]);
-
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.status === "success") {
-                            alert('Data saved successfully!');
-                        } else {
-                            alert(response.message || 'An error occurred while saving data.');
-                        }
-                    },
-                    error: function (xhr) {
-                        if (xhr.status === 422) {
-                            const errors = xhr.responseJSON.errors;
-                            let errorMessages = '';
-                            for (const field in errors) {
-                                errorMessages += `${errors[field][0]}\n`;
-                            }
-                            alert(errorMessages);
-                        } else {
-                            alert('An unexpected error occurred. Please try again.');
-                        }
-                    }
-                });
-            });
-
-            updateButtonsVisibility();
-
+           c
             $('#name').on('input', function () {
                 var name = $(this).val();
                 var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
                 $('#slug').val(slug);
             });
-
             const tableBody = $("#datatable tbody");
-
             tableBody.on("click", ".add-row", function (e) {
                 e.preventDefault();
                 const lastRow = tableBody.find("tr:last");
                 const newRow = lastRow.clone();
                 const rowCount = tableBody.find("tr").length + 1;
-
                 newRow.find("td:first").text(rowCount);
                 newRow.find("input, select").each(function () {
                     const input = $(this);
@@ -224,7 +183,6 @@
                 });
                 tableBody.append(newRow);
             });
-
             tableBody.on("click", ".remove-row", function (e) {
                 e.preventDefault();
                 const rows = tableBody.find("tr");
@@ -246,7 +204,6 @@
                     alert("At least one row must remain in the table.");
                 }
             });
-
             tableBody.on("change", "input[type='radio'][name^='type']", function () {
                 const row = $(this).closest("tr");
                 const mediaText = row.find(".media-text");
@@ -260,7 +217,6 @@
                     mediaFile.hide();
                 }
             });
-
             const modal = $('#imageModal');
             const modalImage = $('#fullSizeImage');
 
@@ -268,7 +224,23 @@
                 const fullImageSrc = $(this).data('bs-image');
                 modalImage.attr('src', fullImageSrc);
             });
-        });
+            $('.add-row').click(function() {
+                var newRow = $('.form-row:first').clone();
+                newRow.find('input').val('');
+                newRow.find('select').prop('selectedIndex', 0);
+                newRow.find('textarea').val('');
 
+                var rowCount = $('#form-rows .form-row').length + 1;
+                newRow.find('.row-number').text(rowCount);
+                $('#form-rows').append(newRow);
+
+                newRow.find('.select-course').select2();
+                newRow.find('.remove-row').click(function() {
+                    if ($('#form-rows .form-row').length > 1) {
+                        $(this).closest('.form-row').remove();
+                    }
+                });
+            });
+        });
     </script>
 @endsection

@@ -205,19 +205,6 @@
     </li>
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-home"></i>
-            <div class="text-truncate" data-i18n="Form Elements">College/School</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('organization.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">College/School</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-images"></i>
             <div class="text-truncate" data-i18n="Form Elements">Gallery Category</div>
         </a>
@@ -229,5 +216,17 @@
             </li>
         </ul>
     </li>
-
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-home"></i>
+            <div class="text-truncate" data-i18n="Form Elements">College/School</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('organization.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">College/School</div>
+                </a>
+            </li>
+        </ul>
+    </li>
 </ul>

@@ -9,6 +9,7 @@ use App\Http\Controllers\UserActionController;
 use App\Http\Controllers\Admin\OrganizationGalleryController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OrganizationSocialMediaController;
+use App\Http\Controllers\Admin\OrganizationCourseController;
 use Illuminate\Support\Facades\Route;
 
 //Route::redirect('/', '/dashboard', 301);
@@ -88,6 +89,8 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/edit',[OrganizationSocialMediaController::class,'edit'])->name('edit');
         Route::put('{id}',[OrganizationSocialMediaController::class,'update'])->name('update');
     });
+
+    Route::resource('organization-course', OrganizationCourseController::class);
 });
 
 require __DIR__ . '/auth.php';

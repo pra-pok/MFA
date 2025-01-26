@@ -67,48 +67,196 @@ class OrganizationGalleryController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(OrganizationGalleryRequest $request)
+//    public function store(Request $request)
+//    {
+//        try {
+//            $organization_id = $request->input('organization_id');
+//            $gallery_category_ids = $request->input('gallery_category_id');
+//            $captions = $request->input('caption');
+//            $ranks = $request->input('rank');
+//            $created_by = auth()->id();
+//            $updated_by = auth()->id();
+//
+//            foreach ($gallery_category_ids as $index => $category_id) {
+//                $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
+//                    ->where('gallery_category_id', $category_id)
+//                    ->first();
+//
+//                // Handle new or existing records
+//                if ($galleryItem) {
+//                    // Update existing item caption and rank
+//                    $galleryItem->caption = $captions[$index];
+//                    $galleryItem->rank = $ranks[$index];
+//                    $galleryItem->updated_by = $updated_by;
+//                  //  $galleryItem->save();
+//                    // Handle image uploads
+//                    if ($request->hasFile("media_file.$index")) {
+//                        foreach ($request->file("media_file.$index") as $file) {
+//                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                            $file->move(public_path("images/organization-gallery/"), $media_file_name);
+//                            // Create new image records
+//                            OrganizationGallery::create([
+//                                'organization_id' => $organization_id,
+//                                'gallery_category_id' => $category_id,
+//                                'caption' => $captions[$index],
+//                                'rank' => $ranks[$index],
+//                                'type' => 1, // Image type
+//                                'media' => $media_file_name,
+//                                'created_by' => $created_by,
+//                                'updated_by' => $updated_by,
+//                            ]);
+//                        }
+//                    }
+//                    // Handle video URL for updating records
+//                    if (!empty($request->input("media.$index"))) {
+//                        $galleryItem->type = 0; // Video type
+//                        $galleryItem->media = $request->input("media.$index");
+//                        $galleryItem->save();
+//                    }
+//                } else {
+//                    if ($request->hasFile("media_file.$index")) {
+//                        foreach ($request->file("media_file.$index") as $file) {
+//                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                            $file->move(public_path("images/organization-gallery/"), $media_file_name);
+//                            OrganizationGallery::create([
+//                                'organization_id' => $organization_id,
+//                                'gallery_category_id' => $category_id,
+//                                'caption' => $captions[$index],
+//                                'rank' => $ranks[$index],
+//                                'type' => 1, // Image type
+//                                'media' => $media_file_name,
+//                                'created_by' => $created_by,
+//                                'updated_by' => $updated_by,
+//                            ]);
+//                        }
+//                    }
+//                    // Handle video URL for new records
+//                    if (!empty($request->input("media.$index"))) {
+//                        OrganizationGallery::create([
+//                            'organization_id' => $organization_id,
+//                            'gallery_category_id' => $category_id,
+//                            'caption' => $captions[$index],
+//                            'rank' => $ranks[$index],
+//                            'type' => 0, // Video type
+//                            'media' => $request->input("media.$index"),
+//                            'created_by' => $created_by,
+//                            'updated_by' => $updated_by,
+//                        ]);
+//                    }
+//                }
+//            }
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'Gallery items stored/updated successfully.', 'success')
+//            );
+//        } catch (\Exception $exception) {
+//            Log::error('Error saving/updating gallery data', [
+//                'error' => $exception->getMessage(),
+//            ]);
+//
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'An error occurred while saving/updating gallery items.', 'error')
+//            );
+//        }
+//    }
+    public function store(Request $request)
     {
         try {
             $organization_id = $request->input('organization_id');
+            $gallery_category_ids = $request->input('gallery_category_id');
+            $captions = $request->input('caption');
+            $ranks = $request->input('rank');
+            $created_by = auth()->id();
+            $updated_by = auth()->id();
 
-            foreach ($request->input('gallery_category_id') as $index => $category_id) {
-                $type = $request->input('type')[$index];
-                $caption = $request->input('caption')[$index];
-                $rank = $request->input('rank')[$index];
-                $media = null;
+            foreach ($gallery_category_ids as $index => $category_id) {
+                // Check if this gallery item exists
+                $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
+                    ->where('gallery_category_id', $category_id)
+                    ->first();
 
-                // Handle image file upload (type == 1)
-                if ($type == '1' && $request->hasFile("media_file.$index")) {
-                    $file = $request->file("media_file.$index");
-                    $media_file = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                // Handle new or existing records
+                if ($galleryItem) {
+                    // Update existing item caption and rank
+                    $galleryItem->caption = $captions[$index];
+                    $galleryItem->rank = $ranks[$index];
+                    $galleryItem->updated_by = $updated_by;
 
-                    // Move file to the appropriate directory
-                    $file->move(public_path('images/' . $this->folder . '/'), $media_file);
-                    $media = $media_file;
+                    // Handle image uploads
+                    if ($request->hasFile("media_file.$index")) {
+                        foreach ($request->file("media_file.$index") as $file) {
+                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path("images/organization-gallery/"), $media_file_name);
+
+                            // Create new image records
+                            OrganizationGallery::create([
+                                'organization_id' => $organization_id,
+                                'gallery_category_id' => $category_id,
+                                'caption' => $captions[$index],
+                                'rank' => $ranks[$index],
+                                'type' => 1, // Image type
+                                'media' => $media_file_name,
+                                'created_by' => $created_by,
+                                'updated_by' => $updated_by,
+                            ]);
+                        }
+                    }
+
+                    // Handle video URL for updating records
+                    if (!empty($request->input("media.$index"))) {
+                        $galleryItem->type = 0; // Video type
+                        $galleryItem->media = $request->input("media.$index");
+                        $galleryItem->save();
+                    }
+
+                } else {
+                    // Handle new item creation
+                    // Handle image uploads
+                    if ($request->hasFile("media_file.$index")) {
+                        foreach ($request->file("media_file.$index") as $file) {
+                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                            $file->move(public_path("images/organization-gallery/"), $media_file_name);
+
+                            // Create new image records
+                            OrganizationGallery::create([
+                                'organization_id' => $organization_id,
+                                'gallery_category_id' => $category_id,
+                                'caption' => $captions[$index],
+                                'rank' => $ranks[$index],
+                                'type' => 1, // Image type
+                                'media' => $media_file_name,
+                                'created_by' => $created_by,
+                                'updated_by' => $updated_by,
+                            ]);
+                        }
+                    }
+
+                    // Handle video URL for new records
+                    if (!empty($request->input("media.$index"))) {
+                        OrganizationGallery::create([
+                            'organization_id' => $organization_id,
+                            'gallery_category_id' => $category_id,
+                            'caption' => $captions[$index],
+                            'rank' => $ranks[$index],
+                            'type' => 0, // Video type
+                            'media' => $request->input("media.$index"),
+                            'created_by' => $created_by,
+                            'updated_by' => $updated_by,
+                        ]);
+                    }
                 }
-                // Handle video media (type == 0)
-                elseif ($type == '0') {
-                    $media = $request->input('media')[$index] ?? null;
-                }
-
-                // Save each gallery item
-                $this->model::create([
-                    'gallery_category_id' => $category_id,
-                    'type' => $type,
-                    'caption' => $caption,
-                    'rank' => $rank,
-                    'media' => $media,
-                    'organization_id' => $organization_id,
-                    'created_by' => auth()->user()->id,
-                    'updated_by' => auth()->user()->id,
-                ]);
             }
 
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'Gallery items uploaded successfully.', 'success'));
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO(null, 'Gallery items stored/updated successfully.', 'success')
+            );
         } catch (\Exception $exception) {
-            Log::error('Error saving organization gallery data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving gallery items.', 'error'));
+            Log::error('Error saving/updating gallery data', [
+                'error' => $exception->getMessage(),
+            ]);
+
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO(null, 'An error occurred while saving/updating gallery items.', 'error')
+            );
         }
     }
     /**
