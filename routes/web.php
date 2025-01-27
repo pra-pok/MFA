@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('{id}',[OrganizationController::class,'destroy'])->name('destroy');
         Route::get('{id}/edit',[OrganizationController::class,'edit'])->name('edit');
         Route::put('{id}',[OrganizationController::class,'update'])->name('update');
+        Route::get('/get-parents-by-country',[OrganizationController::class,'getParentsByCountry'])->name('get_parent');
     });
 
     Route::group(['prefix' =>'organization_gallery', 'as' => 'organization_gallery.'], function() {

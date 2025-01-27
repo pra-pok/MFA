@@ -20,6 +20,7 @@ class Organization extends Model
         'phone',
         'email',
         'website',
+        'country_id',
         'description',
         'type',
         'search_keywords',
@@ -66,6 +67,10 @@ class Organization extends Model
 
     public function organizationGalleries(){
         return $this->hasMany(OrganizationGallery::class,'organization_id','id');
+    }
+
+    public function organizationCourses(){
+        return $this->hasMany(OrganizationCourse::class,'organization_id','id');
     }
 
 }

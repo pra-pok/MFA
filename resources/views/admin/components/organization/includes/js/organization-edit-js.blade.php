@@ -1,0 +1,234 @@
+<script>
+    $(document).ready(function () {
+        const updateButtonsVisibility = () => {
+            const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+            const totalTabs = $('.nav-tabs .nav-link').length;
+            if (currentTabIndex > 0) {
+                $('#edit-prevBtn').show();
+            } else {
+                $('#edit-prevBtn').hide();
+            }
+            if (currentTabIndex === totalTabs - 1) {
+                $('#edit-saveBtn').show();
+                $('#edit-nextBtn').hide();
+            } else {
+                $('#edit-saveBtn').hide();
+                $('#edit-nextBtn').show();
+            }
+        };
+        $('#edit-nextBtn').on('click', function (e) {
+            e.preventDefault();
+            const currentPane = $(".tab-pane.fade.show.active");
+            const form = currentPane.find('form');
+            if (typeof CKEDITOR !== 'undefined') {
+                Object.keys(editors).forEach(id => {
+                    if (editors[id]) {
+                        const editorData = editors[id].getData();
+                        $(`#${id}`).val(editorData);
+                    }
+                });
+            }
+            const formData = new FormData(form[0]);
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === "success") {
+                        const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+                        const nextTabIndex = currentTabIndex + 1;
+                        const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
+                        const nextTabPane = $('.tab-pane').eq(nextTabIndex);
+                        if (nextTabLink.length && nextTabPane.length) {
+                            $('.nav-tabs .nav-link.active').removeClass('active');
+                            nextTabLink.addClass('active');
+                            currentPane.removeClass('show active');
+                            nextTabPane.addClass('show active');
+                            updateButtonsVisibility();
+                        } else {
+                            alert('This is the last tab.');
+                        }
+                    } else {
+                        alert(response.message || 'An error occurred while saving data.');
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessages = '';
+                        for (const field in errors) {
+                            errorMessages += `${errors[field][0]}\n`;
+                        }
+                        alert(errorMessages);
+                    } else {
+                        alert('An unexpected error occurred. Please try again.');
+                    }
+                }
+            });
+        });
+        $('#edit-prevBtn').on('click', function (e) {
+            e.preventDefault();
+            const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+            const prevTabIndex = currentTabIndex - 1;
+            const prevTabLink = $('.nav-tabs .nav-link').eq(prevTabIndex);
+            const prevTabPane = $('.tab-pane').eq(prevTabIndex);
+
+            if (prevTabLink.length && prevTabPane.length) {
+                $('.nav-tabs .nav-link.active').removeClass('active');
+                prevTabLink.addClass('active');
+                $('.tab-pane.fade.show.active').removeClass('show active');
+                prevTabPane.addClass('show active');
+                updateButtonsVisibility();
+            }
+        });
+        $('#edit-saveBtn').on('click', function (e) {
+            e.preventDefault();
+
+            for (let editorId in editors) {
+                const editor = editors[editorId];
+                const textarea = document.getElementById(editorId);
+                if (textarea) {
+                    textarea.value = editor.getData();
+                }
+            }
+            const currentPane = $(".tab-pane.fade.show.active");
+            const form = currentPane.find('form');
+            const formData = new FormData(form[0]);
+
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.status === "success") {
+                        alert('Data saved successfully!');
+                    } else {
+                        alert(response.message || 'An error occurred while saving data.');
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+                        let errorMessages = '';
+                        for (const field in errors) {
+                            errorMessages += `${errors[field][0]}\n`;
+                        }
+                        alert(errorMessages);
+                    } else {
+                        alert('An unexpected error occurred. Please try again.');
+                    }
+                }
+            });
+        });
+
+        updateButtonsVisibility();
+        $('#name').on('input', function () {
+            var name = $(this).val();
+            var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            $('#slug').val(slug);
+        });
+        const tableBody = $("#datatable tbody");
+        tableBody.on("click", ".add-row", function (e) {
+            e.preventDefault();
+            const lastRow = tableBody.find("tr:last");
+            const newRow = lastRow.clone();
+            const rowCount = tableBody.find("tr").length + 1;
+            newRow.find("td:first").text(rowCount);
+            newRow.find("input, select").each(function () {
+                const input = $(this);
+                if (input.is("select")) {
+                    const originalValue = tableBody.find("tr:first select").val();
+                    input.val(originalValue);
+                } else if (input.is(":text") || input.is(":file")) {
+                    input.val("");
+                } else if (input.is(":radio")) {
+                    const baseName = input.attr("name").split("-")[0];
+                    input.attr("name", `${baseName}-${rowCount}`);
+                    input.attr("id", input.attr("id").split("-")[0] + `-${rowCount}`);
+                    input.prop("checked", input.is("[defaultChecked]"));
+                }
+            });
+            tableBody.append(newRow);
+        });
+        tableBody.on("click", ".remove-row", function (e) {
+            e.preventDefault();
+            const rows = tableBody.find("tr");
+            if (rows.length > 1) {
+                $(this).closest("tr").remove();
+                tableBody.find("tr").each(function (index) {
+                    const row = $(this);
+                    row.find("td:first").text(index + 1);
+                    row.find("input, select").each(function () {
+                        const input = $(this);
+                        if (input.is(":radio")) {
+                            const baseName = input.attr("name").split("-")[0];
+                            input.attr("name", `${baseName}-${index + 1}`);
+                            input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
+                        }
+                    });
+                });
+            } else {
+                alert("At least one row must remain in the table.");
+            }
+        });
+        tableBody.on("change", "input[type='radio'][name^='type']", function () {
+            const row = $(this).closest("tr");
+            const mediaText = row.find(".media-text");
+            const mediaFile = row.find(".media-file");
+
+            if ($(this).val() === "1") {
+                mediaText.hide();
+                mediaFile.show();
+            } else if ($(this).val() === "0") {
+                mediaText.show();
+                mediaFile.hide();
+            }
+        });
+        const modal = $('#imageModal');
+        const modalImage = $('#fullSizeImage');
+
+        $('.clickable-image').on('click', function () {
+            const fullImageSrc = $(this).data('bs-image');
+            modalImage.attr('src', fullImageSrc);
+        });
+        function loadAdministrativeAreas(countryId, selectedAreaId = null) {
+            $("#parent_id").html('<option value="">None</option>');
+            if (countryId) {
+                $.ajax({
+                    url: '/organization/get-parents-by-country',
+                    type: "GET",
+                    data: {
+                        id: countryId,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    dataType: 'json',
+                    success: function (result) {
+                        if (result.parents) {
+                            $.each(result.parents, function (key, value) {
+                                $("#parent_id").append(
+                                    `<option value="${key}" ${selectedAreaId == key ? 'selected' : ''}>${value}</option>`
+                                );
+                            });
+                        }
+                    },
+                    error: function () {
+                        console.error('Error fetching administrative areas.');
+                    }
+                });
+            }
+        }
+        $('#country_id').change(function () {
+            var selectedCountryId = this.value;
+            loadAdministrativeAreas(selectedCountryId);
+        });
+        var initialCountryId = $('#country_id').val();
+        var initialAdministrativeAreaId = '{{ $data['record']->administrative_area_id ?? '' }}';
+        if (initialCountryId) {
+            loadAdministrativeAreas(initialCountryId, initialAdministrativeAreaId);
+        }
+    });
+</script>

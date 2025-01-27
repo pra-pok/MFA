@@ -46,4 +46,9 @@ class Course extends Model
     public function level(){
         return $this->belongsTo(Level::class,'level_id','id');
     }
+
+    public function organizations()
+    {
+        return $this->belongsToMany(Organization::class, 'organization_courses', 'course_id', 'organization_id');
+    }
 }

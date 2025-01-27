@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Dtos\ResponseDTO;
 use App\Http\Requests\OrganizationGalleryRequest;
 use App\Models\AdministrativeArea;
+use App\Models\Country;
 use App\Models\GalleryCategory;
 use App\Models\OrganizationCourse;
 use App\Models\Organization;
@@ -67,6 +68,7 @@ class OrganizationCourseController extends DM_BaseController
             'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
             'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
         ];
+        $data['country'] = Country::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -123,9 +125,73 @@ class OrganizationCourseController extends DM_BaseController
 //        }
 //    }
 
+//    public function store(Request $request)
+//    {
+//       // dd($request->all());
+//        try {
+//            // Validate the incoming request
+//            $request->validate([
+//                'organization_id' => 'required|exists:organizations,id',
+//                'course_id' => 'required|array',
+//                'start_fee' => 'required|array',
+//                'end_fee' => 'required|array',
+//                'description' => 'nullable|array',
+//            ]);
+//            $organization_id = $request->input('organization_id');
+//            $course_id = $request->input('course_id');
+//            $start_fees = $request->input('start_fee');
+//            $end_fees = $request->input('end_fee');
+//            $descriptions = $request->input('description');
+//            $created_by = auth()->user()->id;
+//            $updated_by = auth()->user()->id;
+//            $organizationCourses = [];
+//            // Loop through the courses and fees
+//            foreach ($start_fees as $index => $start_fee) {
+//                if (!isset($course_id[$index], $start_fees[$index], $end_fees[$index])) {
+//                    continue;
+//                }
+//                // Ensure we get the description if it's provided
+//                $description = isset($descriptions[$index]) ? $descriptions[$index] : null; // Null if not provided
+//                // Check if the course already exists for the organization
+//                $organizationCourse = OrganizationCourse::where('organization_id', $organization_id)
+//                    ->where('course_id', $course_id[$index])
+//                    ->where('start_fee', $start_fee)
+//                    ->first();
+//                // If it exists, update it, otherwise create a new record
+//                if ($organizationCourse) {
+//                    $organizationCourse->update([
+//                        'end_fee' => $end_fees[$index],
+//                        'description' => $description,
+//                        'updated_by' => $updated_by,
+//                    ]);
+//                    $organizationCourses[] = $organizationCourse;
+//                } else {
+//                    $organizationCourse = OrganizationCourse::create([
+//                        'organization_id' => $organization_id,
+//                        'course_id' => $course_id[$index],
+//                        'start_fee' => $start_fee,
+//                        'end_fee' => $end_fees[$index],
+//                        'description' => $description,
+//                        'created_by' => $created_by,
+//                        'updated_by' => $updated_by,
+//                    ]);
+//                    $organizationCourses[] = $organizationCourse;
+//                }
+//            }
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO($organizationCourses, 'Courses stored/updated successfully.', 'success')
+//            );
+//        } catch (\Exception $exception) {
+//            Log::error('Error saving/updating organization course data', ['error' => $exception->getMessage()]);
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO([], 'An error occurred while saving/updating course data.', 'error')
+//            );
+//        }
+//    }
+
     public function store(Request $request)
     {
-       // dd($request->all());
+       // dd($request->all());  // Debug to check the request data
         try {
             // Validate the incoming request
             $request->validate([
@@ -139,17 +205,25 @@ class OrganizationCourseController extends DM_BaseController
             $course_id = $request->input('course_id');
             $start_fees = $request->input('start_fee');
             $end_fees = $request->input('end_fee');
-            $descriptions = $request->input('description'); // Make sure descriptions are correctly captured
+            $descriptions = $request->input('description');
             $created_by = auth()->user()->id;
             $updated_by = auth()->user()->id;
             $organizationCourses = [];
+
+            // Filter out null or empty values
+            foreach ($start_fees as $index => $start_fee) {
+                if (is_null($start_fee) || is_null($end_fees[$index]) || empty($start_fee) || empty($end_fees[$index]) || empty($descriptions[$index])) {
+                    // Skip this entry if it's null or empty
+                    unset($start_fees[$index], $end_fees[$index], $descriptions[$index], $course_id[$index]);
+                }
+            }
             // Loop through the courses and fees
             foreach ($start_fees as $index => $start_fee) {
                 if (!isset($course_id[$index], $start_fees[$index], $end_fees[$index])) {
                     continue;
                 }
                 // Ensure we get the description if it's provided
-                $description = isset($descriptions[$index]) ? $descriptions[$index] : null; // Null if not provided
+                $description = isset($descriptions[$index]) ? $descriptions[$index] : null;
                 // Check if the course already exists for the organization
                 $organizationCourse = OrganizationCourse::where('organization_id', $organization_id)
                     ->where('course_id', $course_id[$index])
@@ -186,6 +260,9 @@ class OrganizationCourseController extends DM_BaseController
             );
         }
     }
+
+
+
     /**
      * Display the specified resource.
      *

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Dtos\ResponseDTO;
 use App\Http\Requests\OrganizationRequest;
 use App\Models\AdministrativeArea;
+use App\Models\Country;
 use App\Models\Course;
 use App\Models\GalleryCategory;
 use App\Models\Organization;
@@ -92,9 +93,15 @@ class OrganizationController extends DM_BaseController
             'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
         ];
         $data['courses'] = Course::pluck('title', 'id');
+        $data['country'] = Country::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
-
+    public function getParentsByCountry(Request $request)
+    {
+        $countryId = $request->id;
+        $parents = AdministrativeArea::where('country_id', $countryId)->whereNull('parent_id')->pluck('name', 'id');
+        return response()->json(['parents' => $parents]);
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -169,7 +176,6 @@ class OrganizationController extends DM_BaseController
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-
         // Prepare other data
         $data['area'] = AdministrativeArea::pluck('name', 'id');
         $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
@@ -190,6 +196,9 @@ class OrganizationController extends DM_BaseController
             return $social;
         });
         $data['courses'] = Course::pluck('title', 'id');
+        $data['country'] = Country::pluck('name', 'id');
+        $data['organization_courses'] = $data['record']->organizationCourses;
+      //  $data['organization_courses'] = OrganizationCourse::where('organization_id', $id)->get();
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 

@@ -2,18 +2,26 @@
 <form action="{{route('organization.store')}}" method="POST" enctype="multipart/form-data">
     @csrf
     <input type="hidden" name="organization_id" value="{{ old('organization_id', $organization_id ?? '') }}"/>
+
     <div class="row">
-        <div class="col-md-6">
-            <label for="administrative_area_id" class="form-label">Select Administrative Area </label>
-            <select class="form-select required" id="administrative_area_id" name="administrative_area_id"
+        <div class="col-md-4">
+            <label for="country_id" class="form-label">Select Country </label>
+            <select class="form-select required" id="country_id" name="country_id"
                     aria-label="Select">
                 <option selected disabled>Select</option>
-                @foreach ($data['area'] as $key => $value)
+                @foreach ($data['country'] as $key => $value)
                     <option value="{{ $key }}">{{ $value }}</option>
                 @endforeach
             </select>
         </div>
-        <div class="col-md-6 mb-3">
+        <div class="col-md-4">
+            <label for="administrative_area_id" class="form-label">Select Administrative Area </label>
+            <select class="form-select required" id="parent_id" name="administrative_area_id"
+                    aria-label="Select">
+                <option value="">None</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3">
             <label for="type" class="form-label">Select Type</label>
             <select class="form-select required" id="type" name="type" aria-label="Select Type">
                 <option selected disabled>Select Type</option>
