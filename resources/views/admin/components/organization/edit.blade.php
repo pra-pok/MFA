@@ -36,6 +36,13 @@
                                 Course
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-page" aria-controls="navs-justified-page"
+                                    aria-selected="false">
+                                Page
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content mt-3">
@@ -55,6 +62,10 @@
                         <div class="tab-pane fade" id="navs-justified-course" role="tabpanel">
                             @include('admin.components.organization.includes.course')
                         </div>
+                        <!-- Page Tab -->
+                        <div class="tab-pane fade" id="navs-justified-page" role="tabpanel">
+                            @include('admin.components.organization.includes.page')
+                        </div>
                     </div>
                     <div class="" style="padding: 20px;">
                         <div class="d-flex justify-content-between mt-3">
@@ -71,4 +82,5 @@
 @section('js')
     @include('admin.components.organization.includes.js.organization-edit-js')
     @include('admin.components.organization.includes.js.ckeditor')
+    @include('admin.components.organization.includes.js.page-add-js')
 @endsection

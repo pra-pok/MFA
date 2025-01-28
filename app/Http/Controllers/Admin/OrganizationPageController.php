@@ -3,29 +3,30 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
-use App\Http\Requests\OrganizationGalleryRequest;
+use App\Http\Requests\OrganizationPageRequest;
 use App\Models\AdministrativeArea;
+use App\Models\Country;
 use App\Models\GalleryCategory;
-use App\Models\OrganizationSocialMedia;
+use App\Models\OrganizationPage;
 use App\Models\Organization;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
-class OrganizationSocialMediaController extends DM_BaseController
+class OrganizationPageController extends DM_BaseController
 {
-    protected $panel = 'Organization Social Media';
-    protected $base_route = 'organization_social_media';
-    protected $view_path = 'admin.components.organization_social_media';
+    protected $panel = 'Organization Page';
+    protected $base_route = 'organization_page';
+    protected $view_path = 'admin.components.organization_page';
     protected $model;
     protected $table;
-    protected $folder = 'organization_social_media';
+    protected $folder = 'organization_page';
 
 
 
-    public function __construct(Request $request, OrganizationSocialMedia $organization_social_media)
+    public function __construct(Request $request, OrganizationPage $organization_page)
     {
-        $this->model = $organization_social_media;
+        $this->model = $organization_page;
     }
     /**
      * Display a listing of the resource.
@@ -67,6 +68,7 @@ class OrganizationSocialMediaController extends DM_BaseController
             'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
             'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
         ];
+        $data['country'] = Country::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -79,38 +81,60 @@ class OrganizationSocialMediaController extends DM_BaseController
      */
     public function store(Request $request)
     {
+        // Debug to check the request data
+        dd($request->all());
         try {
+            $request->validate([
+                'organization_id' => 'required',
+                'page_category_id' => 'nullable|array',
+                'description' => 'nullable|array',
+            ]);
+
             $organization_id = $request->input('organization_id');
-            $names = $request->input('name');
-            $urls = $request->input('url');
+            $page_category_ids = $request->input('page_category_id');
+            $descriptions = $request->input('description');
             $created_by = auth()->user()->id;
             $updated_by = auth()->user()->id;
 
-            foreach ($urls as $index => $url) {
-                $organizationSocialMedia = OrganizationSocialMedia::where('organization_id', $organization_id)
-                    ->where('name', $names[$index])
+            $organizationPages = [];
+
+            foreach ($page_category_ids as $index => $page_category_id) {
+                $description = $descriptions[$index] ?? null;
+
+                $organizationPage = OrganizationPage::where('organization_id', $organization_id)
+                    ->where('page_category_id', $page_category_id)
                     ->first();
-                if ($organizationSocialMedia) {
-                    $organizationSocialMedia->url = $url;
-                    $organizationSocialMedia->updated_by = $updated_by;
-                    $organizationSocialMedia->save();
+
+                if ($organizationPage) {
+                    $organizationPage->update([
+                        'description' => $description,
+                        'updated_by' => $updated_by,
+                    ]);
                 } else {
-                    $organizationSocialMedia = new OrganizationSocialMedia();
-                    $organizationSocialMedia->organization_id = $organization_id;
-                    $organizationSocialMedia->name = $names[$index];
-                    $organizationSocialMedia->url = $url;
-                    $organizationSocialMedia->created_by = $created_by;
-                    $organizationSocialMedia->updated_by = $updated_by;
-                    $organizationSocialMedia->save();
+                    $organizationPage = OrganizationPage::create([
+                        'organization_id' => $organization_id,
+                        'page_category_id' => $page_category_id,
+                        'description' => $description,
+                        'created_by' => $created_by,
+                        'updated_by' => $updated_by,
+                    ]);
                 }
+
+                $organizationPages[] = $organizationPage;
             }
 
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'Social Media items stored/updated successfully.', 'success'));
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO($organizationPages, 'Pages stored/updated successfully.', 'success')
+            );
         } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization Social Media data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'An error occurred while saving/updating Social Media items.', 'error'));
+            Log::error('Error saving/updating organization page data', ['error' => $exception->getMessage()]);
+
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO([], 'An error occurred while saving/updating page data.', 'error')
+            );
         }
     }
+
     /**
      * Display the specified resource.
      *

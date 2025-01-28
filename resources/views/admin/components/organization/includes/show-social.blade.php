@@ -17,7 +17,7 @@
             </td>
             <td>
                <a href="{{$item->url}}" target="_blank">
-                   {{$item->url}}
+                   {{$item->url ?? ''}}
                </a>
             </td>
             <td>

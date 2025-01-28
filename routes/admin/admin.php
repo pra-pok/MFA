@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\AdministrativeAreaController;
 use App\Http\Controllers\Admin\GalleryCategoryController;
 use App\Http\Controllers\Admin\OrganizationGalleryController;
+use App\Http\Controllers\Admin\PageCategoryController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {

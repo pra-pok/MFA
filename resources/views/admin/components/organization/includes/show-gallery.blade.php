@@ -12,11 +12,11 @@
     </tr>
     </thead>
     <tbody class="table-border-bottom-0">
-    @foreach($data['record']->getGallery as $item)
+    @foreach($data['record']->organizationGalleries as $item)
         <tr>
             <td>{{$item->id}}</td>
             <td>
-                {{$item->galleryCategory->name}}
+                {{$item->galleryCategory->name ?? ''}}
             </td>
             <td>
                 {{$item->caption}}

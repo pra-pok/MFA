@@ -122,7 +122,7 @@
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" name="description" id="description">{{$data['record']->description}}</textarea>
+        <textarea class="form-control editor" name="description"  >{{$data['record']->description}}</textarea>
     </div>
 
     <div class="mb-3">

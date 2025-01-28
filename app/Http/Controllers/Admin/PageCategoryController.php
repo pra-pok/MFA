@@ -3,29 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
-use App\Http\Requests\OrganizationGalleryRequest;
-use App\Models\AdministrativeArea;
-use App\Models\GalleryCategory;
-use App\Models\OrganizationSocialMedia;
-use App\Models\Organization;
+use App\Http\Requests\PageCategoryRequest;
+use App\Models\PageCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
-class OrganizationSocialMediaController extends DM_BaseController
+class PageCategoryController extends DM_BaseController
 {
-    protected $panel = 'Organization Social Media';
-    protected $base_route = 'organization_social_media';
-    protected $view_path = 'admin.components.organization_social_media';
+    protected $panel = 'Page Category';
+    protected $base_route = 'page-category';
+    protected $view_path = 'admin.components.page_category';
     protected $model;
     protected $table;
-    protected $folder = 'organization_social_media';
 
 
 
-    public function __construct(Request $request, OrganizationSocialMedia $organization_social_media)
+    public function __construct(Request $request, PageCategory $page_category)
     {
-        $this->model = $organization_social_media;
+        $this->model = $page_category;
     }
     /**
      * Display a listing of the resource.
@@ -34,18 +30,33 @@ class OrganizationSocialMediaController extends DM_BaseController
      */
     public function index(Request $request)
     {
-        if ($request->ajax()) {
-            $data = $this->model->with(['createds' => function($query) {
-                $query->select('id', 'username');
-            }, 'updatedBy' => function($query) {
-                $query->select('id', 'username');
-            }])->get();
-            return response()->json($data);
+        try {
+            if ($request->ajax()) {
+                $data = $this->model->with([
+                    'createds' => function ($query) {
+                        $query->select('id', 'username');
+                    },
+                    'updatedBy' => function ($query) {
+                        $query->select('id', 'username');
+                    }
+                ])->get();
+
+                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
+            }
+        } catch (\Exception $exception) {
+            \Log::error('Error in index method: ' . $exception->getMessage(), [
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving data.',
+                'status' => 'error'
+            ], 500);
         }
+
         return view(parent::loadView($this->view_path . '.index'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
@@ -54,20 +65,7 @@ class OrganizationSocialMediaController extends DM_BaseController
      */
     public function create(Request $request)
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
-        $data['gallery'] = GalleryCategory::pluck('name', 'id');
-        $data['organization'] = Organization::pluck('name', 'id');
-        $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-        $data['social'] = [
-            'Facebook' => ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
-            'Instagram' => ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
-            'Twitter' => ['name' => 'Twitter', 'icon' => 'bx bxl-twitter'],
-            'Youtube' => ['name' => 'Youtube', 'icon' => 'bx bxl-youtube'],
-            'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
-            'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
-        ];
-        return view(parent::loadView($this->view_path . '.create'),compact('data'));
+        return view(parent::loadView($this->view_path . '.create'));
     }
 
     /**
@@ -77,40 +75,51 @@ class OrganizationSocialMediaController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(Request $request)
+    public function store(PageCategoryRequest  $request)
     {
-        try {
-            $organization_id = $request->input('organization_id');
-            $names = $request->input('name');
-            $urls = $request->input('url');
-            $created_by = auth()->user()->id;
-            $updated_by = auth()->user()->id;
+       // dd($request->all());
+        $request->request->add(['created_by' => auth()->user()->id]);
 
-            foreach ($urls as $index => $url) {
-                $organizationSocialMedia = OrganizationSocialMedia::where('organization_id', $organization_id)
-                    ->where('name', $names[$index])
-                    ->first();
-                if ($organizationSocialMedia) {
-                    $organizationSocialMedia->url = $url;
-                    $organizationSocialMedia->updated_by = $updated_by;
-                    $organizationSocialMedia->save();
+            try {
+                $category = $this->model->create($request->all());
+                if ($category) {
+                    logUserAction(
+                        auth()->user()->id, // User ID
+                        auth()->user()->team_id, // Team ID
+                        $this->panel . ' created successfully!',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
+
+                    $request->session()->flash('alert-success', $this->panel . ' created successfully!');
                 } else {
-                    $organizationSocialMedia = new OrganizationSocialMedia();
-                    $organizationSocialMedia->organization_id = $organization_id;
-                    $organizationSocialMedia->name = $names[$index];
-                    $organizationSocialMedia->url = $url;
-                    $organizationSocialMedia->created_by = $created_by;
-                    $organizationSocialMedia->updated_by = $updated_by;
-                    $organizationSocialMedia->save();
+                    logUserAction(
+                        auth()->user()->id,
+                        auth()->user()->team_id,
+                        $this->panel . ' creation failed.',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
+                    $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
                 }
+            } catch (\Exception $exception) {
+                logUserAction(
+                    auth()->user()->id,
+                    auth()->user()->team_id,
+                    'Database Error during ' . $this->panel . ' update',
+                    [
+                        'error' => $exception->getMessage(),
+                        'data' => $request->all(),
+                    ]
+                );
+                Log::error('Database Error', ['error' => $exception->getMessage()]);
+                $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
             }
-
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'Social Media items stored/updated successfully.', 'success'));
-        } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization Social Media data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'An error occurred while saving/updating Social Media items.', 'error'));
-        }
+        return redirect()->route($this->base_route . '.index');
     }
+
     /**
      * Display the specified resource.
      *
@@ -128,6 +137,7 @@ class OrganizationSocialMediaController extends DM_BaseController
         return view(parent::loadView($this->view_path . '.show'), compact('data'));
 
     }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -140,28 +150,25 @@ class OrganizationSocialMediaController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
      */
-    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+//    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+//    {
+//        $data['record'] = $this->model->find($id);
+//        if (!$data['record']) {
+//            request()->session()->flash('alert-danger', 'Invalid Request');
+//            return redirect()->route($this->base_route . 'index');
+//        }
+//
+//        return view(parent::loadView($this->view_path . '.edit'), compact('data'));
+//    }
+    public function edit($id)
     {
-        $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
-        $data['gallery'] = GalleryCategory::pluck('name', 'id');
-        $data['organization'] = Organization::pluck('name', 'id');
-        $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-        $data['social'] = collect([
-            ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
-            ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
-            ['name' => 'Twitter', 'icon' => 'bx bxl-twitter'],
-            ['name' => 'Youtube', 'icon' => 'bx bxl-youtube'],
-            ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
-            ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
-        ])->map(function ($social) use ($data) {
-            $existing = $data['record']->socialMediaLinks->firstWhere('name', $social['name']);
-            $social['url'] = $existing->url ?? null;
-            return $social;
-        });
+        $data['record'] = $this->model->find($id);
         if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
+            return redirect()->route($this->base_route . '.index')->with('alert-danger', 'Invalid Request');
+        }
+
+        if (request()->ajax()) {
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data['record'], 'Record fetched successfully.', 'success'));
         }
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
@@ -172,7 +179,7 @@ class OrganizationSocialMediaController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationGalleryRequest  $request, $id)
+    public function update(PageCategoryRequest  $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {

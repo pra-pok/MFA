@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\OrganizationSocialMediaController;
 use App\Http\Controllers\Admin\OrganizationCourseController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\PageCategoryController;
+use App\Http\Controllers\Admin\OrganizationPageController;
 
 //Route::redirect('/', '/dashboard', 301);
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
@@ -92,11 +94,15 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('organization-course', OrganizationCourseController::class);
+    Route::resource('organization-page', OrganizationPageController::class);
+
+    Route::resource('page-category', PageCategoryController::class);
+    Route::get('trash',[PageCategoryController::class,'trash'])->name('page-category.trash');
+    Route::get('restore/{id}',[PageCategoryController::class,'restore'])->name('page-category.restore');
+    Route::delete('force-delete/{id}',[PageCategoryController::class,'forceDeleteData'])->name('page-category.force_delete');
+    Route::delete('{id}',[PageCategoryController::class,'destroy'])->name('page-category.destroy');
 });
-
 require __DIR__ . '/auth.php';
-
-
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
     include('admin/admin.php');
 });

@@ -73,4 +73,8 @@ class Organization extends Model
         return $this->hasMany(OrganizationCourse::class,'organization_id','id');
     }
 
+    public function organizationPages(){
+        return $this->hasMany(OrganizationPage::class,'organization_id','id');
+    }
+
 }

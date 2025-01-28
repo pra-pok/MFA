@@ -6,22 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class OrganizationCourse extends Model
+class OrganizationPage extends Model
 {
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
         'organization_id',
-        'course_id',
-        'start_fee',
-        'end_fee',
+        'page_category_id',
+        'title',
         'description',
         'status',
         'created_by',
         'updated_by'
     ];
 
-    protected $table = 'organization_courses';
+    protected $table = 'organization_pages';
     public function createds(){
         return $this->belongsTo(User::class,'created_by','id');
     }
@@ -34,4 +33,7 @@ class OrganizationCourse extends Model
     public function course(){
         return $this->belongsTo(Course::class,'course_id','id');
     }
+
+
+
 }

@@ -4,8 +4,12 @@
         <td>{{$data['record']->id}}</td>
     </tr>
     <tr>
+        <th>Country</th>
+        <td>{{ $data['record']->country->name ?? '' }}</td>
+    </tr>
+    <tr>
         <th>Administrative Area </th>
-        <td>{{ $data['record']->administrativeArea->name }}</td>
+        <td>{{ $data['record']->administrativeArea->name ?? '' }}</td>
     </tr>
     <tr>
         <th>Type</th>

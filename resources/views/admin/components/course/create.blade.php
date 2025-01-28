@@ -82,19 +82,19 @@
                             </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control required" name="description" id="des" rows="3" ></textarea>
+                                <textarea class="form-control editor" name="description" rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="eligibility" class="form-label">Eligibility</label>
-                                <textarea class="form-control" name="eligibility" id="elig" rows="3" ></textarea>
+                                <textarea class="form-control editor" name="eligibility"  rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="job_prospects" class="form-label">Job Prospects</label>
-                                <textarea class="form-control" name="job_prospects" id="job" rows="3" ></textarea>
+                                <textarea class="form-control editor" name="job_prospects"  rows="3" ></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="syllabus" class="form-label">Syllabus</label>
-                                <textarea class="form-control" name="syllabus" id="syllabu" rows="3" ></textarea>
+                                <textarea class="form-control editor" name="syllabus" rows="3" ></textarea>
                             </div>
                             @include('admin.includes.create_meta')
                             @include('admin.includes.create_status')

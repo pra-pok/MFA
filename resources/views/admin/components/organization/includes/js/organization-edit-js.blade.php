@@ -21,10 +21,11 @@
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
             if (typeof CKEDITOR !== 'undefined') {
-                Object.keys(editors).forEach(id => {
-                    if (editors[id]) {
-                        const editorData = editors[id].getData();
-                        $(`#${id}`).val(editorData);
+                document.querySelectorAll('.editor').forEach((element) => {
+                    const editorInstance = editors[element.id || element.getAttribute('data-editor-index')];
+                    if (editorInstance) {
+                        const editorData = editorInstance.getData();
+                        $(element).val(editorData);
                     }
                 });
             }
@@ -47,8 +48,6 @@
                             currentPane.removeClass('show active');
                             nextTabPane.addClass('show active');
                             updateButtonsVisibility();
-                        } else {
-                            alert('This is the last tab.');
                         }
                     } else {
                         alert(response.message || 'An error occurred while saving data.');
@@ -85,18 +84,18 @@
         });
         $('#edit-saveBtn').on('click', function (e) {
             e.preventDefault();
-
-            for (let editorId in editors) {
-                const editor = editors[editorId];
-                const textarea = document.getElementById(editorId);
-                if (textarea) {
-                    textarea.value = editor.getData();
-                }
-            }
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
             const formData = new FormData(form[0]);
-
+            if (typeof CKEDITOR !== 'undefined') {
+                document.querySelectorAll('.editor').forEach((element) => {
+                    const editorInstance = editors[element.id || element.getAttribute('data-editor-index')];
+                    if (editorInstance) {
+                        const editorData = editorInstance.getData();
+                        $(element).val(editorData);
+                    }
+                });
+            }
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',
@@ -124,7 +123,6 @@
                 }
             });
         });
-
         updateButtonsVisibility();
         $('#name').on('input', function () {
             var name = $(this).val();

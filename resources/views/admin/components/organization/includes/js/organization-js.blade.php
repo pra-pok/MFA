@@ -21,8 +21,11 @@
 
         $('#nextBtn').on('click', function (e) {
             e.preventDefault();
+
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
+
+            // Check if CKEditor is defined and assign its data to the form fields
             if (typeof CKEDITOR !== 'undefined') {
                 Object.keys(editors).forEach(id => {
                     if (editors[id]) {
@@ -31,12 +34,17 @@
                     }
                 });
             }
+
+            // Serialize the form data
             const formData = new FormData(form[0]);
 
+            // Validate the form before submitting
             if (!validateTab(form)) {
                 alert('Please fill out all required fields.');
                 return;
             }
+
+            // Make AJAX request to submit the form
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',
@@ -46,22 +54,25 @@
                 success: function (response) {
                     if (response.status === "success") {
                         console.log('Response:', response);
+
+                        // If organization_id is returned, set it in the form field
                         if (response.data) {
                             $('input[name="organization_id"]').val(response.data);
                         }
+
+                        // Navigate to the next tab
                         const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
                         const nextTabIndex = currentTabIndex + 1;
                         const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
                         const nextTabPane = $('.tab-pane').eq(nextTabIndex);
 
+                        // Move to the next tab if it exists
                         if (nextTabLink.length && nextTabPane.length) {
                             $('.nav-tabs .nav-link.active').removeClass('active');
                             nextTabLink.addClass('active');
                             currentPane.removeClass('show active');
                             nextTabPane.addClass('show active');
                             updateButtonsVisibility();
-                        } else {
-                            alert('This is the last tab.');
                         }
                     } else {
                         alert(response.message || 'An error occurred while saving data.');
@@ -81,6 +92,7 @@
                 }
             });
         });
+
 
         $('#prevBtn').on('click', function (e) {
             e.preventDefault();
