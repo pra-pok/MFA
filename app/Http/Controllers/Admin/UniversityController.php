@@ -25,14 +25,6 @@ class UniversityController extends DM_BaseController
 
     public function __construct(Request $request, University $university)
     {
-//        $this->middleware('auth');
-//        $this->middleware('permission:university-list', ['only' => ['index']]);
-//        $this->middleware('permission:university-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:university-show', ['only' => ['show']]);
-//        $this->middleware('permission:university-edit', ['only' => ['edit', 'update']]);
-//        $this->middleware('permission:university-delete', ['only' => ['destroy']]);
-//        $this->middleware('permission:university-restore', ['only' => ['restore']]);
-//        $this->middleware('permission:university-forceDeleteData', ['only' => ['forceDeleteData']]);
         $this->model = $university;
     }
     /**

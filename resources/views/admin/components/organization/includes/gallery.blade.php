@@ -158,7 +158,10 @@
                 </td>
                 <td>
                     <button type="button" class="btn btn-primary add-row"><i class="bx bx-plus"></i></button>
-                    <button type="button" class="btn btn-danger remove-row"><i class="bx bx-trash"></i></button>
+                    {{-- <button type="button" class="btn btn-danger remove-row"><i class="bx bx-trash"></i></button> --}}
+                    <button type="button" class="btn btn-danger remove-row" data-id="{{ $gallery->id ?? '' }}">
+                        <i class="bx bx-trash"></i>
+                    </button>
                 </td>
             </tr>
         @empty

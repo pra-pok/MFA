@@ -22,7 +22,7 @@
             const form = currentPane.find('form');
             if (typeof CKEDITOR !== 'undefined') {
                 document.querySelectorAll('.editor').forEach((element) => {
-                    const editorInstance = editors[element.id || element.getAttribute('data-editor-index')];
+                    const editorInstance = editors[element.id || element.getAttribute('id')];
                     if (editorInstance) {
                         const editorData = editorInstance.getData();
                         $(element).val(editorData);
@@ -86,16 +86,16 @@
             e.preventDefault();
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
-            const formData = new FormData(form[0]);
             if (typeof CKEDITOR !== 'undefined') {
                 document.querySelectorAll('.editor').forEach((element) => {
-                    const editorInstance = editors[element.id || element.getAttribute('data-editor-index')];
+                    const editorInstance = editors[element.id || element.getAttribute('id')];
                     if (editorInstance) {
                         const editorData = editorInstance.getData();
                         $(element).val(editorData);
                     }
                 });
             }
+            const formData = new FormData(form[0]);
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',
@@ -152,27 +152,77 @@
             });
             tableBody.append(newRow);
         });
+        // tableBody.on("click", ".remove-row", function (e) {
+        //     e.preventDefault();
+        //     const rows = tableBody.find("tr");
+        //     if (rows.length > 1) {
+        //         $(this).closest("tr").remove();
+        //         tableBody.find("tr").each(function (index) {
+        //             const row = $(this);
+        //             row.find("td:first").text(index + 1);
+        //             row.find("input, select").each(function () {
+        //                 const input = $(this);
+        //                 if (input.is(":radio")) {
+        //                     const baseName = input.attr("name").split("-")[0];
+        //                     input.attr("name", `${baseName}-${index + 1}`);
+        //                     input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
+        //                 }
+        //             });
+        //         });
+        //     } else {
+        //         alert("At least one row must remain in the table.");
+        //     }
+        // });
         tableBody.on("click", ".remove-row", function (e) {
             e.preventDefault();
             const rows = tableBody.find("tr");
             if (rows.length > 1) {
-                $(this).closest("tr").remove();
-                tableBody.find("tr").each(function (index) {
-                    const row = $(this);
-                    row.find("td:first").text(index + 1);
-                    row.find("input, select").each(function () {
-                        const input = $(this);
-                        if (input.is(":radio")) {
-                            const baseName = input.attr("name").split("-")[0];
-                            input.attr("name", `${baseName}-${index + 1}`);
-                            input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
-                        }
-                    });
-                });
+                let row = $(this).closest("tr");
+                let id = row.find("input[name^='id']").val();
+                if (id) {
+                    if (confirm("Are you sure you want to delete this gallery?")) {
+                        $.ajax({
+                            url: `/organization_gallery/gallery-delete/${id}`,
+                            type: "DELETE",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function (response) {
+                                if (response.success) {
+                                    row.remove();
+                                    updateTableIndexes();
+                                } else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function (xhr) {
+                                alert("Error deleting gallery: " + xhr.responseText);
+                            }
+                        });
+                    }
+                } else {
+                    row.remove();
+                    updateTableIndexes();
+                }
             } else {
                 alert("At least one row must remain in the table.");
             }
         });
+        function updateTableIndexes() {
+            tableBody.find("tr").each(function (index) {
+                const row = $(this);
+                row.find("td:first").text(index + 1);
+
+                row.find("input, select").each(function () {
+                    const input = $(this);
+                    if (input.is(":radio")) {
+                        const baseName = input.attr("name").split("-")[0];
+                        input.attr("name", `${baseName}-${index + 1}`);
+                        input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
+                    }
+                });
+            });
+        }
         tableBody.on("change", "input[type='radio'][name^='type']", function () {
             const row = $(this).closest("tr");
             const mediaText = row.find(".media-text");

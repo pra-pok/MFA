@@ -81,18 +81,18 @@ class OrganizationPageController extends DM_BaseController
      */
     public function store(Request $request)
     {
-        // Debug to check the request data
-        dd($request->all());
         try {
             $request->validate([
                 'organization_id' => 'required',
                 'page_category_id' => 'nullable|array',
                 'description' => 'nullable|array',
+                'status' => 'nullable|array',
             ]);
 
             $organization_id = $request->input('organization_id');
-            $page_category_ids = $request->input('page_category_id');
-            $descriptions = $request->input('description');
+            $page_category_ids = $request->input('page_category_id', []);
+            $descriptions = $request->input('description', []);
+            $statuses = $request->input('status', []);
             $created_by = auth()->user()->id;
             $updated_by = auth()->user()->id;
 
@@ -100,25 +100,20 @@ class OrganizationPageController extends DM_BaseController
 
             foreach ($page_category_ids as $index => $page_category_id) {
                 $description = $descriptions[$index] ?? null;
+                $status_value = $statuses[$index] ?? 0; // Default to 0 if not provided
 
-                $organizationPage = OrganizationPage::where('organization_id', $organization_id)
-                    ->where('page_category_id', $page_category_id)
-                    ->first();
-
-                if ($organizationPage) {
-                    $organizationPage->update([
-                        'description' => $description,
-                        'updated_by' => $updated_by,
-                    ]);
-                } else {
-                    $organizationPage = OrganizationPage::create([
+                $organizationPage = OrganizationPage::updateOrCreate(
+                    [
                         'organization_id' => $organization_id,
-                        'page_category_id' => $page_category_id,
+                        'page_category_id' => $page_category_id
+                    ],
+                    [
                         'description' => $description,
-                        'created_by' => $created_by,
+                        'status' => $status_value,
                         'updated_by' => $updated_by,
-                    ]);
-                }
+                        'created_by' => $created_by
+                    ]
+                );
 
                 $organizationPages[] = $organizationPage;
             }
@@ -126,9 +121,9 @@ class OrganizationPageController extends DM_BaseController
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($organizationPages, 'Pages stored/updated successfully.', 'success')
             );
+
         } catch (\Exception $exception) {
             Log::error('Error saving/updating organization page data', ['error' => $exception->getMessage()]);
-
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO([], 'An error occurred while saving/updating page data.', 'error')
             );
@@ -196,7 +191,7 @@ class OrganizationPageController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationGalleryRequest  $request, $id)
+    public function update(OrganizationPageRequest  $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
@@ -329,6 +324,25 @@ class OrganizationPageController extends DM_BaseController
             request()->session()->flash('alert-danger', $this->panel . ' delete failed!');
         }
         return redirect()->route($this->base_route . '.index');
+    }
+
+    public function permanentDelete($id)
+    {
+        $record = OrganizationPage::find($id);
+
+        if (!$record) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found.'
+            ], 404);
+        }
+
+        $record->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course deleted successfully.'
+        ]);
     }
 
 }

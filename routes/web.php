@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('{id}',[OrganizationGalleryController::class,'destroy'])->name('destroy');
         Route::get('{id}/edit',[OrganizationGalleryController::class,'edit'])->name('edit');
         Route::put('{organization_id}',[OrganizationGalleryController::class,'update'])->name('update');
+        Route::delete('/gallery-delete/{id}',[OrganizationGalleryController::class,'permanentDelete'])->name('permanentDelete');
     });
 //    Route::resource('organization-social-media', OrganizationSocialMediaController::class);
     Route::group(['prefix' =>'organization-social-media', 'as' => 'organization-social-media.'], function() {
@@ -94,7 +95,9 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::resource('organization-course', OrganizationCourseController::class);
+    Route::delete('/delete/{id}',[OrganizationCourseController::class,'permanentDelete'])->name('permanentDelete');
     Route::resource('organization-page', OrganizationPageController::class);
+    Route::delete('/page-delete/{id}',[OrganizationPageController::class,'permanentDelete'])->name('permanentDelete');
 
     Route::resource('page-category', PageCategoryController::class);
     Route::get('trash',[PageCategoryController::class,'trash'])->name('page-category.trash');

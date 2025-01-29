@@ -147,79 +147,70 @@ class OrganizationCourseController extends DM_BaseController
 
     public function store(Request $request)
     {
-     //   dd($request->all());  // Remove this after debugging
+      //  dd($request->all());
         try {
             $request->validate([
-                'organization_id' => 'required',
+                'organization_id' => 'required|integer',
                 'course_id' => 'required|array',
                 'start_fee' => 'nullable|array',
                 'end_fee' => 'nullable|array',
                 'description' => 'nullable|array',
+                'status' => 'nullable|array',
             ]);
-
             $organization_id = $request->input('organization_id');
-            $course_id = $request->input('course_id');
-            $start_fees = $request->input('start_fee');
-            $end_fees = $request->input('end_fee');
-            $descriptions = $request->input('description');
-            $created_by = auth()->user()->id;
-            $updated_by = auth()->user()->id;
+            $course_ids = $request->input('course_id');
+            $start_fees = $request->input('start_fee', []);
+            $end_fees = $request->input('end_fee', []);
+            $descriptions = $request->input('description', []);
+            $statuses = $request->input('status', []);
+            $created_by = auth()->id();
+            $updated_by = auth()->id();
             $organizationCourses = [];
-
-            // Ensure all arrays have the same length and clean up invalid data
-            foreach ($start_fees as $index => $start_fee) {
-                // Remove the entry if any field is invalid or empty
-                if (is_null($start_fee) || is_null($end_fees[$index]) || empty($start_fee) || empty($end_fees[$index]) || empty($descriptions[$index])) {
-                    unset($start_fees[$index], $end_fees[$index], $descriptions[$index], $course_id[$index]);
-                }
-            }
-
-            // Loop through and create or update records
-            foreach ($course_id as $index => $course) {
-                // Ensure there is data for the current entry
-                if (!isset($start_fees[$index], $end_fees[$index], $course_id[$index])) {
-                    continue; // Skip if any required field is missing
-                }
-
-                $description = isset($descriptions[$index]) ? $descriptions[$index] : null;
-
-                // Check if the course already exists in the database
-                $organizationCourse = OrganizationCourse::where('organization_id', $organization_id)
-                    ->where('course_id', $course_id[$index])
-                    ->where('start_fee', $start_fees[$index])
-                    ->first();
-
+            foreach ($course_ids as $index => $course_id) {
+                $start_fee = $start_fees[$index] ?? null;
+                $end_fee = $end_fees[$index] ?? null;
+                $description = $descriptions[$index] ?? null;
+                $status = isset($statuses[$index]) ? 1 : 0; // Checkbox handling
+                // Check if record exists
+                $organizationCourse = OrganizationCourse::where([
+                    'organization_id' => $organization_id,
+                    'course_id' => $course_id,
+                ])->first();
                 if ($organizationCourse) {
-                    // Update existing course record
                     $organizationCourse->update([
-                        'end_fee' => $end_fees[$index],
+                        'start_fee' => $start_fee,
+                        'end_fee' => $end_fee,
                         'description' => $description,
                         'updated_by' => $updated_by,
+                        'status' => $status,
                     ]);
-                    $organizationCourses[] = $organizationCourse;
                 } else {
-                    // Create new course record
                     $organizationCourse = OrganizationCourse::create([
                         'organization_id' => $organization_id,
-                        'course_id' => $course_id[$index],
-                        'start_fee' => $start_fees[$index],
-                        'end_fee' => $end_fees[$index],
+                        'course_id' => $course_id,
+                        'start_fee' => $start_fee,
+                        'end_fee' => $end_fee,
                         'description' => $description,
                         'created_by' => $created_by,
                         'updated_by' => $updated_by,
+                        'status' => $status,
                     ]);
-                    $organizationCourses[] = $organizationCourse;
                 }
+
+                $organizationCourses[] = $organizationCourse;
             }
 
-            return Utils\ResponseUtil::wrapResponse(
-                new ResponseDTO($organizationCourses, 'Courses stored/updated successfully.', 'success')
-            );
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Courses stored/updated successfully.',
+                'data' => $organizationCourses
+            ]);
         } catch (\Exception $exception) {
             Log::error('Error saving/updating organization course data', ['error' => $exception->getMessage()]);
-            return Utils\ResponseUtil::wrapResponse(
-                new ResponseDTO([], 'An error occurred while saving/updating course data.', 'error')
-            );
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while saving/updating course data.'
+            ], 500);
         }
     }
 
@@ -417,6 +408,25 @@ class OrganizationCourseController extends DM_BaseController
             request()->session()->flash('alert-danger', $this->panel . ' delete failed!');
         }
         return redirect()->route($this->base_route . '.index');
+    }
+
+    public function permanentDelete($id)
+    {
+        $record = OrganizationCourse::find($id);
+
+        if (!$record) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found.'
+            ], 404);
+        }
+
+        $record->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course deleted successfully.'
+        ]);
     }
 
 }

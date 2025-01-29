@@ -13,7 +13,7 @@ class OrganizationPage extends Model
     protected $fillable = [
         'organization_id',
         'page_category_id',
-        'title',
+        //'title',
         'description',
         'status',
         'created_by',

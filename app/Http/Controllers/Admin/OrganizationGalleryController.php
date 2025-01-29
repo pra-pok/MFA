@@ -470,4 +470,23 @@ class OrganizationGalleryController extends DM_BaseController
         return redirect()->route($this->base_route . '.index');
     }
 
+    public function permanentDelete($id)
+    {
+        $record = OrganizationGallery::find($id);
+
+        if (!$record) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Course not found.'
+            ], 404);
+        }
+
+        $record->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Course deleted successfully.'
+        ]);
+    }
+
 }

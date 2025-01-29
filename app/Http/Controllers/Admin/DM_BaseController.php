@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Config;
 use App;
+use App\Models\GalleryCategory;
 use Illuminate\Support\Facades\File;
 
 class DM_BaseController extends Controller
@@ -72,7 +73,7 @@ class DM_BaseController extends Controller
             $file_name = time() . '_' . rand() . '_' . $file->getClientOriginalName();
             //    $file_extension = $file->getClientOriginalExtension();
             if (isset($image_height) && isset($image_width)) {
-                $file_resize = Image::make($file->getRealPath());
+                $file_resize = GalleryCategory::make($file->getRealPath());
                 $file_resize->resize($image_width, $image_height);
                 $file_resize->save($folder_path_image . $file_name);
             } else {
