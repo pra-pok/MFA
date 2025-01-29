@@ -104,7 +104,8 @@
                 alert("Organization ID is missing.");
                 return;
             }
-
+            $('.select-course').select2();
+            $('.select-page').select2();
             const formData = new FormData(form[0]);
             formData.append('organization_id', organizationId); // Append organization_id manually if necessary
 

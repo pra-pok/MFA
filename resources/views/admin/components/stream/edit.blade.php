@@ -16,16 +16,16 @@
                                 <input
                                     type="text"
                                     name="title"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="title"
-                                    value="{{$data['record']->title}}" required/>
+                                    value="{{$data['record']->title}}" />
                             </div>
                             <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" value="{{$data['record']->slug}}"   />
                             </div>
                             <div class="mt-3">
@@ -33,8 +33,8 @@
                                 <input
                                     type="number"
                                     name="rank"
-                                    class="form-control"
-                                    id="rank" value="{{$data['record']->rank}}" required />
+                                    class="form-control required"
+                                    id="rank" value="{{$data['record']->rank}}"  />
                             </div>
                             @include('admin.includes.edit_meta')
                             @include('admin.includes.edit_status')

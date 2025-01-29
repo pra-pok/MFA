@@ -10,59 +10,64 @@
                     <div class="card-body">
                         <form action="{{ route('admin.university.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div class="mt-3">
-                                <label for="country_id" class="form-label">Select Country Name</label>
-                                <select class="form-select" id="country_id" name="country_id" aria-label="Select Country Name" required>
-                                    <option selected disabled>Select Country Name</option>
-                                    @foreach ($data['country'] as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="country_id" class="form-label">Select Country Name</label>
+                                    <select class="form-select select-course required" id="country_id" name="country_id" aria-label="Select Country Name" >
+                                        <option selected disabled>Select Country Name</option>
+                                        @foreach ($data['country'] as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="types" class="form-label">Type</label>
+                                    <select class="form-select required" id="types" name="types" aria-label="Select Type" >
+                                        <option selected disabled>Select Type</option>
+                                        @foreach ($data['type'] as $key => $value)
+                                            <option value="{{ $key }}">{{ $value }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mt-3">
-                                <label for="types" class="form-label">Type</label>
-                                <select class="form-select" id="types" name="types" aria-label="Select Type" required>
-                                    <option selected disabled>Select Type</option>
-                                    @foreach ($data['type'] as $key => $value)
-                                        <option value="{{ $key }}">{{ $value }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="title" class="form-label">Title</label>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        class="form-control required"
+                                        id="title"
+                                        placeholder="Enter The Title" />
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="slug" class="form-label">Slug</label>
+                                    <input
+                                        type="text"
+                                        name="slug"
+                                        class="form-control required"
+                                        id="slug" placeholder="slug" />
+                                </div>
                             </div>
-                            <div class="mt-3">
-                                <label for="title" class="form-label">Title</label>
-                                <input
-                                    type="text"
-                                    name="title"
-                                    class="form-control"
-                                    id="title"
-                                    placeholder="Enter The Title" required/>
-                            </div>
-                            <div class="mt-3">
-                                <label for="slug" class="form-label">Slug</label>
-                                <input
-                                    type="text"
-                                    name="slug"
-                                    class="form-control"
-                                    id="slug" placeholder="slug" />
-                            </div>
-                            <div class="mt-3">
-                                <label for="rank" class="form-label">Rank</label>
-                                <input
-                                    type="number"
-                                    name="rank"
-                                    class="form-control"
-                                    min="0"
-                                    max="100"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required />
-                            </div>
-
-                            <div class="mt-3">
-                                <label for="logo" class="form-label">Logo</label>
-                                <input class="form-control" type="file" id="logo" name="image_file" required/>
+                            <div class="row">
+                                <div class="col-md-6 mt-3">
+                                    <label for="rank" class="form-label">Rank</label>
+                                    <input
+                                        type="number"
+                                        name="rank"
+                                        class="form-control required"
+                                        min="0"
+                                        max="100"
+                                        id="rank" placeholder="Enter number i.e. ( 1,2,3...)"  />
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label for="logo" class="form-label">Logo</label>
+                                    <input class="form-control" type="file" id="logo" name="image_file" />
+                                </div>
                             </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
-                                <textarea class="form-control" name="description" id="des" rows="3"></textarea>
+                                <textarea class="form-control editor" name="description"  rows="3"></textarea>
                             </div>
                             @include('admin.includes.create_meta')
                             @include('admin.includes.create_status')
@@ -78,5 +83,10 @@
 @endsection
 @section('js')
     @include('admin.includes.slug')
-
+    <script>
+        $(document).ready(function()
+        {
+            $('.select-course').select2();
+        });
+    </script>
 @endsection

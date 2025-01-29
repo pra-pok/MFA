@@ -15,9 +15,9 @@
                                 <input
                                     type="text"
                                     name="title"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="title"
-                                    placeholder="Enter The Title" required
+                                    placeholder="Enter The Title"
                                 />
                             </div>
                             <div class="mt-3">
@@ -25,7 +25,7 @@
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" placeholder="slug"
                                 />
                             </div>
@@ -36,8 +36,8 @@
                                     name="rank"
                                     min="0"
                                     max="100"
-                                    class="form-control"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required
+                                    class="form-control required"
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)"
                                 />
                             </div>
                             @include('admin.includes.create_meta')

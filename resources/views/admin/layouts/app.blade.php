@@ -158,7 +158,7 @@
                 ],
                 shouldNotGroupWhenFull: true
             },
-            placeholder: 'Enter description...',
+            placeholder: ' ',
             removePlugins: [
                 'AIAssistant', 'CKBox', 'CKFinder', 'EasyImage', 'MultiLevelList',
                 'RealTimeCollaborativeComments', 'RealTimeCollaborativeTrackChanges',

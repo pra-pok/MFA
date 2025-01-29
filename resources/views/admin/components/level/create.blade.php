@@ -10,34 +10,34 @@
                     <div class="card-body">
                         <form action="{{ route($_base_route . '.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
-                            <div>
+                            <div class="mt-3">
                                 <label for="title" class="form-label">Title</label>
                                 <input
                                     type="text"
                                     name="title"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="title"
-                                    placeholder="Enter The Title" required
+                                    placeholder="Enter The Title"
                                 />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" placeholder="slug"
                                 />
                             </div>
-                            <div>
+                            <div class="mt-3">
                                 <label for="rank" class="form-label">Rank</label>
                                 <input
                                     type="number"
                                     name="rank"
-                                    class="form-control"
+                                    class="form-control required"
                                     min="0"
                                     max="100"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)"
                                 />
                             </div>
                             @include('admin.includes.create_meta')
