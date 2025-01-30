@@ -15,9 +15,9 @@
                                 <input
                                     type="text"
                                     name="name"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="name"
-                                    placeholder="Enter The Name" required
+                                    placeholder="Enter The Name"
                                 />
                             </div>
                             <div class="mb-3">
@@ -25,7 +25,7 @@
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" placeholder="slug"
                                 />
                             </div>
@@ -34,10 +34,10 @@
                                 <input
                                     type="number"
                                     name="rank"
-                                    class="form-control"
+                                    class="form-control required"
                                     min="0"
                                     max="100"
-                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)" required
+                                    id="rank" placeholder="Enter number i.e. ( 1,2,3...)"
                                 />
                             </div>
                             <div class="mb-3">
@@ -45,9 +45,9 @@
                                 <input
                                     type="text"
                                     name="iso_code"
-                                    class="form-control"
+                                    class="form-control "
                                     id="iso_code"
-                                    placeholder="Enter The Iso Code" required
+                                    placeholder="Enter The Iso Code"
                                 />
 
                             </div>
@@ -56,9 +56,9 @@
                                 <input
                                     type="text"
                                     name="currency"
-                                    class="form-control"
+                                    class="form-control "
                                     id="currency"
-                                    placeholder="Enter The Currency" required
+                                    placeholder="Enter The Currency"
                                 />
 
                             </div>
@@ -69,7 +69,7 @@
                                     name="icon"
                                     class="form-control"
                                     id="icon"
-                                    placeholder="Enter The Icon" required
+                                    placeholder="Enter The Icon"
                                 />
 
                             </div>

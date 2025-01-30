@@ -13,8 +13,9 @@
             <h5 class="card-header">{{$_panel}}</h5>
             @include('admin.includes.buttons.button-back')
             @include('admin.includes.flash_message')
+            <div class="card-body">
             <div class="table-responsive text-nowrap">
-                <table class="table">
+                <table id="datatable" class="table table-bordered">
                     <thead>
                     <tr>
                         <th>SN</th>
@@ -23,8 +24,6 @@
                         <th>Rank</th>
                         <th>Iso Code</th>
                         <th>Currency</th>
-                        <th>Created By</th>
-                        <th>Updated_By</th>
                         <th>Deleted_By</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -39,8 +38,6 @@
                             <td>{{ $item->rank }}</td>
                             <td>{{$item->iso_code}}</td>
                             <td>{{$item->currency}}</td>
-                            <td>{{ $item->createds->name }}</td>
-                            <td>{{$item->updated_by}}</td>
                             <td>{{$item->deleted_at}}</td>
                             <td>
                                 @include('admin.includes.buttons.display_status',['status' => $item->status])
@@ -59,6 +56,21 @@
                     </tbody>
                 </table>
             </div>
+            </div>
         </div>
     </div>
+@endsection
+@section('js')
+<script>
+    $(document).ready(function() {
+        $('#datatable').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+        });
+    });
+</script>
 @endsection

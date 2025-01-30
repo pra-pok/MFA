@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Dtos\ResponseDTO;
 use App\Http\Requests\AdministrativeAreaRequest;
 use App\Models\AdministrativeArea;
 use App\Models\Country;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use App\Utils;
 
 class AdministrativeAreaController extends DM_BaseController
 {
@@ -142,18 +144,18 @@ class AdministrativeAreaController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
      */
-    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+
+    public function edit($id)
     {
         $data['record'] = $this->model->find($id);
-
         if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . '.index');
+            return redirect()->route($this->base_route . '.index')->with('alert-danger', 'Invalid Request');
         }
-
-        // Load countries and parents for the selected country_id
         $data['country'] = Country::pluck('name', 'id');
         $data['parents'] = AdministrativeArea::whereNull('parent_id')->pluck('name', 'id');
+        if (request()->ajax()) {
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data['record'], 'Record fetched successfully.', 'success'));
+        }
 
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }

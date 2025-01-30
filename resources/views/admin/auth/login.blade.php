@@ -1,21 +1,23 @@
 @extends('admin.layouts.auth')
 @section('content')
-    <form id="formAuthentication" class="mb-6" action="{{route('login')}}" method="POST">
+    <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
         @csrf
         <div class="mb-6">
             <label for="email" class="form-label">Email or Username</label>
-            <input class="form-control" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <input class="form-control" type="email" name="email" :value="old('email')" required autofocus
+                autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
+        {{-- <div class="mb-6">
+            <label for="email_or_username" class="form-label">Email or Username</label>
+            <input class="form-control" type="text" name="email_or_username" :value="old('email_or_username')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email_or_username')" class="mt-2" />
+        </div> --}}
         <div class="mb-6 form-password-toggle">
             <label class="form-label" for="password">Password</label>
             <div class="input-group input-group-merge">
-                <input
-                    id="password"
-                    class="form-control"
-                    type="password"
-                    name="password"
-                    required autocomplete="current-password"  />
+                <input id="password" class="form-control" type="password" name="password" required
+                    autocomplete="current-password" />
                 <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
@@ -27,10 +29,10 @@
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                 </div>
                 @if (Route::has('password.request'))
-                                                <a href="{{ route('password.request') }}">
-                                                    <span>Forgot Password?</span>
-                                                </a>
-                    @endif
+                    <a href="{{ route('password.request') }}">
+                        <span>Forgot Password?</span>
+                    </a>
+                @endif
             </div>
         </div>
         <div class="mb-6">

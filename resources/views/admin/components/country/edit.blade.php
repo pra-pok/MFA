@@ -16,16 +16,16 @@
                                 <input
                                     type="text"
                                     name="name"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="name"
-                                    value="{{$data['record']->name}}" required/>
+                                    value="{{$data['record']->name}}" />
                             </div>
                             <div class="mt-3">
                                 <label for="slug" class="form-label">Slug</label>
                                 <input
                                     type="text"
                                     name="slug"
-                                    class="form-control"
+                                    class="form-control required"
                                     id="slug" value="{{$data['record']->slug}}"  />
                             </div>
                             <div class="mt-3">
@@ -33,19 +33,19 @@
                                 <input
                                     type="number"
                                     name="rank"
-                                    class="form-control"
+                                    class="form-control required"
                                     min="0"
                                     max="100"
-                                    id="rank" value="{{$data['record']->rank}}" required />
+                                    id="rank" value="{{$data['record']->rank}}"  />
                             </div>
                             <div class="mt-3">
                                 <label for="iso_code" class="form-label">Iso Code</label>
                                 <input
                                     type="text"
                                     name="iso_code"
-                                    class="form-control"
+                                    class="form-control "
                                     id="iso_code"
-                                    value="{{$data['record']->iso_code}}" required/>
+                                    value="{{$data['record']->iso_code}}" />
                             </div>
                             <div class="mt-3">
                                 <label for="currency" class="form-label">Currency</label>
@@ -54,7 +54,7 @@
                                     name="currency"
                                     class="form-control"
                                     id="currency"
-                                    value="{{$data['record']->currency}}" required/>
+                                    value="{{$data['record']->currency}}"/>
                             </div>
                             <div class="mt-3">
                                 <label for="icon" class="form-label">Icon</label>
@@ -63,7 +63,7 @@
                                     name="icon"
                                     class="form-control"
                                     id="icon"
-                                    value="{{$data['record']->icon}}" required
+                                    value="{{$data['record']->icon}}" 
                                 />
 
                             </div>

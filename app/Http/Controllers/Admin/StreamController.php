@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Dtos\ResponseDTO;
 use App\Http\Requests\StreamRequest;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use App\Utils;
 
 class StreamController extends DM_BaseController
 {
@@ -24,14 +26,6 @@ class StreamController extends DM_BaseController
 
     public function __construct(Request $request, Stream $stream)
     {
-//        $this->middleware('auth');
-//        $this->middleware('permission:stream-list', ['only' => ['index']]);
-//        $this->middleware('permission:stream-create', ['only' => ['create', 'store']]);
-//        $this->middleware('permission:stream-show', ['only' => ['show']]);
-//        $this->middleware('permission:stream-edit', ['only' => ['edit', 'update']]);
-//        $this->middleware('permission:stream-delete', ['only' => ['destroy']]);
-//        $this->middleware('permission:stream-restore', ['only' => ['restore']]);
-//        $this->middleware('permission:stream-forceDeleteData', ['only' => ['forceDeleteData']]);
         $this->model = $stream;
     }
     /**
@@ -175,14 +169,17 @@ class StreamController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
      */
-    public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
+
+    public function edit($id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
+            return redirect()->route($this->base_route . '.index')->with('alert-danger', 'Invalid Request');
         }
 
+        if (request()->ajax()) {
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data['record'], 'Record fetched successfully.', 'success'));
+        }
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 

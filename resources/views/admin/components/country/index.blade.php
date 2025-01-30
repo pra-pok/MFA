@@ -10,23 +10,28 @@
 
         <div class="card">
             <h5 class="card-header">{{ $_panel }}</h5>
-            @include('admin.includes.buttons.button-create')
-            @include('admin.includes.buttons.button_display_trash')
-            @include('admin.includes.flash_message')
             <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    @include('admin.includes.buttons.button-create')
+
+                    <div class="ml-auto">
+                        @include('admin.includes.buttons.button_display_trash')
+                    </div>
+                </div>
+                @include('admin.includes.flash_message')
                 <div class="text-nowrap">
                     <table id="datatable" class="table table-bordered">
                         <thead>
-                        <tr>
-                            <th>SN</th>
-                            <th width="170">Name</th>
-                            <th>Slug</th>
-                            <th>Rank</th>
-                            <th>ISO Code</th>
-                            <th>Currency</th>
-                            <th>Status</th>
-                            <th>Modified By/At</th>
-                        </tr>
+                            <tr>
+                                <th>SN</th>
+                                <th width="170">Name</th>
+                                <th>Slug</th>
+                                <th>Rank</th>
+                                <th>ISO Code</th>
+                                <th>Currency</th>
+                                <th>Status</th>
+                                <th>Modified By/At</th>
+                            </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
                         </tbody>
@@ -52,21 +57,36 @@
                     alert("Failed to load data. Please check your console for details.");
                 }
             },
-            columns: [
-                { data: null },
-                { data: 'name' },
-                { data: 'slug' },
-                { data: 'rank' },
-                { data: 'iso_code'},
-                { data: 'currency'},
-                { data: 'status' },
-                { data: 'createds.username' }, // Make sure this matches the model field
+            columns: [{
+                    data: null
+                },
+                {
+                    data: 'name'
+                },
+                {
+                    data: 'slug'
+                },
+                {
+                    data: 'rank'
+                },
+                {
+                    data: 'iso_code'
+                },
+                {
+                    data: 'currency'
+                },
+                {
+                    data: 'status'
+                },
+                {
+                    data: 'createds.username'
+                }, // Make sure this matches the model field
             ],
-            rowCallback: function (row, data, index) {
+            rowCallback: function(row, data, index) {
                 // const formattedDate = data.created_at ? new Date(data.created_at).toLocaleString() : '';
-                const statusBadge = data.status === 1
-                    ? '<span class="badge bg-label-primary me-1">Active</span>'
-                    : '<span class="badge bg-label-danger">De-Active</span>';
+                const statusBadge = data.status === 1 ?
+                    '<span class="badge bg-label-success me-1">Active</span>' :
+                    '<span class="badge bg-label-danger">De-Active</span>';
 
                 const editUrl = `{{ url('admin/country/${data.id}/edit') }}`;
                 const showUrl = `{{ url('admin/country/${data.id}/show') }}`;
@@ -74,11 +94,12 @@
                 // const createdByName = data.createds && data.createds.username ? data.createds.username : 'Unknown';
 
 
-                const modifiedByName = data.updatedBy && data.updatedBy.username
-                    ? data.updatedBy.username
-                    : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
+                const modifiedByName = data.updatedBy && data.updatedBy.username ?
+                    data.updatedBy.username :
+                    (data.createds && data.createds.username ? data.createds.username : 'Unknown');
 
-                const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
+                const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data
+                    .created_at ? new Date(data.created_at).toLocaleString() : '');
 
                 // Custom row format
                 const rowContent = `
@@ -118,10 +139,9 @@
                 // Replace the content of the row
                 $(row).html(rowContent);
             },
-            pageLength: 5,
-            lengthMenu: [5, 10, 25, 50],
+            pageLength: 10,
+            lengthMenu: [10, 25, 50, 75, 100, 150],
             responsive: true
         });
-
     </script>
 @endsection

@@ -95,6 +95,7 @@ Route::group(['prefix' =>'administrative_area', 'as' => 'administrative_area.'],
     Route::get('{id}/edit',[AdministrativeAreaController::class,'edit'])->name('edit');
     Route::put('{id}',[AdministrativeAreaController::class,'update'])->name('update');
     Route::get('/get-parents-by-country',[AdministrativeAreaController::class,'getParentsByCountry'])->name('get_parent');
+    Route::get('/edit-get-parents-by-country',[AdministrativeAreaController::class,'editgetParentsByCountry'])->name('edit_get_parent');
 });
 //organization
 

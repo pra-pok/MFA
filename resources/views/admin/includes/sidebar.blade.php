@@ -96,7 +96,7 @@
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Modules</span>
         </li>
-
+{{--
         @canAny(['article__read', 'article__create'])
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -120,7 +120,7 @@
                     @endcan
                 </ul>
             </li>
-        @endcan
+        @endcan --}}
     @endif
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">

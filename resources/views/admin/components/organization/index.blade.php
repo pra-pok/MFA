@@ -10,10 +10,15 @@
 
         <div class="card">
             <h5 class="card-header">{{$_panel}}</h5>
-            @include('admin.includes.buttons.button-create')
-            @include('admin.includes.buttons.button_display_trash')
-            @include('admin.includes.flash_message')
             <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    @include('admin.includes.buttons.button-create')
+
+                    <div class="ml-auto">
+                        @include('admin.includes.buttons.button_display_trash')
+                    </div>
+                </div>
+                @include('admin.includes.flash_message')
                 <div class=" text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
@@ -64,7 +69,7 @@
 
                 const serialNumber = (pageIndex * pageLength) + (index + 1);
                 const statusBadge = data.status === 1
-                    ? '<span class="badge bg-label-primary me-1">Active</span>'
+                    ? '<span class="badge bg-label-success me-1">Active</span>'
                     : '<span class="badge bg-label-danger">In-Active</span>';
 
                 const editUrl = `{{ url('organization/${data.id}/edit') }}`;
@@ -120,7 +125,7 @@
                 $(row).html(rowContent);
             },
             pageLength: 10,
-            lengthMenu: [10, 25, 50],
+            lengthMenu: [ 10, 25, 50, 75, 100, 150],
             responsive: true
         });
     </script>

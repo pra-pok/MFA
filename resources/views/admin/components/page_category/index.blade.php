@@ -10,27 +10,26 @@
 
         <div class="card">
             <h5 class="card-header">{{$_panel}}</h5>
-            <div style="margin-left: 15px;">
-                <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#basicModal">
-                    <i class="icon-base bx bx-plus icon-sm"></i>
-                </button>
-            </div>
-            @include('admin.includes.buttons.button_display_trash')
-            @include('admin.includes.flash_message')
             <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basicModal">
+                        <i class="icon-base bx bx-plus icon-sm"></i>
+                    </button>
+
+                    <div class="ml-auto">
+                        @include('admin.includes.buttons.button_display_trash')
+                    </div>
+                </div>
+                @include('admin.includes.flash_message')
                 <div class=" text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
                         <tr>
-                            <th>SN</th>
+                            <th width="8%" >SN</th>
                             <th>Title</th>
                             <th>Slug</th>
-                            <th>Rank</th>
-                            <th>Status</th>
+                            <th class="text-center">Rank</th>
+                            <th class="text-center">Status</th>
                             <th>Modified By/At</th>
                         </tr>
                         </thead>
@@ -87,7 +86,7 @@
             ],
             rowCallback: function (row, data, index) {
                 const statusBadge = data.status === 1
-                    ? '<span class="badge bg-label-primary me-1">Active</span>'
+                    ? '<span class="badge bg-label-success me-1">Active</span>'
                     : '<span class="badge bg-label-danger">De-Active</span>';
                 const deleteUrl = `{{ url('page-category') }}/${data.id}`;
                 const modifiedByName = data.updatedBy && data.updatedBy.username
@@ -116,8 +115,8 @@
                 </div>
             </td>
             <td>${data.slug}</td>
-            <td>${data.rank}</td>
-            <td>${statusBadge}</td>
+            <td class="text-center">${data.rank}</td>
+            <td class="text-center">${statusBadge}</td>
             <td>
                 ${modifiedByName}<br>
                 ${modifiedDate}
@@ -125,8 +124,8 @@
         `;
                 $(row).html(rowContent);
             },
-            pageLength: 5,
-            lengthMenu: [5, 10, 25, 50],
+            pageLength: 10,
+            lengthMenu: [ 10, 25, 50, 75, 100, 150],
             responsive: true
         });
         function editCategory(id) {
