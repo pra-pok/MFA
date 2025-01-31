@@ -1,10 +1,9 @@
 <div class="row">
-    @foreach($data['record']->organizationCourses as $item)
-        <div class="col-md-12"> <!-- Each card takes 1/4th of the row -->
+    @foreach($data['record']->organizationPages as $item)
+        <div class="col-md-12">
             <div class="card mb-5">
                 <div class="card-body">
-                    <h5 class="card-title">{{$item->course->title}}</h5>
-                    <p><strong>Min Fee Range:</strong> {{$item->start_fee}} to {{$item->end_fee}}</p>
+                    <h5 class="card-title">{{$item->page->title ?? ''}}</h5>
                     <p><strong>Description:</strong> {!! $item->description !!}</p>
                     <p>
                         <strong>Status:</strong>

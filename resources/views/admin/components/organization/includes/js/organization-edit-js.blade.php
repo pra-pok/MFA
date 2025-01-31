@@ -154,27 +154,6 @@
         });
         $('.select-course').select2();
         $('.select-page').select2();
-        // tableBody.on("click", ".remove-row", function (e) {
-        //     e.preventDefault();
-        //     const rows = tableBody.find("tr");
-        //     if (rows.length > 1) {
-        //         $(this).closest("tr").remove();
-        //         tableBody.find("tr").each(function (index) {
-        //             const row = $(this);
-        //             row.find("td:first").text(index + 1);
-        //             row.find("input, select").each(function () {
-        //                 const input = $(this);
-        //                 if (input.is(":radio")) {
-        //                     const baseName = input.attr("name").split("-")[0];
-        //                     input.attr("name", `${baseName}-${index + 1}`);
-        //                     input.attr("id", input.attr("id").split("-")[0] + `-${index + 1}`);
-        //                 }
-        //             });
-        //         });
-        //     } else {
-        //         alert("At least one row must remain in the table.");
-        //     }
-        // });
         tableBody.on("click", ".remove-row", function (e) {
             e.preventDefault();
             const rows = tableBody.find("tr");
@@ -210,6 +189,7 @@
                 alert("At least one row must remain in the table.");
             }
         });
+
         function updateTableIndexes() {
             tableBody.find("tr").each(function (index) {
                 const row = $(this);
@@ -225,6 +205,7 @@
                 });
             });
         }
+
         tableBody.on("change", "input[type='radio'][name^='type']", function () {
             const row = $(this).closest("tr");
             const mediaText = row.find(".media-text");
@@ -245,6 +226,7 @@
             const fullImageSrc = $(this).data('bs-image');
             modalImage.attr('src', fullImageSrc);
         });
+
         function loadAdministrativeAreas(countryId, selectedAreaId = null) {
             $("#parent_id").html('<option value="">None</option>');
             if (countryId) {
@@ -271,6 +253,7 @@
                 });
             }
         }
+
         $('#country_id').change(function () {
             var selectedCountryId = this.value;
             loadAdministrativeAreas(selectedCountryId);

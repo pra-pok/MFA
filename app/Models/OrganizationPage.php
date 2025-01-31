@@ -33,7 +33,8 @@ class OrganizationPage extends Model
     public function course(){
         return $this->belongsTo(Course::class,'course_id','id');
     }
-
-
+    public function page(){
+        return $this->belongsTo(PageCategory::class,'page_category_id','id');
+    }
 
 }

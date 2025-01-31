@@ -111,7 +111,7 @@
                 const rowContent = `
             <td class="text-center">${serialNumber}</td>
             <td>${data.title}
-                <div class="dropdown" style="  margin-left: 250px; margin-top: -22px;">
+                <div class="dropdown" style="  margin-left: 350px; margin-top: -22px;">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                         <i class="bx bx-dots-vertical-rounded"></i>
                     </button>

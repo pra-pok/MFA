@@ -1,5 +1,4 @@
 @extends('admin.layouts.app')
-
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <nav>
@@ -8,7 +7,6 @@
                 <li class="breadcrumb-item active">Profile</li>
             </ol>
         </nav>
-
         <div class="card">
             <div class="card-body">
                 <div class="mb-6">
@@ -18,10 +16,6 @@
                 <div class="mb-6">
                     @include('profile.partials.update-password-form')
                 </div>
-
-                {{-- <div class="mb-6">
-                    @include('profile.partials.delete-user-form')
-                </div> --}}
             </div>
         </div>
     </div>

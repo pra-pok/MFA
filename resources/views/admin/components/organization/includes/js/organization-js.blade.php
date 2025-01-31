@@ -1,6 +1,5 @@
 <script>
     $(document).ready(function () {
-
         const updateButtonsVisibility = () => {
             const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
             const totalTabs = $('.nav-tabs .nav-link').length;
@@ -9,7 +8,6 @@
             } else {
                 $('#prevBtn').hide();
             }
-
             if (currentTabIndex === totalTabs - 1) {
                 $('#saveBtn').show();
                 $('#nextBtn').hide();
@@ -18,7 +16,6 @@
                 $('#nextBtn').show();
             }
         };
-
         $('#nextBtn').on('click', function (e) {
             e.preventDefault();
             const currentPane = $(".tab-pane.fade.show.active");
@@ -97,8 +94,6 @@
             }
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
-
-            // Ensure organization_id is correct
             const organizationId = $('input[name="organization_id"]').val();
             if (!organizationId) {
                 alert("Organization ID is missing.");
@@ -108,7 +103,6 @@
             $('.select-page').select2();
             const formData = new FormData(form[0]);
             formData.append('organization_id', organizationId); // Append organization_id manually if necessary
-
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',
@@ -154,7 +148,6 @@
             });
         });
         updateButtonsVisibility();
-
         function validateTab(form) {
             let isValid = true;
             form.find('.required').each(function () {
@@ -167,21 +160,17 @@
             });
             return isValid;
         }
-
         $('#name').on('input', function () {
             var name = $(this).val();
             var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
             $('#slug').val(slug);
         });
-
         const tableBody = $("#datatable tbody");
-
         tableBody.on("click", ".add-row", function (e) {
             e.preventDefault();
             const lastRow = tableBody.find("tr:last");
             const newRow = lastRow.clone();
             const rowCount = tableBody.find("tr").length + 1;
-
             newRow.find("td:first").text(rowCount);
             newRow.find("input, select").each(function () {
                 const input = $(this);
@@ -199,7 +188,6 @@
             });
             tableBody.append(newRow);
         });
-
         tableBody.on("click", ".remove-row", function (e) {
             e.preventDefault();
             const rows = tableBody.find("tr");
@@ -221,7 +209,6 @@
                 alert("At least one row must remain in the table.");
             }
         });
-
         tableBody.on("change", "input[type='radio'][name^='type']", function () {
             const row = $(this).closest("tr");
             const mediaText = row.find(".media-text");
@@ -235,7 +222,7 @@
             }
         });
         $('.select-course').select2();
-        $('.add-row').click(function() {
+        $('.add-row').click(function () {
             var newRow = $('.form-row:first').clone();
             newRow.find('input').val('');
             newRow.find('select').prop('selectedIndex', 0);
@@ -244,7 +231,7 @@
             newRow.find('.row-number').text(rowCount);
             $('#form-rows').append(newRow);
             newRow.find('.select-course').select2();
-            newRow.find('.remove-row').click(function() {
+            newRow.find('.remove-row').click(function () {
                 if ($('#form-rows .form-row').length > 1) {
                     $(this).closest('.form-row').remove();
                 }
@@ -252,10 +239,10 @@
         });
         $('#country_id').change(function () {
             var idcountry = this.value;
-            $("#parent_id").html('<option value="">None</option>'); // Reset the parent dropdown
+            $("#parent_id").html('<option value="">None</option>');
             if (idcountry) {
                 $.ajax({
-                    url: '/organization/get-parents-by-country', // Replace with your route URL
+                    url: '/organization/get-parents-by-country',
                     type: "GET",
                     data: {
                         id: idcountry,
@@ -273,5 +260,4 @@
             }
         });
     });
-
 </script>

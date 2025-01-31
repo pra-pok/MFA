@@ -86,7 +86,7 @@
             <td class="text-center" >${serialNumber}</td>
             <td>
             <img src="${logoUrl}" alt="logo" class="img-thumbnail" style="width: 20px; height: 20px; object-fit: cover; border-radius: 50%; margin-bottom: -19px;">
-               <span style="margin-left: 32px;" > ${data.name}  </span>
+               <a href="${showUrl}"> <span style="margin-left: 32px;" > ${data.name}  </span></a>
                <a href="${data.website}" target="blank" >
                    <i class="bx bx-right-top-arrow-circle "></i>
                </a>
@@ -98,9 +98,7 @@
                         <a class="dropdown-item" href="${editUrl}">
                             <i class="bx bx-edit-alt me-1"></i> Edit
                         </a>
-                        <a class="dropdown-item" href="${showUrl}">
-                            <i class="bx bx-show"></i> Show
-                        </a>
+
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="DELETE">

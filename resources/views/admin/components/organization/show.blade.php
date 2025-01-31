@@ -12,28 +12,42 @@
                             <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                                     data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
                                     aria-selected="true">
-                                Basic Information
+                                <i class='bx bx-user'></i> Basic Information
                             </button>
                         </li>
                         <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                     data-bs-target="#navs-justified-gallery" aria-controls="navs-justified-gallery"
                                     aria-selected="false">
-                                Gallery
+                                <i class='bx bx-image' ></i> Gallery
                             </button>
                         </li>
                         <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                     data-bs-target="#navs-justified-social" aria-controls="navs-justified-social"
                                     aria-selected="false">
-                                Social Media
+                                <i class='bx bxl-meta'></i> Social Media
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-course" aria-controls="navs-justified-course"
+                                    aria-selected="false">
+                                <i class='bx bx-book'></i> Course
                             </button>
                         </li>
                         <li class="nav-item">
                             <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                     data-bs-target="#navs-justified-page" aria-controls="navs-justified-page"
                                     aria-selected="false">
-                                Course
+                                <i class='bx bx-first-page'></i>   Page
+                            </button>
+                        </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-facilities" aria-controls="navs-justified-facilities"
+                                    aria-selected="false">
+                                <i class='bx bxs-face-mask'></i>  Facilities
                             </button>
                         </li>
                     </ul>
@@ -52,8 +66,14 @@
                             @include('admin.components.organization.includes.show-social')
                         </div>
                         <!-- Course Tab -->
-                        <div class="tab-pane fade" id="navs-justified-page" role="tabpanel">
+                        <div class="tab-pane fade" id="navs-justified-course" role="tabpanel">
                             @include('admin.components.organization.includes.show-course')
+                        </div>
+                        <div class="tab-pane fade" id="navs-justified-page" role="tabpanel">
+                            @include('admin.components.organization.includes.show-page')
+                        </div>
+                        <div class="tab-pane fade" id="navs-justified-facilities" role="tabpanel">
+                            @include('admin.components.organization.includes.show-facilities')
                         </div>
                     </div>
                 </div>

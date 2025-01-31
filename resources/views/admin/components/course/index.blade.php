@@ -64,7 +64,6 @@
             const statusBadge = data.status === 1
                 ? '<span class="badge bg-label-success me-1">Active</span>'
                 : '<span class="badge bg-label-danger">De-Active</span>';
-
             const editUrl = `{{ url('admin/course/${data.id}/edit') }}`;
             const showUrl = `{{ url('admin/course/${data.id}/show') }}`;
             const deleteUrl = `{{ url('admin/course/${data.id}') }}`;
@@ -77,7 +76,7 @@
             <td>${data.stream.title}<br>
                <span> ${data.level.title} </span>
             </td>
-            <td>${data.title}
+            <td> <a href="${showUrl}">  ${data.title}  <br> <span> (${data.short_title}) </span> </a>
                 <div class="dropdown" style="  margin-left: 430px; margin-top: -22px;">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                         <i class="bx bx-dots-vertical-rounded"></i>
@@ -85,9 +84,6 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="${editUrl}">
                             <i class="bx bx-edit-alt me-1"></i> Edit
-                        </a>
-                         <a class="dropdown-item" href="${showUrl}">
-                            <i class="bx bx-show"></i> Show
                         </a>
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -98,16 +94,13 @@
                         </form>
                     </div>
                 </div>
-                <span> (${data.short_title}) </span>
             </td>
-
             <td>${statusBadge}</td>
             <td>
                 ${modifiedByName}<br>
                 ${modifiedDate}
             </td>
         `;
-            // Replace the content of the row
             $(row).html(rowContent);
         },
         pageLength: 10,

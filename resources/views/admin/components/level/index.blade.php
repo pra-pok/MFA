@@ -96,24 +96,17 @@
                 const statusBadge = data.status === 1 ?
                     '<span class="badge bg-label-success me-1">Active</span>' :
                     '<span class="badge bg-label-danger">De-Active</span>';
-
-                //const editUrl = `{{ url('admin/level/${data.id}/edit') }}`;
                 const showUrl = `{{ url('admin/level/${data.id}/show') }}`;
                 const deleteUrl = `{{ url('admin/level/${data.id}') }}`;
-
-
-
                 const modifiedByName = data.updatedBy && data.updatedBy.username ?
                     data.updatedBy.username :
                     (data.createds && data.createds.username ? data.createds.username : 'Unknown');
-
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data
                     .created_at ? new Date(data.created_at).toLocaleString() : '');
-
-                // Custom row format
                 const rowContent = `
             <td class="text-center" >${serialNumber}</td>
-            <td>${data.title}
+            <td>
+                <a href="${showUrl}">  ${data.title} </a>
                 <div class="dropdown" style=" position: relative; margin-left: 330px; margin-top: -22px;">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                         <i class="bx bx-dots-vertical-rounded"></i>
@@ -121,9 +114,6 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="javascript:void(0)" onclick="editCategory(${data.id})">
                             <i class="bx bx-edit-alt me-1"></i> Edit
-                        </a>
-                        <a class="dropdown-item" href="${showUrl}">
-                            <i class="bx bx-show"></i> Show
                         </a>
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">

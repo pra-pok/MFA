@@ -29,4 +29,8 @@ class Facilities extends Model
         return $this->belongsTo(User::class,'updated_by','id');
     }
 
+    public function organizationfacilities(){
+        return $this->hasMany(OrganizationFacilities::class,'faculty_id','id');
+    }
+
 }

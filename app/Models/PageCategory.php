@@ -29,4 +29,9 @@ class PageCategory extends Model
         return $this->belongsTo(User::class,'updated_by','id');
     }
 
+    public function pagecategory(){
+            return $this->belongsTo(OrganizationPage::class,'page_category_id','id');
+    }
+
+
 }

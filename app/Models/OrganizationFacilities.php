@@ -27,4 +27,10 @@ class OrganizationFacilities extends Model
         return $this->belongsTo(User::class,'updated_by','id');
     }
 
+    public function facility() {
+        return $this->belongsTo(Facilities::class, 'facility_id', 'id');
+    }
+    public function organization(){
+        return $this->belongsTo(Organization::class,'organization_id','id');
+    }
 }

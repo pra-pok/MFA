@@ -13,35 +13,35 @@
                                 <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
                                         aria-selected="true">
-                                    Basic Information
+                                    <i class='bx bx-user'></i> Basic Information
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-gallery" aria-controls="navs-justified-gallery"
                                         aria-selected="false">
-                                    Gallery
+                                    <i class='bx bx-image'></i>  Gallery
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-social" aria-controls="navs-justified-social"
                                         aria-selected="false">
-                                    Social Media
+                                    <i class='bx bxl-meta'></i>  Social Media
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-course" aria-controls="navs-justified-course"
                                         aria-selected="false">
-                                    Course
+                                    <i class='bx bx-book'></i>  Course
                                 </button>
                             </li>
                             <li class="nav-item">
                                 <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-page" aria-controls="navs-justified-page"
                                         aria-selected="false">
-                                    Page
+                                    <i class='bx bx-first-page'></i> Page
                                 </button>
                             </li>
                             <li class="nav-item">
@@ -49,7 +49,7 @@
                                         data-bs-target="#navs-justified-facilities"
                                         aria-controls="navs-justified-facilities"
                                         aria-selected="false">
-                                    Facilities
+                                    <i class='bx bxs-face-mask'></i>  Facilities
                                 </button>
                             </li>
                         </ul>
@@ -82,9 +82,9 @@
                         </div>
                         <div class="" style="padding: 20px;">
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-primary d-none" id="edit-prevBtn">Previous</button>
+                                <button type="button" class="btn btn-primary" id="edit-prevBtn" style="display: none;">Previous</button>
                                 <button type="button" class="btn btn-primary " id="edit-nextBtn">Next</button>
-                                <button type="button" class="btn btn-success d-none" id="edit-saveBtn">Save</button>
+                                <button type="button" class="btn btn-success" id="edit-saveBtn" style="display: none;">Save</button>
                             </div>
                         </div>
                     </div>

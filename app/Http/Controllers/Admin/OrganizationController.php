@@ -12,6 +12,7 @@ use App\Models\GalleryCategory;
 use App\Models\Organization;
 use App\Models\Level;
 use App\Models\OrganizationCourse;
+use App\Models\OrganizationFacilities;
 use App\Models\PageCategory;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -98,6 +99,7 @@ class OrganizationController extends DM_BaseController
         $data['country'] = Country::pluck('name', 'id');
         $data['page'] = PageCategory::pluck('title', 'id');
         $data['faculty'] = Facilities::where('status', '1')->get();
+        $data['Facilities'] = [];
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
     public function getParentsByCountry(Request $request)
@@ -149,7 +151,8 @@ class OrganizationController extends DM_BaseController
     public function show($id)
     {
 //        $data['record'] = $this->model->find($id);
-        $data['record'] = $this->model->with(['createds', 'updatedBy', 'socialMediaLinks', 'organizationGalleries' , 'organizationCourses'])  // Eager load any relationships
+        $data['record'] = $this->model->with(['createds', 'updatedBy', 'socialMediaLinks', 'organizationGalleries' ,
+            'organizationCourses' , 'organizationPages' , 'organizationfacilities' ])  // Eager load any relationships
         ->find($id);
 
         if (!$data['record']) {
@@ -205,6 +208,7 @@ class OrganizationController extends DM_BaseController
         $data['page'] = PageCategory::pluck('title', 'id');
         $data['organization_pages'] = $data['record']->organizationPages;
         $data['faculty'] = Facilities::where('status', '1')->get();
+        $data['Facilities'] = OrganizationFacilities::where('organization_id', $id)->pluck('facility_id')->toArray();
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 

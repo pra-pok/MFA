@@ -41,7 +41,6 @@
         </div>
     </div>
 @endsection
-
 @section('js')
     <script>
         $('#datatable').DataTable({
@@ -80,31 +79,26 @@
                 },
                 {
                     data: 'createds.username'
-                }, // Make sure this matches the model field
+                },
             ],
             rowCallback: function(row, data, index) {
-                // const formattedDate = data.created_at ? new Date(data.created_at).toLocaleString() : '';
                 const statusBadge = data.status === 1 ?
                     '<span class="badge bg-label-success me-1">Active</span>' :
                     '<span class="badge bg-label-danger">De-Active</span>';
-
                 const editUrl = `{{ url('admin/country/${data.id}/edit') }}`;
                 const showUrl = `{{ url('admin/country/${data.id}/show') }}`;
                 const deleteUrl = `{{ url('admin/country/${data.id}') }}`;
-                // const createdByName = data.createds && data.createds.username ? data.createds.username : 'Unknown';
-
-
                 const modifiedByName = data.updatedBy && data.updatedBy.username ?
                     data.updatedBy.username :
                     (data.createds && data.createds.username ? data.createds.username : 'Unknown');
 
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data
                     .created_at ? new Date(data.created_at).toLocaleString() : '');
-
-                // Custom row format
                 const rowContent = `
             <td>${index + 1}</td>
-            <td>${data.name}
+            <td>
+                <a href="${showUrl}">  ${data.name} </a>
+
                 <div class="dropdown" style="margin-left: 251px; margin-top: -22px;">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                         <i class="bx bx-dots-vertical-rounded"></i>
@@ -112,9 +106,6 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="${editUrl}">
                             <i class="bx bx-edit-alt me-1"></i> Edit
-                        </a>
-                         <a class="dropdown-item" href="${showUrl}">
-                            <i class="bx bx-show"></i> Show
                         </a>
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -136,7 +127,6 @@
                 ${modifiedDate}
             </td>
         `;
-                // Replace the content of the row
                 $(row).html(rowContent);
             },
             pageLength: 10,
