@@ -19,11 +19,9 @@
                         <thead>
                             <tr>
                                 <th>SN</th>
-                                <th>Name</th>
-                                <th>Slug</th>
+                                <th>Title</th>
+                                <th>Icon</th>
                                 <th>Rank</th>
-                                <th>Iso Code</th>
-                                <th>Currency</th>
                                 <th>Deleted_By</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -33,11 +31,9 @@
                             @foreach ($data['records'] as $item)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->name }}</td>
-                                    <td>{{ $item->slug }}</td>
+                                    <td>{{ $item->title }}</td>
+                                    <td>{{ $item->icon }}</td>
                                     <td>{{ $item->rank }}</td>
-                                    <td>{{ $item->iso_code }}</td>
-                                    <td>{{ $item->currency }}</td>
                                     <td>{{ $item->deleted_at }}</td>
                                     <td>
                                         @include('admin.includes.buttons.display_status', [

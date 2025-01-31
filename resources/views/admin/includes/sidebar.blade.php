@@ -231,6 +231,19 @@
     </li>
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bxs-face"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Facilities</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('facilities.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Facilities</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+    <li class="menu-item ">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-home"></i>
             <div class="text-truncate" data-i18n="Form Elements">College/School</div>
         </a>

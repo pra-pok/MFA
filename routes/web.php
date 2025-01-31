@@ -13,7 +13,10 @@ use App\Http\Controllers\Admin\OrganizationCourseController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\PageCategoryController;
 use App\Http\Controllers\Admin\OrganizationPageController;
+use App\Http\Controllers\Admin\FacilitiesController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Admin\OrganizationFacilitiesController;
+
 
 //Route::redirect('/', '/dashboard', 301);
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class,'loginForm'])->name('admin.login');
@@ -108,6 +111,15 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [PageCategoryController::class, 'restore'])->name('page-category.restore');
     Route::delete('force-delete/{id}', [PageCategoryController::class, 'forceDeleteData'])->name('page-category.force_delete');
     Route::delete('{id}', [PageCategoryController::class, 'destroy'])->name('page-category.destroy');
+
+
+    Route::resource('facilities', FacilitiesController::class);
+    Route::get('trash', [FacilitiesController::class, 'trash'])->name('facilities.trash');
+    Route::get('restore/{id}', [FacilitiesController::class, 'restore'])->name('facilities.restore');
+    Route::delete('force-delete/{id}', [FacilitiesController::class, 'forceDeleteData'])->name('facilities.force_delete');
+    Route::delete('{id}', [FacilitiesController::class, 'destroy'])->name('facilities.destroy');
+
+    Route::resource('organization_facilities', OrganizationFacilitiesController::class);
 });
 require __DIR__ . '/auth.php';
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {

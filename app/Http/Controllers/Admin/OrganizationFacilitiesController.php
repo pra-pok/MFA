@@ -3,39 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
-use App\Http\Requests\OrganizationRequest;
 use App\Models\AdministrativeArea;
-use App\Models\Country;
-use App\Models\Course;
 use App\Models\Facilities;
 use App\Models\GalleryCategory;
+use App\Models\OrganizationFacilities;
 use App\Models\Organization;
-use App\Models\Level;
-use App\Models\OrganizationCourse;
-use App\Models\PageCategory;
-use App\Models\Stream;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
-
-class OrganizationController extends DM_BaseController
+class OrganizationFacilitiesController extends DM_BaseController
 {
-    protected $panel = 'College / School';
-    protected $base_route = 'organization';
-    protected $view_path = 'admin.components.organization';
+    protected $panel = 'Organization Organization Facilities';
+    protected $base_route = 'organization_facilities';
+    protected $view_path = 'admin.components.organization_facilities';
     protected $model;
     protected $table;
-    protected $folder = 'organization';
+    protected $folder = 'organization_facilities';
 
 
 
-    public function __construct(Request $request, Organization $organization)
+    public function __construct(Request $request, OrganizationFacilities $organization_facilities)
     {
-        $this->model = $organization;
+        $this->model = $organization_facilities;
     }
     /**
      * Display a listing of the resource.
@@ -44,29 +34,13 @@ class OrganizationController extends DM_BaseController
      */
     public function index(Request $request)
     {
-        try {
-            if ($request->ajax()) {
-                $data = $this->model->with([
-                    'createds' => function ($query) {
-                        $query->select('id', 'username');
-                    },
-                    'updatedBy' => function ($query) {
-                        $query->select('id', 'username');
-                    }
-                ])->get();
-
-                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
-            }
-        } catch (\Exception $exception) {
-            \Log::error('Error in index method: ' . $exception->getMessage(), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return response()->json([
-                'data' => [],
-                'message' => 'An error occurred while retrieving data.',
-                'status' => 'error'
-            ], 500);
+        if ($request->ajax()) {
+            $data = $this->model->with(['createds' => function($query) {
+                $query->select('id', 'username');
+            }, 'updatedBy' => function($query) {
+                $query->select('id', 'username');
+            }])->get();
+            return response()->json($data);
         }
         return view(parent::loadView($this->view_path . '.index'));
     }
@@ -85,7 +59,6 @@ class OrganizationController extends DM_BaseController
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-       // $data['social'] = DB::table('social_medias')->get();
         $data['social'] = [
             'Facebook' => ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
             'Instagram' => ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
@@ -94,18 +67,10 @@ class OrganizationController extends DM_BaseController
             'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
             'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
         ];
-        $data['courses'] = Course::pluck('title', 'id');
-        $data['country'] = Country::pluck('name', 'id');
-        $data['page'] = PageCategory::pluck('title', 'id');
         $data['faculty'] = Facilities::where('status', '1')->get();
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
-    public function getParentsByCountry(Request $request)
-    {
-        $countryId = $request->id;
-        $parents = AdministrativeArea::where('country_id', $countryId)->whereNull('parent_id')->pluck('name', 'id');
-        return response()->json(['parents' => $parents]);
-    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -113,29 +78,72 @@ class OrganizationController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(OrganizationRequest $request)
+//    public function store(Request $request)
+//    {
+//        try {
+//            $organization_id = $request->input('organization_id');
+//            $faculty_id = $request->input('facility_id');
+//            $created_by = auth()->user()->id;
+//            $updated_by = auth()->user()->id;
+//
+//            foreach ($facility_id as $index => $url) {
+//                $organizationFaculty = OrganizationFacilities::where('organization_id', $organization_id)
+//                    ->where('facility_id', $facility_id[$index])
+//                    ->first();
+//                if ($organizationFaculty) {
+//                    $organizationFaculty->facility_id = $facility_id;
+//                    $organizationFaculty->updated_by = $updated_by;
+//                    $organizationFaculty->save();
+//                } else {
+//                    $organizationFaculty = new OrganizationFacilities();
+//                    $organizationFaculty->organization_id = $organization_id;
+//                    $organizationFaculty->facility_id = $facility_id[$index];
+//                    $organizationFaculty->created_by = $created_by;
+//                    $organizationFaculty->updated_by = $updated_by;
+//                    $organizationFaculty->save();
+//                }
+//            }
+//
+//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationFaculty, 'Social Media items stored/updated successfully.', 'success'));
+//        } catch (\Exception $exception) {
+//            Log::error('Error saving/updating organization Social Media data', ['error' => $exception->getMessage()]);
+//            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationFaculty, 'An error occurred while saving/updating Social Media items.', 'error'));
+//        }
+//    }
+    public function store(Request $request)
     {
+      //  dd($request->all());
         try {
-            $request->request->add(['created_by' => auth()->user()->id]);
+            $organization_id = $request->input('organization_id');
+            $facility_ids = $request->input('facility_id', []);
+            $created_by = auth()->user()->id;
+            $updated_by = auth()->user()->id;
+            $facility_ids = array_filter($facility_ids, function ($value) {
+                return $value != "0";
+            });
+            $savedFacilities = [];
+            foreach ($facility_ids as $facility_id) {
+                $organizationFacility = OrganizationFacilities::where('organization_id', $organization_id)
+                    ->where('facility_id', $facility_id)
+                    ->first();
+                if ($organizationFacility) {
+                    $organizationFacility->updated_by = $updated_by;
+                    $organizationFacility->save();
+                } else {
+                    $organizationFacility = new OrganizationFacilities();
+                    $organizationFacility->organization_id = $organization_id;
+                    $organizationFacility->facility_id = $facility_id;
+                    $organizationFacility->created_by = $created_by;
+                    $organizationFacility->updated_by = $updated_by;
+                    $organizationFacility->save();
+                }
 
-            if ($request->hasfile('logo_file')) {
-                $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
-                $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
-                $request->request->add(['logo' => $logo_file]);
+                $savedFacilities[] = $organizationFacility;
             }
-
-            if ($request->hasfile('banner_file')) {
-                $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-                $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
-                $request->request->add(['banner_image' => $banner_file]);
-            }
-
-            $organization = $this->model->create($request->all());
-
-            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organization->id, 'Data retrieved successfully.', 'success'));
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($savedFacilities, 'Facilities stored/updated successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving organization data', ['error' => $exception->getMessage()]);
-            return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
+            Log::error('Error saving/updating organization facilities', ['error' => $exception->getMessage()]);
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving/updating facilities.', 'error'));
         }
     }
 
@@ -148,10 +156,7 @@ class OrganizationController extends DM_BaseController
      */
     public function show($id)
     {
-//        $data['record'] = $this->model->find($id);
-        $data['record'] = $this->model->with(['createds', 'updatedBy', 'socialMediaLinks', 'organizationGalleries' , 'organizationCourses'])  // Eager load any relationships
-        ->find($id);
-
+        $data['record'] = $this->model->find($id);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
@@ -173,20 +178,11 @@ class OrganizationController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        // Load the record first
-        $data['record'] = $this->model->with(['organizationGalleries', ])
-        ->find($id);
-        if (!$data['record']) {
-            request()->session()->flash('alert-danger', 'Invalid Request');
-            return redirect()->route($this->base_route . 'index');
-        }
-        // Prepare other data
         $data['area'] = AdministrativeArea::pluck('name', 'id');
         $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-        // Prepare social media links
         $data['social'] = collect([
             ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
             ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
@@ -199,15 +195,12 @@ class OrganizationController extends DM_BaseController
             $social['url'] = $existing->url ?? null;
             return $social;
         });
-        $data['courses'] = Course::pluck('title', 'id');
-        $data['country'] = Country::pluck('name', 'id');
-        $data['organization_courses'] = $data['record']->organizationCourses;
-        $data['page'] = PageCategory::pluck('title', 'id');
-        $data['organization_pages'] = $data['record']->organizationPages;
-        $data['faculty'] = Facilities::where('status', '1')->get();
+        if (!$data['record']) {
+            request()->session()->flash('alert-danger', 'Invalid Request');
+            return redirect()->route($this->base_route . 'index');
+        }
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -215,36 +208,14 @@ class OrganizationController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationRequest  $request, $id)
+    public function update(OrganizationGalleryRequest  $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
             $request->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . '.index');
         }
-        if ($request->hasfile('logo_file')) {
-            $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
 
-            $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
-            $request->request->add(['logo' => $logo_file]);
-            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->logo))) {
-                unlink(public_path('images/' . $this->folder . '/' . $data['record']->logo));
-            }
-        } else {
-            $request->request->add(['logo' => $data['record']->logo]);
-        }
-
-        if ($request->hasfile('banner_file')) {
-            $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-
-            $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
-            $request->request->add(['banner_image' => $banner_file]);
-            if ($data['record']->banner_image && file_exists(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image))) {
-                unlink(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image));
-            }
-        } else {
-            $request->request->add(['banner_image' => $data['record']->banner_image]);
-        }
         $request->request->add(['updated_by' => auth()->user()->id]);
 
         try {
@@ -259,8 +230,7 @@ class OrganizationController extends DM_BaseController
                         'data' => $request->all(),
                     ]
                 );
-//                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
-                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data updated successfully.', 'success'));
+                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
                 // Custom log for failure
                 logUserAction(
@@ -284,10 +254,10 @@ class OrganizationController extends DM_BaseController
                     'data' => $request->all(),
                 ]
             );
-            return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
+            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
 
-//        return redirect()->route($this->base_route . '.index');
+        return redirect()->route($this->base_route . '.index');
     }
 
 
@@ -372,8 +342,5 @@ class OrganizationController extends DM_BaseController
         }
         return redirect()->route($this->base_route . '.index');
     }
-
-
-
 
 }

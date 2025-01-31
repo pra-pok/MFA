@@ -25,7 +25,7 @@ class UserTableSeeder extends Seeder
         $superAdminTeam = Team::create(['name' => 'Digital Nepal']);
         $superAdmin = User::factory()->create([
             'name' => 'Super Admin',
-            'email' => 'superadmin@test.com',
+            'email' => 'superadmin@gamil.com',
             'password' => bcrypt('password'),
             'team_id' => $superAdminTeam->id
         ]);

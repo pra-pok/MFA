@@ -24,17 +24,13 @@
                                 <label class="form-label">Description</label>
                                 <textarea class="form-control editor" name="description[]" rows="3">{{ $item->description ?? '' }}</textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Status</label>
+                            <div class="mb-3 text-end">
                                 <input type="hidden" name="status[{{ $key }}]" value="0">
-                                <input value="1" type="checkbox" name="status[{{ $key }}]" class="checkbox" {{ $item->status ? 'checked' : '' }} />
+                                <input value="1" type="checkbox" name="status[{{ $key }}]" class="form-check-input checkbox" {{ $item->status ? 'checked' : '' }} />
                             </div>
-                            {{-- <div class="mt-3 text-end">
-                                <button type="button" class="btn btn-danger remove-row-page"><i class="bx bx-trash"></i></button>
-                            </div> --}}
                             <div class="mt-3 text-end">
-                                <button type="button" class="btn btn-danger remove-row-page" data-id="{{ $item->id ?? '' }}">
-                                    <i class="bx bx-trash"></i>
+                                <button type="button" class="btn btn-danger btn-sm remove-row-page" data-id="{{ $item->id ?? '' }}">
+                                    <i class="bx bx-trash me-1 fs-5"></i>
                                 </button>
                             </div>
                         </div>
@@ -61,13 +57,12 @@
                             <label class="form-label">Description</label>
                             <textarea class="form-control editor" name="description[]" rows="3"></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="status" class="form-label">Status</label>
+                        <div class="mt-3 text-end">
                             <input type="hidden" name="status[]" value="0">
-                            <input value="1" type="checkbox"  name="status[]" class="checkbox" style="width: 50px;" />
+                            <input value="1" type="checkbox" name="status[]" class="form-check-input checkbox" checked />
                         </div>
                         <div class="mt-3 text-end">
-                            <button type="button" class="btn btn-danger remove-row"><i class="bx bx-trash"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bx bx-trash me-1 fs-5"></i></button>
                         </div>
                     </div>
                 </div>
@@ -75,7 +70,7 @@
             @endif
         </div>
         <div class="mt-4 text-end">
-            <button type="button" class="btn btn-primary" id="add-row-page"><i class="bx bx-plus"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" id="add-row-page"><i class="bx bx-plus"></i></button>
         </div>
     </div>
 </form>
