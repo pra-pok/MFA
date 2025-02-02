@@ -13,6 +13,7 @@ class OrganizationCourse extends Model
     protected $fillable = [
         'organization_id',
         'course_id',
+        'university_id',
         'start_fee',
         'end_fee',
         'description',
@@ -33,5 +34,8 @@ class OrganizationCourse extends Model
     }
     public function course(){
         return $this->belongsTo(Course::class,'course_id','id');
+    }
+    public function university(){
+        return $this->belongsTo(University::class,'university_id','id');
     }
 }

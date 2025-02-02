@@ -79,13 +79,13 @@ class OrganizationSocialMediaController extends DM_BaseController
      */
     public function store(Request $request)
     {
+       // dd($request->all());
         try {
             $organization_id = $request->input('organization_id');
             $names = $request->input('name');
             $urls = $request->input('url');
             $created_by = auth()->user()->id;
             $updated_by = auth()->user()->id;
-
             foreach ($urls as $index => $url) {
                 $organizationSocialMedia = OrganizationSocialMedia::where('organization_id', $organization_id)
                     ->where('name', $names[$index])
@@ -104,10 +104,8 @@ class OrganizationSocialMediaController extends DM_BaseController
                     $organizationSocialMedia->save();
                 }
             }
-
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'Social Media items stored/updated successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization Social Media data', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organizationSocialMedia, 'An error occurred while saving/updating Social Media items.', 'error'));
         }
     }
@@ -126,7 +124,6 @@ class OrganizationSocialMediaController extends DM_BaseController
             return redirect()->route($this->base_route . 'index');
         }
         return view(parent::loadView($this->view_path . '.show'), compact('data'));
-
     }
     /**
      * Show the form for editing the specified resource.
@@ -291,7 +288,6 @@ class OrganizationSocialMediaController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($record->forceDelete()) {
-
             logUserAction(
                 auth()->user()->id, // User ID
                 auth()->user()->team_id, // Team ID
@@ -306,5 +302,4 @@ class OrganizationSocialMediaController extends DM_BaseController
         }
         return redirect()->route($this->base_route . '.index');
     }
-
 }

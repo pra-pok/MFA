@@ -38,7 +38,7 @@ class AdministrativeAreaController extends DM_BaseController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->with(['createds', 'parent','country'])->get();
+            $data = $this->model->with(['createds', 'parent','country'])->orderBy('created_at', 'desc')->get();
             return response()->json($data);
         }
         $data['parents'] = AdministrativeArea::whereNull('parent_id')->pluck('name' , 'id');

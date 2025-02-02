@@ -7,7 +7,7 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>MFA</title>
     <meta name="description" content="{{ csrf_token() }}" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/mfa-logo.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/myfree-favicon.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -24,7 +24,7 @@
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
 <body>
-    <div class="container-xxl">
+    <div class="container-fluid">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
                 <div class="card px-sm-6 px-0">

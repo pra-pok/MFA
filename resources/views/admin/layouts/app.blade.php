@@ -8,7 +8,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Laravel') }}</title>
     <meta name="description" content="" />
-    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/mfa-logo.png') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/myfree-favicon.png') }}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -49,7 +49,7 @@
                 <div class="content-wrapper">
                     @yield('content')
                     <footer class="content-footer footer bg-footer-theme">
-                        <div class="container-xxl">
+                        <div class="container-fluid">
                             <div
                                 class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
                                 <?php

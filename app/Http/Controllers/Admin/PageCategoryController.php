@@ -39,7 +39,7 @@ class PageCategoryController extends DM_BaseController
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
                     }
-                ])->get();
+                ])->orderBy('created_at', 'desc')->get();
 
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }

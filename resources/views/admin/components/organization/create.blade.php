@@ -1,9 +1,6 @@
 @extends('admin.layouts.app')
-@section('css')
-
-@endsection
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-fluid flex-grow-1 container-p-y">
         <div class="row g-6">
             <div class="col-md-12">
                 <div class="card">
@@ -16,7 +13,7 @@
                                 <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
                                         data-bs-target="#navs-justified-profile" aria-controls="navs-justified-profile"
                                         aria-selected="true">
-                                    <i class='bx bx-user'></i>   Basic Information
+                                    <i class='bx bx-user'></i>  Basic Information
                                 </button>
                             </li>
                             <li class="nav-item">
@@ -83,7 +80,7 @@
                         </div>
                         <div class="" style="padding:20px;">
                             <div class="d-flex justify-content-between mt-3">
-                                <button type="button" class="btn btn-primary " id="prevBtn" style="display: none;">Previous</button>
+                                <button type="button" class="btn btn-primary" id="prevBtn" style="display: none;">Previous</button>
                                 <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
                                 <button type="button" class="btn btn-success " id="saveBtn" style="display: none;">Save</button>
                             </div>

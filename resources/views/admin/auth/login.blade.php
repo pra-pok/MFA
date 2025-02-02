@@ -3,16 +3,11 @@
     <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
         @csrf
         <div class="mb-6">
-            <label for="email" class="form-label">Email or Username</label>
-            <input class="form-control" type="email" name="email" :value="old('email')" required autofocus
+            <label for="username" class="form-label">Username</label>
+            <input class="form-control" type="text" name="username" :value="old( 'username')" required autofocus
                 autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
-        {{-- <div class="mb-6">
-            <label for="email_or_username" class="form-label">Email or Username</label>
-            <input class="form-control" type="text" name="email_or_username" :value="old('email_or_username')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email_or_username')" class="mt-2" />
-        </div> --}}
         <div class="mb-6 form-password-toggle">
             <label class="form-label" for="password">Password</label>
             <div class="input-group input-group-merge">

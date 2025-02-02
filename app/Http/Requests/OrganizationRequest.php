@@ -23,19 +23,12 @@ class OrganizationRequest extends FormRequest
     {
         return [
             'name' => 'required',
-//            'address' => 'required',
-//            'phone' => 'required',
-//            'email' => 'required',
-//            'website' => 'required',
         ];
     }
     function  messages(): array
     {
         return [
             'name.required' => 'Please enter name',
-//            'address' => 'Please enter address',
-//            'phone' => 'Please enter phone',
-//            'email' => 'Please enter email',
         ];
     }
 }

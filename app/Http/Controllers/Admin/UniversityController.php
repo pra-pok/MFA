@@ -20,7 +20,7 @@ class UniversityController extends DM_BaseController
     protected $view_path = 'admin.components.university';
     protected $model;
     protected $table;
-
+    protected $folder = 'university';
 
 
     public function __construct(Request $request, University $university)
@@ -41,42 +41,11 @@ class UniversityController extends DM_BaseController
                 $query->select('id', 'username');
             }, 'country' => function($query) {
                 $query->select('id', 'name');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
             return response()->json($data);
         }
         return view(parent::loadView($this->view_path . '.index'));
     }
-    public function getData(Request $request)
-    {
-        if ($request->ajax()) {
-            $data = $this->model->all();
-
-            return DataTables::of($data)
-                ->addColumn('action', function ($row) {
-                    $editButton = '<a href="/admin/university/' . $row->id . '/edit" class="btn rounded-pill btn-warning">
-                                <i class="icon-base bx bx-edit icon-sm"></i>
-                               </a>';
-                    $showButton = '<a href="/admin/university/' . $row->id . '/show" class="btn rounded-pill btn-info">
-                                <i class="bx bx-show"></i>
-                               </a>';
-                    $deleteButton = '<form action="/admin/university/' . $row->id . '" class="d-inline" method="post" onsubmit="return confirm(\'Are you sure to delete?\')">
-                                    <input type="hidden" name="_token" value="' . csrf_token() . '">
-                                    <input type="hidden" name="_method" value="DELETE">
-                                    <button type="submit" class="btn rounded-pill btn-danger" title="Move to Trash">
-                                        <i class="bx bx-trash me-1"></i>
-                                    </button>
-                                 </form>';
-
-
-                    return $editButton . ' ' . $showButton . ' ' . $deleteButton;
-                })
-                ->addColumn('country', function ($row) {
-                    return $row->country->name ?? 'Unknown';
-                })
-                ->make(true);
-        }
-    }
-
 
     /**
      * Show the form for creating a new resource.
@@ -102,21 +71,39 @@ class UniversityController extends DM_BaseController
     {
        // dd($request->all());
         $request->request->add(['created_by' => auth()->user()->id]);
+        $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+        if (!file_exists($fileDirectory)) {
+            mkdir($fileDirectory, 0777, true);
+        }
         if ($request->hasfile('image_file')) {
             $image_file = time() . '.' . $request->file('image_file')->getClientOriginalExtension();
-            $request->file('image_file')->move('images/' . $this->folder . '/', $image_file);
+            $request->file('image_file')->move($fileDirectory, $image_file);
             $request->request->add(['logo' => $image_file]);
         }
             try {
                 $category = $this->model->create($request->all());
                 if ($category) {
-                    Log::info($this->panel . ' created successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
+                    logUserAction(
+                        auth()->user()->id,
+                        auth()->user()->team_id,
+                        $this->panel . ' created successfully!',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
                     $request->session()->flash('alert-success', $this->panel . ' created successfully!');
                 } else {
+                    logUserAction(
+                        auth()->user()->id,
+                        auth()->user()->team_id,
+                        $this->panel . ' Failed!',
+                        [
+                            'data' => $request->all(),
+                        ]
+                    );
                     $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
                 }
             } catch (\Exception $exception) {
-                Log::error('Database Error', ['error' => $exception->getMessage()]);
                 $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
             }
         return redirect()->route($this->base_route . '.index');
@@ -126,7 +113,7 @@ class UniversityController extends DM_BaseController
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      * @return \Illuminate\Contracts\View\View
      */
     public function show($id)
@@ -169,10 +156,10 @@ class UniversityController extends DM_BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UniversityRequest $request, $id)
+    public function update(UniversityRequest $request, $id): \Illuminate\Http\RedirectResponse
     {
        // dd($request->all());
         $data['record'] = $this->model->find($id);
@@ -181,12 +168,16 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . 'index');
         }
         if ($request->hasfile('image_file')) {
+            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            if (!file_exists($fileDirectory)) {
+                mkdir($fileDirectory, 0777, true);
+            }
             $image_file = time() . '.' . $request->file('image_file')->getClientOriginalExtension();
 
-            $request->file('image_file')->move('images/' . $this->folder . '/', $image_file);
+            $request->file('image_file')->move($fileDirectory, $image_file);
             $request->request->add(['logo' => $image_file]);
-            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->logo))) {
-                unlink(public_path('images/' . $this->folder . '/' . $data['record']->logo));
+            if ($data['record']->logo && file_exists(public_path($fileDirectory . $data['record']->logo))) {
+                unlink(public_path($fileDirectory . $data['record']->logo));
             }
         } else {
             $request->request->add(['logo' => $data['record']->logo]);
@@ -196,13 +187,27 @@ class UniversityController extends DM_BaseController
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                Log::info($this->panel . ' updated successfully!', ['user_id' => auth()->user()->name, 'data' => $request->all()]);
+                logUserAction(
+                    auth()->user()->id,
+                    auth()->user()->team_id,
+                    $this->panel . ' Updated successfully!',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
                 $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
+                logUserAction(
+                    auth()->user()->id, // User ID
+                    auth()->user()->team_id, // Team ID
+                    $this->panel . ' Failed!',
+                    [
+                        'data' => $request->all(),
+                    ]
+                );
                 $request->session()->flash('alert-danger', $this->panel . ' update failed!');
             }
         } catch (\Exception $exception) {
-            Log::error('Database Error', ['error' => $exception->getMessage()]);
             $request->session()->flash('alert-danger', 'Database Error:' . $exception->getMessage());
         }
         return redirect()->route($this->base_route . '.index');
@@ -214,7 +219,7 @@ class UniversityController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id): \Illuminate\Http\Response
     {
         $record = $this->model->find($id);
         if (!$record) {

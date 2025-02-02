@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-fluid flex-grow-1 container-p-y">
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
@@ -79,7 +79,7 @@
                     ? data.updatedBy.username
                     : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
                 const logoUrl = data.logo
-                    ? `{{ asset('images/organization') }}/${data.logo}`
+                    ? `{{ asset('/data/mfa/images/' .  $folder . '/') }}/${data.logo}`
                     : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png";
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `

@@ -57,7 +57,14 @@ return [
             'throw' => false,
         ],
 
+        'external' => [
+            'driver' => 'local',
+            'root' => '/data/mfa/',
+            'visibility' => 'public',
+        ],
+
     ],
+
 
     /*
     |--------------------------------------------------------------------------

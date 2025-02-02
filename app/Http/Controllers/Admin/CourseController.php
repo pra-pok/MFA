@@ -44,7 +44,7 @@ class CourseController extends DM_BaseController
                 $query->select('id', 'title');
             }, 'level' => function($query) {
                 $query->select('id', 'title');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
             return response()->json($data);
         }
         return view(parent::loadView($this->view_path . '.index'));

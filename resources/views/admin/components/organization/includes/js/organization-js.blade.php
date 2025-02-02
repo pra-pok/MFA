@@ -37,8 +37,10 @@
                 contentType: false,
                 success: function (response) {
                     if (response.status === "success") {
-                        $('input[name="organization_id"]').val(response.data);
                         const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
+                        if(currentTabIndex ===0 && response.data){
+                            $('input[name="organization_id"]').val(response.data);
+                        }
                         const nextTabIndex = currentTabIndex + 1;
                         const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
                         const nextTabPane = $('.tab-pane').eq(nextTabIndex);
@@ -148,6 +150,7 @@
             });
         });
         updateButtonsVisibility();
+
         function validateTab(form) {
             let isValid = true;
             form.find('.required').each(function () {
@@ -160,6 +163,7 @@
             });
             return isValid;
         }
+
         $('#name').on('input', function () {
             var name = $(this).val();
             var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');

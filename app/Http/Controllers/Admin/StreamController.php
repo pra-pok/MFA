@@ -40,7 +40,7 @@ class StreamController extends DM_BaseController
                 $query->select('id', 'username');
             }, 'updatedBy' => function($query) {
                 $query->select('id', 'username');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
             return response()->json($data);
         }
         return view(parent::loadView($this->view_path . '.index'));

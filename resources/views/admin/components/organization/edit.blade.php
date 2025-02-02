@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
+    <div class="container-fluid flex-grow-1 container-p-y">
         <div class="row g-6">
             <div class="col-md-12">
                 <div class="card">
@@ -65,7 +65,7 @@
                             </div>
                             <!-- Social Media Tab -->
                             <div class="tab-pane fade" id="navs-justified-social" role="tabpanel">
-                                @include('admin.components.organization.includes.social')
+                                @include('admin.components.organization.includes.edit-social')
                             </div>
                             <!-- Course Tab -->
                             <div class="tab-pane fade" id="navs-justified-course" role="tabpanel">

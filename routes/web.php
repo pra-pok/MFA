@@ -16,22 +16,21 @@ use App\Http\Controllers\Admin\OrganizationPageController;
 use App\Http\Controllers\Admin\FacilitiesController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\OrganizationFacilitiesController;
-
+use Illuminate\Support\Facades\Response;
 
 //Route::redirect('/', '/dashboard', 301);
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class,'loginForm'])->name('admin.login');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-
 Route::get('/login', function(){
     abort(404);
 });
-
 Route::get('/register', function(){
     abort(404);
 });
 Route::get('/logout', function(){
     abort(404);
 });
+
 
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
@@ -70,8 +69,11 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/edit', [OrganizationController::class, 'edit'])->name('edit');
         Route::put('{id}', [OrganizationController::class, 'update'])->name('update');
         Route::get('/get-parents-by-country', [OrganizationController::class, 'getParentsByCountry'])->name('get_parent');
-    });
 
+    });
+//    Route::get('/storage/external/{file}', [OrganizationController::class, 'showFile'])
+//        ->where('file', '.*')
+//        ->name('external.file');
     Route::group(['prefix' => 'organization_gallery', 'as' => 'organization_gallery.'], function () {
         Route::get('trash', [OrganizationGalleryController::class, 'trash'])->name('trash');
         Route::get('restore/{id}', [OrganizationGalleryController::class, 'restore'])->name('restore');

@@ -38,7 +38,7 @@ class CountryController extends DM_BaseController
                 $query->select('id', 'username');
             }, 'updatedBy' => function($query) {
                 $query->select('id', 'username');
-            }])->get();
+            }])->orderBy('created_at', 'desc')->get();
             return response()->json($data);
         }
 

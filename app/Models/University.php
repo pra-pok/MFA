@@ -38,4 +38,8 @@ class University extends Model
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');
     }
+    public function organizationCourses()
+    {
+        return $this->hasMany(OrganizationCourse::class, 'university_id', 'id');
+    }
 }

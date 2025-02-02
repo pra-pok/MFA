@@ -144,7 +144,6 @@ class OrganizationCourseController extends DM_BaseController
 //            );
 //        }
 //    }
-
     public function store(Request $request)
     {
       //  dd($request->all());
@@ -152,6 +151,7 @@ class OrganizationCourseController extends DM_BaseController
             $request->validate([
                 'organization_id' => 'required|integer',
                 'course_id' => 'required|array',
+                'university_id' => 'nullable|array',
                 'start_fee' => 'nullable|array',
                 'end_fee' => 'nullable|array',
                 'description' => 'nullable|array',
@@ -159,6 +159,7 @@ class OrganizationCourseController extends DM_BaseController
             ]);
             $organization_id = $request->input('organization_id');
             $course_ids = $request->input('course_id');
+            $university_ids = $request->input('university_id', []);
             $start_fees = $request->input('start_fee', []);
             $end_fees = $request->input('end_fee', []);
             $descriptions = $request->input('description', []);
@@ -167,17 +168,21 @@ class OrganizationCourseController extends DM_BaseController
             $updated_by = auth()->id();
             $organizationCourses = [];
             foreach ($course_ids as $index => $course_id) {
+                if (!isset($course_id)) {
+                    continue;
+                }
+                $university_id = $university_ids[$index] ?? null;
                 $start_fee = $start_fees[$index] ?? null;
                 $end_fee = $end_fees[$index] ?? null;
                 $description = $descriptions[$index] ?? null;
-                $status = isset($statuses[$index]) ? 1 : 0; // Checkbox handling
-                // Check if record exists
+                $status = isset($statuses[$index]) ? 1 : 0;
                 $organizationCourse = OrganizationCourse::where([
                     'organization_id' => $organization_id,
                     'course_id' => $course_id,
                 ])->first();
                 if ($organizationCourse) {
                     $organizationCourse->update([
+                        'university_id' => $university_id,
                         'start_fee' => $start_fee,
                         'end_fee' => $end_fee,
                         'description' => $description,
@@ -188,6 +193,7 @@ class OrganizationCourseController extends DM_BaseController
                     $organizationCourse = OrganizationCourse::create([
                         'organization_id' => $organization_id,
                         'course_id' => $course_id,
+                        'university_id' => $university_id,
                         'start_fee' => $start_fee,
                         'end_fee' => $end_fee,
                         'description' => $description,
@@ -213,7 +219,6 @@ class OrganizationCourseController extends DM_BaseController
             ], 500);
         }
     }
-
     /**
      * Display the specified resource.
      *

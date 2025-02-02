@@ -1,7 +1,6 @@
-{{--social media--}}
 <form action="{{route('organization-social-media.store')}}" method="POST"  enctype="multipart/form-data">
     @csrf
-    <input type="hidden" name="organization_id" value="{{ $data['record']->id ?? '' }} " />
+    <input type="hidden" name="organization_id" value="{{ old('organization_id', $organization_id ?? '') }}"/>
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -20,7 +19,7 @@
                     <input type="hidden" name="name[]" value="{{ $item['name'] }}" />
                 </td>
                 <td>
-                    <input type="text" name="url[]" class="form-control" value="{{ $item['url'] ?? '' }}" />
+                    <input type="text" name="url[]" class="form-control" value=" " />
                 </td>
             </tr>
         @endforeach

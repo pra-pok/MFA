@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
+use Illuminate\Support\Facades\Storage;
 
 class OrganizationController extends DM_BaseController
 {
@@ -45,6 +46,7 @@ class OrganizationController extends DM_BaseController
      */
     public function index(Request $request)
     {
+        $data['folder'] = $this->folder;
         try {
             if ($request->ajax()) {
                 $data = $this->model->with([
@@ -54,7 +56,9 @@ class OrganizationController extends DM_BaseController
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
                     }
-                ])->get();
+                ])
+                    ->orderBy('created_at', 'desc')
+                    ->get();
 
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
@@ -86,7 +90,6 @@ class OrganizationController extends DM_BaseController
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-       // $data['social'] = DB::table('social_medias')->get();
         $data['social'] = [
             'Facebook' => ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
             'Instagram' => ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
@@ -117,26 +120,38 @@ class OrganizationController extends DM_BaseController
      */
     public function store(OrganizationRequest $request)
     {
+       // dd($request->all());
         try {
             $request->request->add(['created_by' => auth()->user()->id]);
-
             if ($request->hasfile('logo_file')) {
+                $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+                if (!file_exists($fileDirectory)) {
+                    mkdir($fileDirectory, 0777, true);
+                }
                 $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
-                $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
+                $request->file('logo_file')->move($fileDirectory, $logo_file);
                 $request->request->add(['logo' => $logo_file]);
             }
-
             if ($request->hasfile('banner_file')) {
+                $fileDirectory = '/data/mfa/images/' . $this->folder . '/banner/';
+                if (!file_exists($fileDirectory)) {
+                    mkdir($fileDirectory, 0777, true);
+                }
                 $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-                $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
+                $request->file('banner_file')->move($fileDirectory, $banner_file);
                 $request->request->add(['banner_image' => $banner_file]);
             }
-
             $organization = $this->model->create($request->all());
-
+            logUserAction(
+                auth()->user()->id,
+                auth()->user()->team_id,
+                $this->panel . ' created successfully!',
+                [
+                    $request->all(),
+                ]
+            );
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO($organization->id, 'Data retrieved successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving organization data', ['error' => $exception->getMessage()]);
             return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
         }
     }
@@ -176,20 +191,17 @@ class OrganizationController extends DM_BaseController
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
     {
-        // Load the record first
         $data['record'] = $this->model->with(['organizationGalleries', ])
         ->find($id);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-        // Prepare other data
         $data['area'] = AdministrativeArea::pluck('name', 'id');
         $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
-        // Prepare social media links
         $data['social'] = collect([
             ['name' => 'Facebook', 'icon' => 'bx bxl-facebook'],
             ['name' => 'Instagram', 'icon' => 'bx bxl-instagram'],
@@ -209,8 +221,23 @@ class OrganizationController extends DM_BaseController
         $data['organization_pages'] = $data['record']->organizationPages;
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = OrganizationFacilities::where('organization_id', $id)->pluck('facility_id')->toArray();
+
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
+//    public function showFile($file)
+//    {
+//        if (!Storage::disk('external')->exists($file)) {
+//            abort(404);
+//        }
+//
+//        return response()->file(
+//            Storage::disk('external')->path($file),
+//            [
+//                'Content-Type'  => Storage::disk('external')->mimeType($file) ?? 'application/octet-stream',
+//                'Cache-Control' => 'public, max-age=31536000', // 1-year cache
+//            ]
+//        );
+//    }
 
     /**
      * Update the specified resource in storage.
@@ -227,24 +254,30 @@ class OrganizationController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($request->hasfile('logo_file')) {
+            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            if (!file_exists($fileDirectory)) {
+                mkdir($fileDirectory, 0777, true);
+            }
             $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
 
-            $request->file('logo_file')->move('images/' . $this->folder . '/', $logo_file);
+            $request->file('logo_file')->move($fileDirectory, $logo_file);
             $request->request->add(['logo' => $logo_file]);
-            if ($data['record']->logo && file_exists(public_path('images/' . $this->folder . '/' . $data['record']->logo))) {
-                unlink(public_path('images/' . $this->folder . '/' . $data['record']->logo));
+            if ($data['record']->logo && file_exists(public_path($fileDirectory . $data['record']->logo))) {
+                unlink(public_path($fileDirectory . $data['record']->logo));
             }
         } else {
             $request->request->add(['logo' => $data['record']->logo]);
         }
-
         if ($request->hasfile('banner_file')) {
+            $fileDirectory = '/data/mfa/images/' . $this->folder . '/banner/';
+            if (!file_exists($fileDirectory)) {
+                mkdir($fileDirectory, 0777, true);
+            }
             $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
-
-            $request->file('banner_file')->move('images/' . $this->folder . '/banner/', $banner_file);
+            $request->file('banner_file')->move($fileDirectory, $banner_file);
             $request->request->add(['banner_image' => $banner_file]);
-            if ($data['record']->banner_image && file_exists(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image))) {
-                unlink(public_path('images/' . $this->folder . '/banner/' . $data['record']->banner_image));
+            if ($data['record']->banner_image && file_exists(public_path($fileDirectory . $data['record']->banner_image))) {
+                unlink(public_path($fileDirectory . $data['record']->banner_image));
             }
         } else {
             $request->request->add(['banner_image' => $data['record']->banner_image]);
@@ -376,8 +409,4 @@ class OrganizationController extends DM_BaseController
         }
         return redirect()->route($this->base_route . '.index');
     }
-
-
-
-
 }
