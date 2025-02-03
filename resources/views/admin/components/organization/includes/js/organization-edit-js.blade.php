@@ -152,8 +152,6 @@
             });
             tableBody.append(newRow);
         });
-        $('.select-course').select2();
-        $('.select-page').select2();
         tableBody.on("click", ".remove-row", function (e) {
             e.preventDefault();
             const rows = tableBody.find("tr");

@@ -26,6 +26,7 @@ class kernel extends HttpKernel
         'web' => [
            //
             \App\Http\Middleware\ActivityLogger::class,
+            \App\Http\Middleware\Authenticate::class,
         ],
 
         'api' => [
@@ -43,7 +44,8 @@ class kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        //
+       'auth' => \App\Http\Middleware\Authenticate::class,
+        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
     ];
 
     /**

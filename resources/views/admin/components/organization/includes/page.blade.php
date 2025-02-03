@@ -62,7 +62,7 @@
                             <input value="1" type="checkbox" name="status[]" class="form-check-input checkbox" checked />
                         </div>
                         <div class="mt-3 text-end">
-                            <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bx bx-trash me-1 fs-5"></i></button>
+                            <button type="button" class="btn btn-danger btn-sm remove-row-page"><i class="bx bx-trash me-1 fs-5"></i></button>
                         </div>
                     </div>
                 </div>

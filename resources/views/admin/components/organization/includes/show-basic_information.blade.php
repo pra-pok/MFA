@@ -49,7 +49,7 @@
         <th>Logo</th>
         <td>
             @if($data['record']->logo != null)
-                <img src="{{ asset('images/organization/' . $data['record']->logo) }}" alt="Logo" class="img-thumbnail" width="200"/>
+                <img src="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}" alt="Logo" class="img-thumbnail" width="200"/>
             @else
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="Logo" class="img-thumbnail" width="200"/>
             @endif
@@ -60,7 +60,7 @@
         <th>Banner Image</th>
         <td>
             @if($data['record']->banner_image != null)
-                <img src="{{ asset('images/organization/banner/' . $data['record']->banner_image) }}" alt="Banner" class="img-thumbnail" width="200"/>
+                <img src="{{ url('/image-serve-banner/' . $folder . '/' . $data['record']->banner_image) }}" alt="Banner" class="img-thumbnail" width="200"/>
             @else
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="Banner" class="img-thumbnail" width="200"/>
             @endif

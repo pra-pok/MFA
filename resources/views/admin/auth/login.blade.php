@@ -8,6 +8,9 @@
                 autocomplete="username" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
         </div>
+        {{--<img src="{{route('mfa_ext.file', ['file' => '1738490041.jpg'])}}" alt="">--}}
+
+
         <div class="mb-6 form-password-toggle">
             <label class="form-label" for="password">Password</label>
             <div class="input-group input-group-merge">

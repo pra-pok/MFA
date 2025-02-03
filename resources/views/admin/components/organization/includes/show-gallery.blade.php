@@ -33,7 +33,7 @@
             </td>
             <td>
                 @if($item->type == 1)
-                    <img src="{{ asset('images/organization-gallery/' . $item->media) }}" alt="{{$item->caption}}" style="width: 100px; height: 100px;">
+                    <img src="{{ url('/image-serve-organization/'  . $item->media) }}" alt="{{$item->caption}}" style="width: 100px; height: 100px;">
                 @elseif($item->type == 0)
                     <a href=" {{$item->media}}" target="_blank">
                         {{$item->media}}

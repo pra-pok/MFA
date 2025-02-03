@@ -9,11 +9,11 @@
                         <div class="card-body">
                             <div class="row form-row">
                                 <input type="hidden" name="id[{{$key}}]" value="{{ $record->id ?? ' '}}" >
-                                <div class="col-md-4">
-                                    <label for="course_id">Select Course</label>
+                                <div class="col-md-6 mt-3">
+                                    <label for="course_id"> Course</label>
                                     <select class="form-control select-course required" name="course_id[]"
-                                            aria-label="Select Course">
-                                        <option selected disabled>Select Course</option>
+                                            aria-label=" Course">
+                                        <option selected disabled> Course</option>
                                         @foreach ($data['courses'] as $courseKey => $courseValue)
                                             <option
                                                 value="{{ $courseKey }}" {{ $record->course_id == $courseKey ? 'selected' : '' }}>
@@ -22,12 +22,25 @@
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6 mt-3">
+                                    <label for="university_id"> University</label>
+                                    <select class="form-control select-course required" name="university_id[]"
+                                            aria-label=" University">
+                                        <option selected disabled> University</option>
+                                        @foreach ($data['university'] as $Key => $Value)
+                                            <option
+                                                value="{{ $Key }}" {{ $record->university_id == $Key ? 'selected' : '' }}>
+                                                {{ $Value }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mt-3">
                                     <label for="start_fee" class="form-label">Min Fee Range</label>
                                     <input type="number" class="form-control" name="start_fee[]" step="0.01"
                                            value="{{ $record->start_fee ?? '' }}" placeholder="Enter minimum fee"/>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6 mt-3">
                                     <label for="end_fee" class="form-label">Max Fee Range</label>
                                     <input type="number" class="form-control" name="end_fee[]" step="0.01"
                                            value="{{ $record->end_fee ?? '' }}" placeholder="Enter maximum fee"/>
@@ -53,23 +66,35 @@
                 <div class="card mb-3 clone-file">
                     <div class="card-body">
                         <div class="row form-row">
-                            <div class="col-md-4">
-                                <label for="course_id">Select Course</label>
-                                <select class="form-control select-course required" name="course_id[]"
-                                        aria-label="Select Course">
-                                    <option selected disabled>Select Course</option>
+                            <div class="col-md-6 mt-3">
+                                <label for="course_id"> Course</label>
+                                <select class="form-select select-course required" name="course_id[]"
+                                        aria-label=" Course">
+                                    <option selected disabled> Course</option>
                                     @foreach ($data['courses'] as $courseKey => $courseValue)
                                         <option value="{{ $courseKey }}">{{ $courseValue }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-3">
+                                <label for="university_id"> University</label>
+                                <select class="form-select select-course required" name="university_id[]"
+                                        aria-label=" University">
+                                    <option selected disabled> University</option>
+                                    @foreach ($data['university'] as $Key => $Value)
+                                        <option
+                                            value="{{ $Key }}" > {{ $Value }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6 mt-3">
                                 <label for="start_fee" class="form-label">Min Fee Range</label>
                                 <input type="number" class="form-control" name="start_fee[]" step="0.01" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6 mt-3">
                                 <label for="end_fee" class="form-label">Max Fee Range</label>
-                                <input type="number" class="form-control" name="end_fee[]" step="0.01" placeholder="Enter maximum fee"/>
+                                <input type="number" class="form-control" name="end_fee[]" step="0.01" />
                             </div>
                             <div class="mb-3">
                                 <label for="description" class="form-label">Description</label>

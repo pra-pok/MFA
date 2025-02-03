@@ -17,20 +17,16 @@ use App\Http\Controllers\Admin\FacilitiesController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\OrganizationFacilitiesController;
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\File;
 
-//Route::redirect('/', '/dashboard', 301);
-Route::get('mfa-admin/signin', [AuthenticatedSessionController::class,'loginForm'])->name('admin.login');
+Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
-Route::get('/login', function(){
+Route::get('/register', function () {
     abort(404);
 });
-Route::get('/register', function(){
+Route::get('/logout', function () {
     abort(404);
 });
-Route::get('/logout', function(){
-    abort(404);
-});
-
 
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
@@ -122,6 +118,38 @@ Route::middleware('auth')->group(function () {
     Route::delete('{id}', [FacilitiesController::class, 'destroy'])->name('facilities.destroy');
 
     Route::resource('organization_facilities', OrganizationFacilitiesController::class);
+
+//    Route::post('/upload', [FileController::class, 'uploadFile']);
+    //Route::get('/files/{filename}', [\App\Utils\FileUtil::class, 'getFile']);
+    Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
+//        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
+        $path = "/data/mfa/images/$folder/$filename";
+
+        if (!File::exists($path)) {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        return Response::make($file, 200)->header("Content-Type", $type);
+    });
+    Route::get('/image-serve-banner/{folder}/{filename}', function ($folder, $filename) {
+        $path = "/data/mfa/images/$folder/banner/$filename";
+        if (!File::exists($path)) {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        return Response::make($file, 200)->header("Content-Type", $type);
+    });
+    Route::get('/image-serve-organization/{filename}', function ($filename) {
+        $path = "/data/mfa/images/organization-gallery/$filename";
+        if (!File::exists($path)) {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        return Response::make($file, 200)->header("Content-Type", $type);
+    });
 });
 require __DIR__ . '/auth.php';
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {

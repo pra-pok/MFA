@@ -78,9 +78,10 @@
                 const modifiedByName = data.updatedBy && data.updatedBy.username
                     ? data.updatedBy.username
                     : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
+                const folder = 'organization';
                 const logoUrl = data.logo
-                    ? `{{ asset('/data/mfa/images/' .  $folder . '/') }}/${data.logo}`
-                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png";
+                    ? `{{ url('/image-serve/') }}/${folder}/${data.logo}`
+                    : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png';
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `
             <td class="text-center" >${serialNumber}</td>

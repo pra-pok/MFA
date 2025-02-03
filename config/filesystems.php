@@ -57,10 +57,10 @@ return [
             'throw' => false,
         ],
 
-        'external' => [
+        'mfa_ext' => [
             'driver' => 'local',
-            'root' => '/data/mfa/',
-            'visibility' => 'public',
+            'root' => '/data/mfa', // e.g., /mnt/external_storage
+            'visibility' => 'public', // Keep as private for security
         ],
 
     ],

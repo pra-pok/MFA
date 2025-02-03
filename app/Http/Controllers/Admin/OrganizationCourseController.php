@@ -22,8 +22,6 @@ class OrganizationCourseController extends DM_BaseController
     protected $table;
     protected $folder = 'organization_course';
 
-
-
     public function __construct(Request $request, OrganizationCourse $organization_course)
     {
         $this->model = $organization_course;
@@ -45,8 +43,6 @@ class OrganizationCourseController extends DM_BaseController
         }
         return view(parent::loadView($this->view_path . '.index'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
@@ -146,7 +142,7 @@ class OrganizationCourseController extends DM_BaseController
 //    }
     public function store(Request $request)
     {
-      //  dd($request->all());
+     //  dd($request->all());
         try {
             $request->validate([
                 'organization_id' => 'required|integer',

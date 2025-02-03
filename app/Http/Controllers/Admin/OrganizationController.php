@@ -15,6 +15,7 @@ use App\Models\OrganizationCourse;
 use App\Models\OrganizationFacilities;
 use App\Models\PageCategory;
 use App\Models\Stream;
+use App\Models\University;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\DB;
@@ -103,6 +104,7 @@ class OrganizationController extends DM_BaseController
         $data['page'] = PageCategory::pluck('title', 'id');
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = [];
+        $data['university'] = University::pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
     public function getParentsByCountry(Request $request)
@@ -221,7 +223,7 @@ class OrganizationController extends DM_BaseController
         $data['organization_pages'] = $data['record']->organizationPages;
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = OrganizationFacilities::where('organization_id', $id)->pluck('facility_id')->toArray();
-
+        $data['university'] = University::pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 //    public function showFile($file)

@@ -15,12 +15,12 @@
         });
         $('.file-block').append(newRow);
         newRow.find('.select-course').select2();
+
     });
     $(document).on('click', '.remove-row', function () {
         if ($('.file-block .clone-file').length > 1) {
             let row = $(this).closest('.clone-file');
             let id = row.find("input[name^='id']").val(); // Get hidden ID
-
             if (id) {
                 if (confirm("Are you sure you want to delete this course?")) {
                     $.ajax({

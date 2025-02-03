@@ -22,8 +22,6 @@ class OrganizationPageController extends DM_BaseController
     protected $table;
     protected $folder = 'organization_page';
 
-
-
     public function __construct(Request $request, OrganizationPage $organization_page)
     {
         $this->model = $organization_page;
@@ -45,8 +43,6 @@ class OrganizationPageController extends DM_BaseController
         }
         return view(parent::loadView($this->view_path . '.index'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
@@ -71,7 +67,6 @@ class OrganizationPageController extends DM_BaseController
         $data['country'] = Country::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -81,6 +76,7 @@ class OrganizationPageController extends DM_BaseController
      */
     public function store(Request $request)
     {
+      //  dd($request->all());
         try {
             $request->validate([
                 'organization_id' => 'required',
@@ -95,13 +91,11 @@ class OrganizationPageController extends DM_BaseController
             $statuses = $request->input('status', []);
             $created_by = auth()->user()->id;
             $updated_by = auth()->user()->id;
-
             $organizationPages = [];
-
             foreach ($page_category_ids as $index => $page_category_id) {
-                $description = $descriptions[$index] ?? null;
-                $status_value = $statuses[$index] ?? 0; // Default to 0 if not provided
 
+                $description = $descriptions[$index] ?? null;
+                $status_value = isset($statuses[$index]) ? 1 : 0;
                 $organizationPage = OrganizationPage::updateOrCreate(
                     [
                         'organization_id' => $organization_id,
@@ -114,14 +108,11 @@ class OrganizationPageController extends DM_BaseController
                         'created_by' => $created_by
                     ]
                 );
-
                 $organizationPages[] = $organizationPage;
             }
-
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($organizationPages, 'Pages stored/updated successfully.', 'success')
             );
-
         } catch (\Exception $exception) {
             Log::error('Error saving/updating organization page data', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(
@@ -129,7 +120,6 @@ class OrganizationPageController extends DM_BaseController
             );
         }
     }
-
     /**
      * Display the specified resource.
      *
@@ -198,9 +188,7 @@ class OrganizationPageController extends DM_BaseController
             $request->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . '.index');
         }
-
         $request->request->add(['updated_by' => auth()->user()->id]);
-
         try {
             $category = $data['record']->update($request->all());
             if ($category) {

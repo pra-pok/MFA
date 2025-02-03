@@ -150,7 +150,6 @@
             });
         });
         updateButtonsVisibility();
-
         function validateTab(form) {
             let isValid = true;
             form.find('.required').each(function () {
@@ -163,7 +162,6 @@
             });
             return isValid;
         }
-
         $('#name').on('input', function () {
             var name = $(this).val();
             var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
@@ -224,22 +222,6 @@
                 mediaText.show();
                 mediaFile.hide();
             }
-        });
-        $('.select-course').select2();
-        $('.add-row').click(function () {
-            var newRow = $('.form-row:first').clone();
-            newRow.find('input').val('');
-            newRow.find('select').prop('selectedIndex', 0);
-            newRow.find('textarea').val('');
-            var rowCount = $('#form-rows .form-row').length + 1;
-            newRow.find('.row-number').text(rowCount);
-            $('#form-rows').append(newRow);
-            newRow.find('.select-course').select2();
-            newRow.find('.remove-row').click(function () {
-                if ($('#form-rows .form-row').length > 1) {
-                    $(this).closest('.form-row').remove();
-                }
-            });
         });
         $('#country_id').change(function () {
             var idcountry = this.value;
