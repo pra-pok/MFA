@@ -114,7 +114,6 @@ class PageCategoryController extends DM_BaseController
                         'data' => $request->all(),
                     ]
                 );
-                Log::error('Database Error', ['error' => $exception->getMessage()]);
                 $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
             }
         return redirect()->route($this->base_route . '.index');

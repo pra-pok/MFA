@@ -114,7 +114,6 @@ class OrganizationPageController extends DM_BaseController
                 new ResponseDTO($organizationPages, 'Pages stored/updated successfully.', 'success')
             );
         } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization page data', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO([], 'An error occurred while saving/updating page data.', 'error')
             );

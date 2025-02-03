@@ -65,7 +65,7 @@
     <div class="row">
         <div class="col-md-6">
             <label for="phone" class="form-label">Phone Number</label>
-            <input type="number" name="phone" class="form-control " id="phone" value="{{$data['record']->phone}}"/>
+            <input type="text" name="phone" class="form-control " id="phone" value="{{$data['record']->phone}}"/>
         </div>
         <div class="col-md-6 mb-3">
             <label for="website" class="form-label">Website</label>

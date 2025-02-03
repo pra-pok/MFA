@@ -24,14 +24,14 @@
                     @can('team__create')
                         <li class="menu-item">
                             <a href="{{ route('team.create') }}" class="menu-link">
-                                <div class="text-truncate">Add Team</div>
+                                <div class="text-truncate">Add</div>
                             </a>
                         </li>
                     @endcan
                     @can('team__read')
                         <li class="menu-item">
                             <a href="{{ route('team.index') }}" class="menu-link">
-                                <div class="text-truncate">List Team</div>
+                                <div class="text-truncate">View</div>
                             </a>
                         </li>
                     @endcan
@@ -50,14 +50,14 @@
                 @can('role__create')
                     <li class="menu-item">
                         <a href="{{ route('role.create') }}" class="menu-link">
-                            <div class="text-truncate">Add Role</div>
+                            <div class="text-truncate">Add</div>
                         </a>
                     </li>
                 @endcan
                 @can('role__read')
                     <li class="menu-item">
                         <a href="{{ route('role.index') }}" class="menu-link">
-                            <div class="text-truncate">List Role</div>
+                            <div class="text-truncate">View</div>
                         </a>
                     </li>
                 @endcan
@@ -75,14 +75,14 @@
                 @can('user__create')
                     <li class="menu-item">
                         <a href="{{ route('user.create') }}" class="menu-link">
-                            <div class="text-truncate">Add User</div>
+                            <div class="text-truncate">Add</div>
                         </a>
                     </li>
                 @endcan
                 @can('user__read')
                     <li class="menu-item">
                         <a href="{{ route('user.index') }}" class="menu-link">
-                            <div class="text-truncate">List User</div>
+                            <div class="text-truncate">View</div>
                         </a>
                     </li>
                 @endcan
@@ -124,135 +124,79 @@
     @endif
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-globe"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Country</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.country.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Country</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-building-house"></i>
-            <div class="text-truncate" data-i18n="Form Elements">University</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.university.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">University</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-street-view"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Stream/Discipline</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.stream.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Stream/Discipline</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-lira"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Level</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.level.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Level</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-book"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Course</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.course.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Course</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-area"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.administrative_area.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Administrative Area</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-images"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Gallery Category</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('admin.gallery_category.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Gallery Category</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-first-page"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Page Category</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('page-category.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Page Category</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bxs-face"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Facilities</div>
-        </a>
-        <ul class="menu-sub">
-            <li class="menu-item ">
-                <a href="{{route('facilities.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">Facilities</div>
-                </a>
-            </li>
-        </ul>
-    </li>
-    <li class="menu-item ">
-        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-home"></i>
             <div class="text-truncate" data-i18n="Form Elements">College/School</div>
         </a>
         <ul class="menu-sub">
             <li class="menu-item ">
+                <a href="{{route('organization.create')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Add</div>
+                </a>
+            </li>
+            <li class="menu-item ">
                 <a href="{{route('organization.index')}}" class="menu-link">
-                    <div class="text-truncate" data-i18n="Basic Inputs">College/School</div>
+                    <div class="text-truncate" data-i18n="Basic Inputs">View</div>
                 </a>
             </li>
         </ul>
     </li>
+    <li class="menu-item ">
+        <a href="{{route('admin.country.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-globe"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Country</div>
+        </a>
+    </li>
+    <li class="menu-item ">
+        <a href="{{route('admin.university.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-building-house"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">University</div>
+        </a>
+    </li>
+
+    <li class="menu-item ">
+        <a href="{{route('admin.stream.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-street-view"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Stream/Discipline</div>
+        </a>
+    </li>
+
+    <li class="menu-item ">
+        <a href="{{route('admin.level.index')}}" class="menu-link ">
+            <i class="menu-icon tf-icons bx bx-lira"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Level</div>
+        </a>
+
+    </li>
+
+    <li class="menu-item ">
+        <a href="{{route('admin.course.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-book"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Course</div>
+        </a>
+    </li>
+    <li class="menu-item ">
+        <a href="{{route('admin.administrative_area.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-area"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>
+        </a>
+    </li>
+    <li class="menu-item ">
+        <a href="{{route('admin.gallery_category.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-images"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Gallery Category</div>
+        </a>
+    </li>
+    <li class="menu-item ">
+        <a href="{{route('page-category.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-first-page"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Page Category</div>
+        </a>
+    </li>
+    <li class="menu-item ">
+        <a href="{{route('facilities.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-face"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Facilities</div>
+        </a>
+    </li>
+
 </ul>

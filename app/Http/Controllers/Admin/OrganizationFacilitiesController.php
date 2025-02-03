@@ -142,7 +142,6 @@ class OrganizationFacilitiesController extends DM_BaseController
             }
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO($savedFacilities, 'Facilities stored/updated successfully.', 'success'));
         } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization facilities', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO(null, 'An error occurred while saving/updating facilities.', 'error'));
         }
     }

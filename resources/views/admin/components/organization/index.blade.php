@@ -25,7 +25,7 @@
                         <tr>
                             <th width="8%" class="text-center">SN</th>
                             <th>College/School Name</th>
-                            <th>Address</th>
+                            <th width="10%" >Logo</th>
                             <th>Email/Phone No.</th>
                             <th class="text-center">Status</th>
                             <th>Modified By/At</th>
@@ -66,12 +66,10 @@
                 const pageInfo = $('#datatable').DataTable().page.info();
                 const pageIndex = pageInfo.page;
                 const pageLength = pageInfo.length;
-
                 const serialNumber = (pageIndex * pageLength) + (index + 1);
                 const statusBadge = data.status === 1
                     ? '<span class="badge bg-label-success me-1">Active</span>'
                     : '<span class="badge bg-label-danger">In-Active</span>';
-
                 const editUrl = `{{ url('organization/${data.id}/edit') }}`;
                 const showUrl = `{{ url('organization/${data.id}/show') }}`;
                 const deleteUrl = `{{ url('organization/${data.id}') }}`;
@@ -80,14 +78,13 @@
                     : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
                 const folder = 'organization';
                 const logoUrl = data.logo
-                    ? `{{ url('/image-serve/') }}/${folder}/${data.logo}`
-                    : 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png';
+                    ? `<img src="{{ url('/image-serve/') }}/${folder}/${data.logo}" alt="logo" class="img-thumbnail" >`
+                    : '';
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `
             <td class="text-center" >${serialNumber}</td>
             <td>
-            <img src="${logoUrl}" alt="logo" class="img-thumbnail" style="width: 20px; height: 20px; object-fit: cover; border-radius: 50%; margin-bottom: -19px;">
-               <a href="${showUrl}"> <span style="margin-left: 32px;" > ${data.name}  </span></a>
+               <a href="${showUrl}">  ${data.name}  </a>
                <a href="${data.website}" target="blank" >
                    <i class="bx bx-right-top-arrow-circle "></i>
                </a>
@@ -99,7 +96,6 @@
                         <a class="dropdown-item" href="${editUrl}">
                             <i class="bx bx-edit-alt me-1"></i> Edit
                         </a>
-
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="_method" value="DELETE">
@@ -109,8 +105,11 @@
                         </form>
                     </div>
                 </div>
+                <span style="font-size: 13px;"> ${data.address || ' '} </span>
             </td>
-            <td>${data.address}</td>
+            <td>
+               ${logoUrl}
+            </td>
             <td>
                ${data.email}
                 <br> <span style="font-size: 13px;"> ${data.phone || '-'} </span>

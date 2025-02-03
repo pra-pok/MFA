@@ -198,17 +198,14 @@ class OrganizationCourseController extends DM_BaseController
                         'status' => $status,
                     ]);
                 }
-
                 $organizationCourses[] = $organizationCourse;
             }
-
             return response()->json([
                 'status' => 'success',
                 'message' => 'Courses stored/updated successfully.',
                 'data' => $organizationCourses
             ]);
         } catch (\Exception $exception) {
-            Log::error('Error saving/updating organization course data', ['error' => $exception->getMessage()]);
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while saving/updating course data.'

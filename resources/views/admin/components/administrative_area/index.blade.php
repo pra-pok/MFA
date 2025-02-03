@@ -115,10 +115,10 @@
                     const deleteUrl = `{{ url('admin/administrative_area/${data.id}') }}`;
                     const rowContent = `
                      <td class="text-center" >${serialNumber}</td>
-                    <td>${data.country?.name || 'No Country'}</td>
+                    <td>${data.country?.name || ' '}</td>
 
                     <td>${data.name}
-                        <br> <span style="font-size: 13px;"> ${data.parent?.name || 'No Administrative Area'} </span>
+                        <br> <span style="font-size: 13px;"> ${data.parent?.name || ''} </span>
                      <div class="dropdown" style="margin-left: 251px; margin-top: -22px;" >
                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                             <i class="bx bx-dots-vertical-rounded"></i>

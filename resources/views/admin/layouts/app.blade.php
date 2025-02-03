@@ -53,21 +53,16 @@
                             <div
                                 class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
                                 <?php
-                                $version = getenv('Version') ?: 'Unknown Version';
+                                $version = getenv('App_Version') ?: 'Unknown Version';
                                 ?>
                                 <div class="text-body">
-                                    <span><?php echo $version; ?></span> ,made with ❤️ by
-                                    ©
+                                    MFA <span><?php echo $version; ?></span> | Made with ❤️ in Nepal ©
                                     <script>
                                         document.write(new Date().getFullYear());
                                     </script>
-
-                                    <a href="https://myfreeadmission.com" target="_blank" class="footer-link">My Free
-                                        Admission</a>
-                                </div>
-                                <div class="d-none d-lg-inline-block">
-                                    <a href="https://myfreeadmission.com" class="footer-link me-4"
-                                        target="_blank">Privacy Policy</a>
+                                    <a href="https://myfreeadmission.com" target="_blank" class="footer-link">My Free Admission Pvt. Ltd.</a> |
+                                    <a href="https://myfreeadmission.com" class="footer-link me-4" target="_blank">Privacy Policy </a> |
+                                    <a href="https://myfreeadmission.com" class="footer-link me-4" target="_blank">Terms of Use</a>
                                 </div>
                             </div>
                         </div>
