@@ -261,5 +261,9 @@
         if (initialCountryId) {
             loadAdministrativeAreas(initialCountryId, initialAdministrativeAreaId);
         }
+        $('#parent_id').select2();
+        $('.select-country').select2();
+        $('.select-type').select2();
+        $('.select-university').select2();
     });
 </script>

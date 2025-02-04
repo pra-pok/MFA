@@ -115,13 +115,13 @@
                     const deleteUrl = `{{ url('admin/administrative_area/${data.id}') }}`;
                     const rowContent = `
                      <td class="text-center" >${serialNumber}</td>
-                    <td>${data.country?.name || ' '}</td>
-
-                    <td>${data.name}
-                        <br> <span style="font-size: 13px;"> ${data.parent?.name || ''} </span>
-                     <div class="dropdown" style="margin-left: 251px; margin-top: -22px;" >
-                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                            <i class="bx bx-dots-vertical-rounded"></i>
+                     <td>${data.country?.name || ' '}</td>
+                    <td class="position-relative">
+                    ${data.name}
+                       <br> <span style="font-size: 13px;"> ${data.parent?.name || ''} </span>
+                     <div class="dropdown d-inline-block">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y " data-bs-toggle="dropdown">
+                            <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
                         </button>
                         <div class="dropdown-menu">
                            <a class="dropdown-item" href="javascript:void(0)" onclick="editCategory(${data.id})">
@@ -260,4 +260,5 @@
 
         });
     </script>
+    @include('admin.includes.javascript.display_none')
 @endsection

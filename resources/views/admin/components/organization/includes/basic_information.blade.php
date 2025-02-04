@@ -5,34 +5,32 @@
 
     <div class="row">
         <div class="col-md-4">
-            <label for="country_id" class="form-label">Select Country </label>
-            <select class="form-select required" id="country_id" name="country_id"
-                    aria-label="Select">
-                <option selected disabled>Select</option>
+            <label for="country_id" class="form-label"> Country </label>
+            <select class="form-select select-country required" id="country_id" name="country_id"
+                    aria-label="Country">
+                <option selected disabled>Country</option>
                 @foreach ($data['country'] as $key => $value)
                     <option value="{{ $key }}">{{ $value }}</option>
                 @endforeach
             </select>
         </div>
         <div class="col-md-4">
-            <label for="administrative_area_id" class="form-label">Select Administrative Area </label>
+            <label for="administrative_area_id" class="form-label"> Administrative Area </label>
             <select class="form-select required" id="parent_id" name="administrative_area_id"
-                    aria-label="Select">
+                    aria-label="Administrative Area">
                 <option value="">None</option>
             </select>
         </div>
         <div class="col-md-4 mb-3">
-            <label for="type" class="form-label">Select Type</label>
-            <select class="form-select required" id="type" name="type" aria-label="Select Type">
-                <option selected disabled>Select Type</option>
+            <label for="type" class="form-label">Type</label>
+            <select class="form-select select-type  required" id="type" name="type" aria-label="Type">
+                <option selected disabled>Type</option>
                 @foreach ($data['type'] as $key => $value)
                     <option value="{{ $key }}">{{ $value }}</option>
                 @endforeach
             </select>
         </div>
     </div>
-
-
     <div class="mb-3">
         <label for="name" class="form-label">College/School Name</label>
         <input type="text" name="name" class="form-control required" id="name"

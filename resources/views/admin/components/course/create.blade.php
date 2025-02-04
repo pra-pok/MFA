@@ -12,9 +12,9 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mt-3">
-                                    <label for="stream_id" class="form-label">Select Stream Name</label>
-                                    <select class="form-select select-course required" id="stream_id" name="stream_id" aria-label="Select Stream Name" >
-                                        <option selected disabled>Select Stream Name</option>
+                                    <label for="stream_id" class="form-label">Stream</label>
+                                    <select class="form-select select-course required" id="stream_id" name="stream_id" aria-label="Stream" >
+                                        <option selected disabled>Stream</option>
                                         @foreach ($data['stream'] as $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
                                         @endforeach
@@ -24,9 +24,9 @@
                                     @endif
                                 </div>
                                 <div class="col-md-6 mt-3">
-                                    <label for="level_id" class="form-label">Select Level Name</label>
-                                    <select class="form-select select-course required" id="level_id" name="level_id" aria-label="Select Level Name" >
-                                        <option selected disabled>Select Level Name</option>
+                                    <label for="level_id" class="form-label">Level</label>
+                                    <select class="form-select select-course required" id="level_id" name="level_id" aria-label="Level" >
+                                        <option selected disabled> Level Name</option>
                                         @foreach ($data['level'] as $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
                                         @endforeach

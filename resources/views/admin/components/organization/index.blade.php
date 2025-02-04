@@ -19,13 +19,13 @@
                     </div>
                 </div>
                 @include('admin.includes.flash_message')
-                <div class=" text-nowrap">
+                <div class="text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
                         <tr>
                             <th width="8%" class="text-center">SN</th>
                             <th>College/School Name</th>
-                            <th width="10%" >Logo</th>
+                            <th width="10%">Logo</th>
                             <th>Email/Phone No.</th>
                             <th class="text-center">Status</th>
                             <th>Modified By/At</th>
@@ -83,29 +83,34 @@
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `
             <td class="text-center" >${serialNumber}</td>
-            <td>
-               <a href="${showUrl}">  ${data.name}  </a>
+            <td class="position-relative">
+               <a href="${showUrl}" class="text-decoration-none" >  ${data.name}  </a>
                <a href="${data.website}" target="blank" >
-                   <i class="bx bx-right-top-arrow-circle "></i>
+                   <i class="bx bx-right-top-arrow-circle"></i>
                </a>
-                <div class="dropdown" style="  margin-left: 300px; margin-top: -22px; position: relative;">
-                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                        <i class="bx bx-dots-vertical-rounded"></i>
+                <div class="dropdown d-inline-block">
+                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y " data-bs-toggle="dropdown">
+                        <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
                     </button>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="${editUrl}">
-                            <i class="bx bx-edit-alt me-1"></i> Edit
-                        </a>
-                        <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="_method" value="DELETE">
-                            <button type="submit" class="dropdown-item">
-                                <i class="bx bx-trash me-1"></i> Delete
-                            </button>
-                        </form>
-                    </div>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="${editUrl}">
+                                <i class="bx bx-edit-alt me-2"></i> Edit
+                            </a>
+                        </li>
+                        <li>
+                            <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit" class="dropdown-item ">
+                                    <i class="bx bx-trash me-2"></i> Delete
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
                 </div>
-                <span style="font-size: 13px;"> ${data.address || ' '} </span>
+                <br>
+                <span class="d-block text-muted mt-1" style="font-size: 13px;"> ${data.address || ' '} </span>
             </td>
             <td>
                ${logoUrl}
@@ -123,8 +128,9 @@
                 $(row).html(rowContent);
             },
             pageLength: 10,
-            lengthMenu: [ 10, 25, 50, 75, 100, 150],
+            lengthMenu: [10, 25, 50, 75, 100, 150],
             responsive: true
         });
     </script>
+    @include('admin.includes.javascript.display_none')
 @endsection

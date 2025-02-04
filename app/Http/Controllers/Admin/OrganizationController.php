@@ -87,7 +87,11 @@ class OrganizationController extends DM_BaseController
     public function create(Request $request)
     {
         $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community (Aided)' => 'Community (Aided)'
+        , 'Community (Managed)' => 'Community (Managed)', 'Community (Teacher Aid)' => 'Community (Teacher Aid)', 'Community (Unaided)' => 'Community (Unaided)'
+        , 'Institutional (Private)' => 'Institutional (Private)', 'Institutional (Public)' => 'Institutional (Public)', 'Institutional (Company)' => 'Institutional (Company)'
+        , 'Public with religious' => 'Public with religious', 'Madrasa' => 'Madrasa', 'Gumba' => 'Gumba', 'Ashram' => 'Ashram',
+            'SOP/FSP' => 'SOP/FSP', 'Community ECD' => 'Community ECD', 'Other' => 'Other'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
@@ -200,7 +204,11 @@ class OrganizationController extends DM_BaseController
             return redirect()->route($this->base_route . 'index');
         }
         $data['area'] = AdministrativeArea::pluck('name', 'id');
-        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community' => 'Community'];
+        $data['type'] = ['Public' => 'Public', 'Private' => 'Private', 'Community (Aided)' => 'Community (Aided)'
+            , 'Community (Managed)' => 'Community (Managed)', 'Community (Teacher Aid)' => 'Community (Teacher Aid)', 'Community (Unaided)' => 'Community (Unaided)'
+            , 'Institutional (Private)' => 'Institutional (Private)', 'Institutional (Public)' => 'Institutional (Public)', 'Institutional (Company)' => 'Institutional (Company)'
+            , 'Public with religious' => 'Public with religious', 'Madrasa' => 'Madrasa', 'Gumba' => 'Gumba', 'Ashram' => 'Ashram',
+            'SOP/FSP' => 'SOP/FSP', 'Community ECD' => 'Community ECD', 'Other' => 'Other'];
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['gallery_type'] = ['Video' => 'Video', 'Image' => 'Image'];
@@ -226,21 +234,6 @@ class OrganizationController extends DM_BaseController
         $data['university'] = University::pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
-//    public function showFile($file)
-//    {
-//        if (!Storage::disk('external')->exists($file)) {
-//            abort(404);
-//        }
-//
-//        return response()->file(
-//            Storage::disk('external')->path($file),
-//            [
-//                'Content-Type'  => Storage::disk('external')->mimeType($file) ?? 'application/octet-stream',
-//                'Cache-Control' => 'public, max-age=31536000', // 1-year cache
-//            ]
-//        );
-//    }
-
     /**
      * Update the specified resource in storage.
      *

@@ -245,5 +245,12 @@
                 });
             }
         });
+        // $('#country_id').trigger('change');
+        // $('#country_id').select2();
+        $('#parent_id').select2();
+        $('.select-country').select2();
+        $('.select-type').select2();
+        $('.select-university').select2();
+
     });
 </script>

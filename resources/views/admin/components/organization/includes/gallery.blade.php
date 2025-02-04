@@ -5,7 +5,7 @@
         <thead>
         <tr>
             <th>SN</th>
-            <th>Select Category</th>
+            <th> Category</th>
             <th width="150">Type</th>
             <th>Caption</th>
             <th>Rank</th>

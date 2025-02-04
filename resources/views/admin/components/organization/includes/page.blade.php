@@ -10,9 +10,9 @@
                         <div class="row form-row">
                             <input type="hidden" name="id[{{$key}}]" value="{{ $item->id ?? ' '}}" >
                             <div class="col-md-4 mt-3">
-                                <label>Select Page</label>
-                                <select class="form-control select-page required" name="page_category_id[]" aria-label="Select Page">
-                                    <option selected disabled>Select Page</option>
+                                <label> Page</label>
+                                <select class="form-control select-page required" name="page_category_id[]" aria-label=" Page">
+                                    <option selected disabled> Page</option>
                                     @foreach ($data['page'] as $pageKey => $pageValue)
                                         <option value="{{ $pageKey }}" {{ $item->page_category_id == $pageKey ? 'selected' : '' }}>
                                             {{ $pageValue }}
@@ -43,9 +43,9 @@
                     <div class="row form-row">
                         <input type="hidden" name="id[ ]" value="" >
                         <div class="col-md-4 mt-3">
-                            <label>Select Page</label>
-                            <select class="form-control select-page required" name="page_category_id[]" aria-label="Select Page">
-                                <option selected disabled>Select Page</option>
+                            <label> Page</label>
+                            <select class="form-control select-page required" name="page_category_id[]" aria-label=" Page">
+                                <option selected disabled> Page</option>
                                 @foreach ($data['page'] as $pageKey => $pageValue)
                                     <option value="{{ $pageKey }}" >
                                         {{ $pageValue }}

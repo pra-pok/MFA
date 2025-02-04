@@ -56,6 +56,10 @@ class Organization extends Model
         return $this->belongsTo(AdministrativeArea::class,'administrative_area_id','id');
     }
 
+    public function country(){
+        return $this->belongsTo(Country::class,'country_id','id');
+    }
+
     public function socialMediaLinks()
     {
         return $this->hasMany(OrganizationSocialMedia::class);
@@ -80,4 +84,6 @@ class Organization extends Model
     public function organizationfacilities(){
         return $this->hasMany(OrganizationFacilities::class,'organization_id','id');
     }
+
+
 }

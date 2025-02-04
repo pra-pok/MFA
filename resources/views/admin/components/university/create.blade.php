@@ -12,9 +12,9 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mt-3">
-                                    <label for="country_id" class="form-label">Select Country Name</label>
-                                    <select class="form-select select-course required" id="country_id" name="country_id" aria-label="Select Country Name" >
-                                        <option selected disabled>Select Country Name</option>
+                                    <label for="country_id" class="form-label"> Country </label>
+                                    <select class="form-select select-course required" id="country_id" name="country_id" aria-label=" Country " >
+                                        <option selected disabled> Country </option>
                                         @foreach ($data['country'] as $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
                                         @endforeach
@@ -22,8 +22,8 @@
                                 </div>
                                 <div class="col-md-6 mt-3">
                                     <label for="types" class="form-label">Type</label>
-                                    <select class="form-select required" id="types" name="types" aria-label="Select Type" >
-                                        <option selected disabled>Select Type</option>
+                                    <select class="form-select required" id="types" name="types" aria-label=" Type" >
+                                        <option selected disabled> Type</option>
                                         @foreach ($data['type'] as $key => $value)
                                             <option value="{{ $key }}">{{ $value }}</option>
                                         @endforeach

@@ -95,11 +95,11 @@
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `
             <td>${index + 1}</td>
-            <td>${data.title}
-                <div class="dropdown" style="  margin-left: 250px; margin-top: -22px;">
-                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                        <i class="bx bx-dots-vertical-rounded"></i>
-                    </button>
+            <td  class="position-relative">${data.title}
+                <div class="dropdown d-inline-block">
+                        <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="dropdown">
+                            <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
+                        </button>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="javascript:void(0)" onclick="editCategory(${data.id})">
                             <i class="bx bx-edit-alt me-1"></i> Edit
@@ -164,4 +164,5 @@
         });
 
     </script>
+    @include('admin.includes.javascript.display_none')
 @endsection
