@@ -77,7 +77,7 @@
                                 id="deactiveStatus"
                                 {{ isset($user->status) && $user->status == 0 ? 'checked' : '' }}
                             />
-                            <label class="form-check-label" for="deactiveStatus"> De-Active </label>
+                            <label class="form-check-label" for="deactiveStatus"> In-Active </label>
 
                         </div>
                     </div> <br>

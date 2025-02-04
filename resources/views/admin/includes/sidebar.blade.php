@@ -89,6 +89,24 @@
             </ul>
         </li>
     @endcan
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-home-alt-2"></i>
+            <div class="text-truncate">College Signup</div>
+        </a>
+        <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{ route('organization-signup.create') }}" class="menu-link">
+                        <div class="text-truncate">Add</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('organization-signup.index') }}" class="menu-link">
+                        <div class="text-truncate">View</div>
+                    </a>
+                </li>
+        </ul>
+    </li>
 
     {{-- Disable Modules for Super Admin Team --}}
     @if (auth()->user()->team_id != 1)

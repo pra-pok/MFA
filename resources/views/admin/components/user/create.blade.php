@@ -15,7 +15,6 @@
             <div class="card-body">
                 <form action="{{ route('user.store') }}" method="POST">
                     @csrf
-
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="mb-6">
@@ -36,7 +35,6 @@
                             </select>
                         </div>
                         </div>
-
                         <div class="col-sm-6">
                             <div class="mb-6">
                                 <label class="form-label" for="username">Username</label>
@@ -92,7 +90,7 @@
                                 id="deactiveStatus"
 
                             />
-                            <label class="form-check-label" for="deactiveStatus"> De-Active </label>
+                            <label class="form-check-label" for="deactiveStatus"> In-Active </label>
                         </div> <br>
 
                     </div><br>

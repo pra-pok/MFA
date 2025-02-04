@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\OrganizationFacilitiesController;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
+use App\Http\Controllers\Admin\OrganizationSignupController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
@@ -118,9 +119,13 @@ Route::middleware('auth')->group(function () {
     Route::delete('{id}', [FacilitiesController::class, 'destroy'])->name('facilities.destroy');
 
     Route::resource('organization_facilities', OrganizationFacilitiesController::class);
+    Route::resource('organization-signup', OrganizationSignupController::class);
+    Route::get('trash', [OrganizationSignupController::class, 'trash'])->name('organization-signup.trash');
+    Route::get('restore/{id}', [OrganizationSignupController::class, 'restore'])->name('organization-signup.restore');
+    Route::delete('force-delete/{id}', [OrganizationSignupController::class, 'forceDeleteData'])->name('organization-signup.force_delete');
+    Route::delete('{id}', [OrganizationSignupController::class, 'destroy'])->name('organization-signup.destroy');
+    Route::post('/reset-password', [OrganizationSignupController::class, 'reset'])->name('organization-signup.reset');
 
-//    Route::post('/upload', [FileController::class, 'uploadFile']);
-    //Route::get('/files/{filename}', [\App\Utils\FileUtil::class, 'getFile']);
     Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
         $path = "/data/mfa/images/$folder/$filename";
