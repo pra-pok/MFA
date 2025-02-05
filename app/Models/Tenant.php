@@ -23,7 +23,7 @@ class Tenant extends Model
         return $this->belongsTo(Organization::class, 'organization_signup_id');
     }
 
-    public function tenants()
+    public function organizationSignups()
     {
         return $this->hasMany(OrganizationSignup::class, 'tenant_id');
 

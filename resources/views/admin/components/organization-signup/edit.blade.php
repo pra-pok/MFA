@@ -4,14 +4,16 @@
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ url('/') }}">Home</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('user.index') }}">Users</a></li>
-                <li class="breadcrumb-item active">Edit</li>
+                <li class="breadcrumb-item active">{{ $_panel }}</li>
+
             </ol>
         </nav>
         <div class="row">
             <div class="col-md-9">
                 <div class="card">
                     <h5 class="card-header"> {{ $_panel }}</h5>
+                    @include('admin.includes.buttons.button-back')
+                    @include('admin.includes.flash_message_error')
                     <div class="card-body">
                         <form action="{{ route($_base_route . '.update' , $data['record']->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf

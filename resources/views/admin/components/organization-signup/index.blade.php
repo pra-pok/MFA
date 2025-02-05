@@ -11,6 +11,7 @@
         <div class="card">
             <h5 class="card-header">{{$_panel}}</h5>
             <div class="card-body" >
+
                 <div class="d-flex justify-content-between mb-3">
                     @include('admin.includes.buttons.button-create')
 
@@ -63,21 +64,16 @@
             serverSide: false,
             ajax: {
                 url: '{{ route( 'organization-signup.index') }}',
-                dataSrc: function (json) {
-                    if (json.data) {
-                        return json.data;
-                    } else {
-                        console.error("Data format error", json);
-                        return [];
-                    }
-                },
                 type: "GET",
-                data: function(d) {
-                    d.tenant_id = `${data.tenantId} `;
+                data: function (d) {
+                    d.tenant_id = $('#tenant_id').val();
                 },
-
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                dataSrc: function (json) {
+                    console.log("API Response:", json);
+                    return json.data || [];
                 },
                 error: function(xhr, status, error) {
                     console.error("Error loading data: " + error);
@@ -135,6 +131,7 @@
 
                     </div>
                 </div>
+                <span class="text-danger"> | Team Id: ${data.tenant_id}</span>
             </td>
             <td>${data.email}<br>
                 <span> ${data.phone} </span>
