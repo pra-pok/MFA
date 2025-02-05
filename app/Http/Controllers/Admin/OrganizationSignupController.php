@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
 use App\Http\Requests\OrganizationSignupRequest;
+use App\Models\OrganizationRole;
 use App\Models\OrganizationSignup;
+use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganizationSignupController extends DM_BaseController
 {
-    protected $panel = 'College / School Signup';
+    protected $panel = 'College / School Account';
     protected $base_route = 'organization-signup';
     protected $view_path = 'admin.components.organization-signup';
     protected $model;
@@ -39,6 +41,8 @@ class OrganizationSignupController extends DM_BaseController
     {
         try {
             if ($request->ajax()) {
+                // Check if tenant_id is present
+                $tenantId = $request->get('tenant_id');
                 $data = $this->model->with([
                     'createds' => function ($query) {
                         $query->select('id', 'username');
@@ -46,8 +50,14 @@ class OrganizationSignupController extends DM_BaseController
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
                     }
-                ])->orderBy('created_at', 'desc')
+                ])
+                    ->leftJoin("tenants", "tenants.id", "=", "organization_signup.tenant_id")
+                    ->when($tenantId, function ($query) use ($tenantId) {
+                        return $query->where('organization_signup.tenant_id', $tenantId);
+                    })
+                    ->orderBy('created_at', 'desc')
                     ->get();
+
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
         } catch (\Exception $exception) {
@@ -74,35 +84,96 @@ class OrganizationSignupController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
+//    public function store(OrganizationSignupRequest $request)
+//    {
+//        try {
+//
+//            $defaultRoleId = 'Super admin';
+//            if($defaultRoleId) {
+//                $defaultRoleId = OrganizationRole::create($defaultRoleId);
+//            }
+//
+//            $defaultTenantId = 'full_name_tenant';
+//            $request->request->add(['created_by' => auth()->user()->id]);
+//            $data = $request->except(['password_confirmation']);
+//            $data['password'] = Hash::make($request->password);
+//            $data['organization_role_id'] = $request->organization_role_id ?? $defaultRoleId;
+//            $data['tenant_id'] = $request->tenant_id ?? $defaultTenantId;
+//            $organization_signup = $this->model->create($data);
+//            if ($organization_signup) {
+//                logUserAction(
+//                    auth()->user()->id,
+//                    auth()->user()->team_id,
+//                    $this->panel . ' created successfully!',
+//                    [$data]
+//                );
+//                $request->session()->flash('alert-success', $this->panel . ' created successfully!');
+//            } else {
+//                logUserAction(
+//                    auth()->user()->id,
+//                    auth()->user()->team_id,
+//                    $this->panel . ' creation failed.',
+//                    [$data]
+//                );
+//                $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
+//            }
+//        } catch (\Exception $exception) {
+//            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+//        }
+//        return redirect()->route($this->base_route . '.index');
+//    }
+
     public function store(OrganizationSignupRequest $request)
     {
+        //dd($request->all());
         try {
+            DB::beginTransaction();
             $request->request->add(['created_by' => auth()->user()->id]);
             $data = $request->except(['password_confirmation']);
             $data['password'] = Hash::make($request->password);
             $organization_signup = $this->model->create($data);
-            if ($organization_signup) {
-                logUserAction(
-                    auth()->user()->id,
-                    auth()->user()->team_id,
-                    $this->panel . ' created successfully!',
-                    [$data]
-                );
-                $request->session()->flash('alert-success', $this->panel . ' created successfully!');
-            } else {
-                logUserAction(
-                    auth()->user()->id,
-                    auth()->user()->team_id,
-                    $this->panel . ' creation failed.',
-                    [$data]
-                );
-                $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
+            if (!$organization_signup) {
+                throw new \Exception('Failed to create Organization Signup.');
             }
+            //  Create Default Tenant
+            $tenantName = $request->full_name . '_tenant';
+            $defaultTenant = Tenant::create([
+                'name' => $tenantName,
+                'organization_signup_id' => $organization_signup->id,
+                'status' => 1
+            ]);
+            if (!$defaultTenant) {
+                throw new \Exception('Failed to create Tenant.');
+            }
+            //  Create Default Organization Role (Super Admin)
+            $defaultRole = OrganizationRole::create([
+                'name' => 'Super Admin',
+                'tenant_id' => $defaultTenant->id,
+                'status' => 1
+            ]);
+            if (!$defaultRole) {
+                throw new \Exception('Failed to create Organization Role.');
+            }
+            //  Assign Tenant & Role to User
+            $organization_signup->update([
+                'organization_role_id' => $defaultRole->id,
+                'tenant_id' => $defaultTenant->id
+            ]);
+            logUserAction(
+                auth()->user()->id,
+                auth()->user()->team_id,
+                $this->panel . ' created successfully!',
+                [$data]
+            );
+            DB::commit();
+            $request->session()->flash('alert-success', $this->panel . ' created successfully!');
         } catch (\Exception $exception) {
+            DB::rollBack();
             $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
         return redirect()->route($this->base_route . '.index');
     }
+
 
     /**
      * Display the specified resource.
@@ -292,7 +363,7 @@ class OrganizationSignupController extends DM_BaseController
             $organization = OrganizationSignup::findOrFail($request->id);
             $organization->password = Hash::make($request->password);
             $organization->save();
-            if($organization){
+            if ($organization) {
                 $request->session()->flash('alert-success', $this->panel . ' Password Change successfully!');
             } else {
                 $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
@@ -301,5 +372,50 @@ class OrganizationSignupController extends DM_BaseController
             $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
         return redirect()->route($this->base_route . '.index');
+    }
+
+//    public function block(Request $request)
+//    {
+//        $request->validate([
+//            'id' => 'required|exists:organization_signup,id',
+//            'comment' => 'nullable',
+//        ]);
+//        try {
+//            $organization = OrganizationSignup::findOrFail($request->id);
+//            $organization->comment = $request->comment;
+//            $organization->status = 0;
+//            $organization->save();
+//
+//            $request->session()->flash('alert-success', 'Organization Blocked successfully!');
+//        } catch (\Exception $exception) {
+//            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+//        }
+//        return redirect()->route($this->base_route . '.index');
+//    }
+
+    public function block(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:organization_signup,id',
+            'comment' => $request->status == 0 ? 'nullable' : 'nullable',
+        ]);
+        try {
+            $organization = OrganizationSignup::findOrFail($request->id);
+            $newStatus = $organization->status == 1 ? 0 : 1;
+
+            if ($newStatus == 0 && !$request->comment) {
+                return response()->json(['success' => false, 'message' => 'Comment is required to block.'], 422);
+            }
+            $organization->status = $newStatus;
+            $organization->comment = $request->comment ?? $organization->comment;
+            $organization->save();
+            return response()->json([
+                'success' => true,
+                'status' => $organization->status,
+                'message' => $newStatus == 1 ? 'Organization Unblocked successfully!' : 'Organization Blocked successfully!',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => 'Database Error: ' . $exception->getMessage()], 500);
+        }
     }
 }

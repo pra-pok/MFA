@@ -1,6 +1,6 @@
 @extends('admin.layouts.auth')
 @section('content')
-    <form id="formAuthentication" class="mb-6" action="{{ route('login') }}" method="POST">
+    <form id="formAuthentication" class="mb-6" action="{{ route('mfa-admin.login') }}" method="POST">
         @csrf
         <div class="mb-6">
             <label for="username" class="form-label">Username</label>

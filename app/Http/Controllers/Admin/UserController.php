@@ -21,7 +21,6 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize(Permissions::USER_READ);
-
         $users = User::all();
         return view('admin.components.user.index', ['users' => $users]);
     }
@@ -49,8 +48,6 @@ class UserController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
-
-
         User::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
@@ -91,13 +88,10 @@ class UserController extends Controller
         if ($user->team_id != getPermissionsTeamId()) {
             abort(403, 'Unauthorized');
         }
-
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-
         ]);
-
         $user->name = $validated['name'];
         $user->username = $request->username;
         $user->email = $validated['email'];
@@ -109,7 +103,6 @@ class UserController extends Controller
             ->route('user.index')
             ->withSuccess('User updated successfully');
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -120,11 +113,9 @@ class UserController extends Controller
         if ($user->team_id != getPermissionsTeamId()) {
             abort(403, 'Unauthorized');
         }
-
         if ($user->id == $request->user()->id) {
             return redirect()->route('user.index')->withError('You cannot delete yourself');
         }
-
         $user->delete();
         return redirect()
             ->route('user.index')
@@ -138,7 +129,6 @@ class UserController extends Controller
         if ($user->team_id != getPermissionsTeamId()) {
             abort(403, 'Unauthorized');
         }
-
 
         if ($user->id == $request->user()->id) {
             return redirect()->route('user.index')->withError('You cannot assign role to yourself');

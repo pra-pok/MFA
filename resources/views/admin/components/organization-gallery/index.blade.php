@@ -14,7 +14,7 @@
             @include('admin.includes.buttons.button_display_trash')
             @include('admin.includes.flash_message')
             <div class="card-body" >
-                <div class=" text-nowrap">
+                <div class="table-responsive text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
                             <tr>

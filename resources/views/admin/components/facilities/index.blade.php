@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 @include('admin.includes.flash_message')
-                <div class=" text-nowrap">
+                <div class="table-responsive text-nowrap">
                     <table id="datatable" class=" table table-bordered">
                         <thead>
                             <tr>

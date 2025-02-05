@@ -72,8 +72,6 @@
                                             <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                                             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                         </div>
-{{--                                        <input type="password" class="form-control" id="password_confirmation"--}}
-{{--                                               name="password_confirmation" placeholder="Confirm Password">--}}
                                     </div>
                                 </div>
                                 <br>

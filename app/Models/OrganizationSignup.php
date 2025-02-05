@@ -19,7 +19,10 @@ class OrganizationSignup extends Model
         'phone',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'comment',
+        'tenant_id',
+        'organization_role_id',
     ];
 
     protected $table = 'organization_signup';
@@ -30,5 +33,13 @@ class OrganizationSignup extends Model
 
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
+    }
+
+    public function tenant(){
+        return $this->belongsTo(Tenant::class,'tenant_id','id');
+    }
+
+    public function organizationRole(){
+        return $this->belongsTo(OrganizationRole::class,'organization_role_id','id');
     }
 }

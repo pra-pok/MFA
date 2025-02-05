@@ -8,7 +8,6 @@
                 <li class="breadcrumb-item active">Edit</li>
             </ol>
         </nav>
-
         <div class="row">
             <div class="col-md-9">
                 <div class="card">
@@ -54,31 +53,6 @@
                                         <x-error key="address"/>
                                     </div>
                                 </div>
-                                <div>
-                                    <label for="status" class="form-label">Status</label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="1"
-                                        id="activeStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 1 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="activeStatus"> Active </label>
-
-                                    <input
-                                        name="status"
-                                        class="form-check-input"
-                                        type="radio"
-                                        value="0"
-                                        id="deactiveStatus"
-                                        {{ isset($data['record']->status) && $data['record']->status == 0 ? 'checked' : '' }}
-                                    />
-                                    <label class="form-check-label" for="deactiveStatus"> In-Active </label>
-
-                                </div>
-                                <br>
                             </div>
                             <br>
                             <button type="submit" class="btn btn-primary">Update</button>

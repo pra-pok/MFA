@@ -19,8 +19,8 @@
                     </div>
                 </div>
                 @include('admin.includes.flash_message')
-                <div class=" text-nowrap">
-                    <table id="datatable" class=" table table-bordered">
+                <div class=" text-nowrap table-responsive">
+                    <table id="datatable" class=" table table-bordered ">
                         <thead>
                         <tr>
                             <th width="6%">SN</th>
@@ -49,8 +49,6 @@
         </div>
     </div>
     <div class="mt-4">
-        <!-- Button trigger modal -->
-        <!-- Modal -->
         <div class="modal fade" id="basicModalBlock" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 @include('admin.components.organization-signup.block')
@@ -74,6 +72,10 @@
                     }
                 },
                 type: "GET",
+                data: function(d) {
+                    d.tenant_id = `${data.tenantId} `;
+                },
+
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 },
@@ -93,13 +95,16 @@
             rowCallback: function (row, data, index) {
                 const statusBadge = data.status === 1
                     ? '<span class="badge bg-label-success me-1">Active</span>'
-                    : '<span class="badge bg-label-danger ">De-Active</span>';
+                    : '<span class="badge bg-label-danger ">In-Active</span>';
                 const editUrl = `{{ url('organization-signup/${data.id}/edit') }}`;
                 const deleteUrl = `{{ url('organization-signup/${data.id}') }}`;
                 const modifiedByName = data.updatedBy && data.updatedBy.username
                     ? data.updatedBy.username
                     : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
+                const blockButtonClass = data.status === 1 ? "text-danger" : "text-success";
+                const blockIcon = data.status === 1 ? "bx-block" : "bx-check-circle";
+                const blockText = data.status === 1 ? "Block" : "Unblock";
                 const rowContent = `
             <td>${index + 1}</td>
             <td class="position-relative">${data.full_name}<br><span> ${data.username} </span>
@@ -114,8 +119,11 @@
                         <a class="dropdown-item" href="javascript:void(0)" onclick="showBasicModal(${data.id})">
                             <i class="bx bx-edit-alt me-1"></i> Change Password
                         </a>
-                         <a class="dropdown-item text-danger" href="javascript:void(0)" onclick="showBasicModalBlock(${data.id})">
-                            <i class="bx bx-block"></i> Block
+                        <a id="block-btn-${data.id}"
+                           class="dropdown-item ${blockButtonClass}"
+                           href="javascript:void(0)"
+                           onclick="showBasicModalBlock(${data.id})">
+                            <i class="bx ${blockIcon}"></i> ${blockText}
                         </a>
                         <form action="${deleteUrl}" method="POST" onsubmit="return confirm('Are you sure?');">
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -174,11 +182,61 @@
                 });
             });
         });
-
-        function showBasicModalBlock(id) {
-            $("#id").val(id);
-            var myModal = new bootstrap.Modal(document.getElementById('basicModalBlock'));
-            myModal.show();
+        // function showBasicModalBlock(id) {
+        //     $("#block_id").val(id);
+        //     var myBlockModal = new bootstrap.Modal(document.getElementById("basicModalBlock"));
+        //     myBlockModal.show();
+        // }
+        function showBasicModalBlock(id, status) {
+            $("#block_id").val(id);
+            $("#block_status").val(status);
+            if (status === 1) {
+                $("#commentField").hide();
+            } else {
+                $("#commentField").show();
+            }
+            var myBlockModal = new bootstrap.Modal(document.getElementById("basicModalBlock"));
+            myBlockModal.show();
         }
+        $(document).ready(function () {
+            $("#blockForm").submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+                var organizationId = $("#block_id").val();
+                var status = $("#block_status").val();
+
+                $.ajax({
+                    url: "{{ route('organization-signup.block') }}",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            $("#basicModalBlock").modal("hide"); // Close modal
+
+                            // Update the button dynamically
+                            let button = $("#block-btn-" + organizationId);
+                            if (response.status === 1) {
+                                button.html('<i class="bx bx-block"></i> Block'); // Change to "Block"
+                                button.removeClass("text-success").addClass("text-danger"); // Change color
+                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-success">Active</span>'); // Change status badge
+                                location.reload();
+                            } else {
+                                button.html('<i class="bx bx-check-circle"></i> Unblock'); // Change to "Unblock"
+                                button.removeClass("text-danger").addClass("text-success"); // Change color
+                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-danger">In-Active</span>'); // Change status badge
+                                location.reload();
+                            }
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr) {
+                        alert("Error: " + (xhr.responseJSON?.message || "Something went wrong!"));
+                    }
+                });
+            });
+        });
     </script>
 @endsection

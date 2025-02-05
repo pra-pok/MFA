@@ -19,16 +19,28 @@ use App\Http\Controllers\Admin\OrganizationFacilitiesController;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\Admin\OrganizationSignupController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
+Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboard');
 Route::get('/register', function () {
     abort(404);
 });
+
 Route::get('/logout', function () {
     abort(404);
 });
-
+Route::get('/login', function () {
+    abort(404);
+});
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
     //        return view('dashboard');
@@ -37,15 +49,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     Route::resource('team', TeamController::class);
     Route::get('/team/{team}/assign-permissions', [TeamController::class, 'assignPermission'])->name('team.assign-permissions');
     Route::post('/team/{team}/assign-permissions', [TeamController::class, 'saveAssignPermission'])->name('team.assign-permissions.save');
-
     Route::resource('role', RoleController::class)->except('show');
     Route::get('/role/{role}/assign-permissions', [RoleController::class, 'assignPermissions'])->name('role.assign-permissions');
     Route::post('/role/{role}/assign-permissions', [RoleController::class, 'saveAssignPermissions'])->name('role.assign-permissions.save');
-
     Route::resource('user', UserController::class)->except('show');
     Route::get('/user/{user}/assign-roles', [UserController::class, 'assignRoles'])->name('user.assign-roles');
     Route::post('/user/{user}/assign-roles', [UserController::class, 'saveAssignRoles'])->name('user.assign-roles.save');
@@ -66,11 +75,7 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/edit', [OrganizationController::class, 'edit'])->name('edit');
         Route::put('{id}', [OrganizationController::class, 'update'])->name('update');
         Route::get('/get-parents-by-country', [OrganizationController::class, 'getParentsByCountry'])->name('get_parent');
-
     });
-//    Route::get('/storage/external/{file}', [OrganizationController::class, 'showFile'])
-//        ->where('file', '.*')
-//        ->name('external.file');
     Route::group(['prefix' => 'organization_gallery', 'as' => 'organization_gallery.'], function () {
         Route::get('trash', [OrganizationGalleryController::class, 'trash'])->name('trash');
         Route::get('restore/{id}', [OrganizationGalleryController::class, 'restore'])->name('restore');
@@ -125,6 +130,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('force-delete/{id}', [OrganizationSignupController::class, 'forceDeleteData'])->name('organization-signup.force_delete');
     Route::delete('{id}', [OrganizationSignupController::class, 'destroy'])->name('organization-signup.destroy');
     Route::post('/reset-password', [OrganizationSignupController::class, 'reset'])->name('organization-signup.reset');
+    Route::post('/block', [OrganizationSignupController::class, 'block'])->name('organization-signup.block');
 
     Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
@@ -155,8 +161,28 @@ Route::middleware('auth')->group(function () {
         $type = File::mimeType($path);
         return Response::make($file, 200)->header("Content-Type", $type);
     });
+    Route::get('verify-email', EmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+        ->name('password.confirm');
+
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+
+    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
 });
-require __DIR__ . '/auth.php';
+
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
     include('admin/admin.php');
 });
