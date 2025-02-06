@@ -4,7 +4,7 @@
     @method('PUT')
     <input type="hidden" name="organization_id" value="{{ $data['record']->id ?? 'default_value' }}"/>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-2">
             <label for="country_id" class="form-label"> Country </label>
             <select class="form-select select-country required" id="country_id" name="country_id"
                     aria-label="Country">
@@ -16,14 +16,27 @@
                 @endforeach
             </select>
         </div>
-        <div class="col-md-4">
-            <label for="administrative_area_id" class="form-label"> Administrative Area </label>
-            <select class="form-select required" id="parent_id" name="administrative_area_id"
-                    aria-label="Administrative Area">
+        <div class="col-md-2">
+            <label for="administrative_area_id" class="form-label"> Province/State </label>
+            <select data-id="{{ $data['record']->locality->administrativeArea->parent->id ?? '' }}" class="form-select required" id="parent_id" aria-label="Province/State">
                 <option value="">None</option>
             </select>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-2">
+            <label for="district_id" class="form-label">District</label>
+            <select data-id="{{ $data['record']->locality->administrativeArea->id ?? '' }}" class="form-select district required" id="district_id"
+                    aria-label="District">
+                <option value="">None</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <label for="locality_id" class="form-label">Locality</label>
+            <select data-id="{{ $data['record']->locality->id ?? '' }}" class="form-select locality required" id="locality_id" name="locality_id"
+                    aria-label="Locality">
+                <option value="">None</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
             <label for="type" class="form-label"> Type</label>
             <select class="form-select select-type required" id="type" name="type" aria-label="Type">
                 <option selected disabled> Type</option>

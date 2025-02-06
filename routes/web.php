@@ -75,6 +75,9 @@ Route::middleware('auth')->group(function () {
         Route::get('{id}/edit', [OrganizationController::class, 'edit'])->name('edit');
         Route::put('{id}', [OrganizationController::class, 'update'])->name('update');
         Route::get('/get-parents-by-country', [OrganizationController::class, 'getParentsByCountry'])->name('get_parent');
+        Route::get('/get-districts-by-parent', [OrganizationController::class, 'getDistrictsByParent'])->name('get_parent_district');
+        Route::get('/get-localities-by-district', [OrganizationController::class, 'getLocalitiesByDistrict'])->name('get_locality_district');
+        Route::get('/get-localities-by-country', [OrganizationController::class, 'getParentDetailsByLocality']);
     });
     Route::group(['prefix' => 'organization_gallery', 'as' => 'organization_gallery.'], function () {
         Route::get('trash', [OrganizationGalleryController::class, 'trash'])->name('trash');

@@ -9,7 +9,15 @@
     </tr>
     <tr>
         <th>Administrative Area </th>
-        <td>{{ $data['record']->administrativeArea->name ?? '' }}</td>
+        <td>{{ $data['record']->locality->administrativeArea->parent->name ?? '' }}</td>
+    </tr>
+    <tr>
+        <th>District</th>
+        <td>{{ $data['record']->locality->administrativeArea->name ?? '' }}</td>
+    </tr>
+    <tr>
+        <th>Locality</th>
+        <td>{{ $data['record']->locality->name ?? '' }}</td>
     </tr>
     <tr>
         <th>Type</th>

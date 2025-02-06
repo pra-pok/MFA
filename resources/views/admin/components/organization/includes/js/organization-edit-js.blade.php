@@ -187,7 +187,6 @@
                 alert("At least one row must remain in the table.");
             }
         });
-
         function updateTableIndexes() {
             tableBody.find("tr").each(function (index) {
                 const row = $(this);
@@ -203,7 +202,6 @@
                 });
             });
         }
-
         tableBody.on("change", "input[type='radio'][name^='type']", function () {
             const row = $(this).closest("tr");
             const mediaText = row.find(".media-text");
@@ -219,51 +217,125 @@
         });
         const modal = $('#imageModal');
         const modalImage = $('#fullSizeImage');
-
         $('.clickable-image').on('click', function () {
             const fullImageSrc = $(this).data('bs-image');
             modalImage.attr('src', fullImageSrc);
         });
-
-        function loadAdministrativeAreas(countryId, selectedAreaId = null) {
-            $("#parent_id").html('<option value="">None</option>');
-            if (countryId) {
-                $.ajax({
-                    url: '/organization/get-parents-by-country',
-                    type: "GET",
-                    data: {
-                        id: countryId,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result.parents) {
-                            $.each(result.parents, function (key, value) {
-                                $("#parent_id").append(
-                                    `<option value="${key}" ${selectedAreaId == key ? 'selected' : ''}>${value}</option>`
-                                );
-                            });
+        var defaultCountryId = $('#country_id').val();
+        var selectedParentId = $('#parent_id').attr('data-id');
+        var selectedDistrictId = $('#district_id').attr('data-id');
+        var selectedLocalityId = $('#locality_id').attr('data-id');
+        if (defaultCountryId) {
+            loadAdministrativeAreas(defaultCountryId, selectedParentId, function() {
+                if (selectedParentId) {
+                    loadDistricts(selectedParentId, selectedDistrictId, function() {
+                        if (selectedDistrictId) {
+                            loadLocalities(selectedDistrictId, selectedLocalityId);
                         }
-                    },
-                    error: function () {
-                        console.error('Error fetching administrative areas.');
-                    }
-                });
-            }
+                    });
+                }
+            });
         }
-
         $('#country_id').change(function () {
-            var selectedCountryId = this.value;
-            loadAdministrativeAreas(selectedCountryId);
+            var countryId = this.value;
+            $("#parent_id").html('<option value="">None</option>');
+            $("#district_id").html('<option value="">None</option>');
+            $("#locality_id").html('<option value="">None</option>');
+
+            if (countryId) {
+                loadAdministrativeAreas(countryId, null);
+            }
         });
-        var initialCountryId = $('#country_id').val();
-        var initialAdministrativeAreaId = '{{ $data['record']->administrative_area_id ?? '' }}';
-        if (initialCountryId) {
-            loadAdministrativeAreas(initialCountryId, initialAdministrativeAreaId);
+        $('#parent_id').change(function () {
+            var parentId = this.value;
+            $("#district_id").html('<option value="">None</option>');
+            $("#locality_id").html('<option value="">None</option>');
+
+            if (parentId) {
+                loadDistricts(parentId, null);
+            }
+        });
+        $('#district_id').change(function () {
+            var districtId = this.value;
+            $("#locality_id").html('<option value="">None</option>');
+
+            if (districtId) {
+                loadLocalities(districtId, null);
+            }
+        });
+        function loadAdministrativeAreas(countryId, selectedParentId, callback = null) {
+            $.ajax({
+                url: '/organization/get-parents-by-country',
+                type: "GET",
+                data: {
+                    id: countryId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.parents) {
+                        $.each(result.parents, function (key, value) {
+                            $("#parent_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+                        if (selectedParentId) {
+                            $('#parent_id').val(selectedParentId).trigger('change');
+                        }
+                        if (callback) callback();
+                    }
+                }
+            });
+        }
+        function loadDistricts(parentId, selectedDistrictId, callback = null) {
+            $.ajax({
+                url: '/organization/get-districts-by-parent',
+                type: "GET",
+                data: {
+                    id: parentId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.districts) {
+                        $.each(result.districts, function (key, value) {
+                            $("#district_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+
+                        if (selectedDistrictId) {
+                            $('#district_id').val(selectedDistrictId).trigger('change');
+                        }
+
+                        if (callback) callback();
+                    }
+                }
+            });
+        }
+        function loadLocalities(districtId, selectedLocalityId) {
+            $.ajax({
+                url: '/organization/get-localities-by-district',
+                type: "GET",
+                data: {
+                    id: districtId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.localities) {
+                        $.each(result.localities, function (key, value) {
+                            $("#locality_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+
+                        if (selectedLocalityId) {
+                            $('#locality_id').val(selectedLocalityId).trigger('change');
+                        }
+                    }
+                }
+            });
         }
         $('#parent_id').select2();
         $('.select-country').select2();
         $('.select-type').select2();
         $('.select-university').select2();
+        $('.district').select2();
+        $('.locality').select2();
     });
 </script>

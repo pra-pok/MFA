@@ -26,12 +26,10 @@ class OrganizationSignupController extends DM_BaseController
     protected $table;
     protected $folder = 'organization-signup';
 
-
     public function __construct(Request $request, OrganizationSignup $organization_signup)
     {
         $this->model = $organization_signup;
     }
-
     /**
      * Display a listing of the resource.
      * @return \Illuminate\Http\Response
@@ -44,9 +42,8 @@ class OrganizationSignupController extends DM_BaseController
                 $query = $this->model->with(['createds:id,username', 'updatedBy:id,username'])
                 ->join('tenants', 'tenants.id', '=', 'organization_signup.tenant_id')
                 ->whereNotNull('organization_signup.tenant_id')
-                ->select('organization_signup.*', 'tenants.name as tenant_name') 
+                ->select('organization_signup.*', 'tenants.name as tenant_name')
                 ->orderBy('organization_signup.created_at', 'desc');
-
                 if (!empty($request->tenant_id)) {
                     $query->where('organization_signup.tenant_id', $request->tenant_id);
                 }
@@ -60,8 +57,6 @@ class OrganizationSignupController extends DM_BaseController
 
         return view(parent::loadView($this->view_path . '.index'));
     }
-
-
     /**
      * Show the form for creating a new resource.
      * @return \Illuminate\Http\Response
@@ -414,3 +409,4 @@ class OrganizationSignupController extends DM_BaseController
         }
     }
 }
+

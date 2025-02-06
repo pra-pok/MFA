@@ -104,7 +104,7 @@
             $('.select-course').select2();
             $('.select-page').select2();
             const formData = new FormData(form[0]);
-            formData.append('organization_id', organizationId); // Append organization_id manually if necessary
+            formData.append('organization_id', organizationId);
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',
@@ -121,7 +121,6 @@
                         const nextTabIndex = currentTabIndex + 1;
                         const nextTabLink = $('.nav-tabs .nav-link').eq(nextTabIndex);
                         const nextTabPane = $('.tab-pane').eq(nextTabIndex);
-
                         if (nextTabLink.length && nextTabPane.length) {
                             $('.nav-tabs .nav-link.active').removeClass('active');
                             nextTabLink.addClass('active');
@@ -223,34 +222,170 @@
                 mediaFile.hide();
             }
         });
+        var defaultCountryId = $('#country_id').val();
+        if (defaultCountryId) {
+            loadAdministrativeAreas(defaultCountryId);
+        }
+
+        // When the country changes
         $('#country_id').change(function () {
-            var idcountry = this.value;
+            var countryId = this.value;
             $("#parent_id").html('<option value="">None</option>');
-            if (idcountry) {
-                $.ajax({
-                    url: '/organization/get-parents-by-country',
-                    type: "GET",
-                    data: {
-                        id: idcountry,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function (result) {
-                        if (result.parents) {
-                            $.each(result.parents, function (key, value) {
-                                $("#parent_id").append('<option value="' + key + '">' + value + '</option>');
-                            });
-                        }
-                    }
-                });
+            if (countryId) {
+                loadAdministrativeAreas(countryId);
             }
         });
+
+        // When administrative area changes
+        $('#parent_id').change(function () {
+            var parentId = this.value;
+            $("#district_id").html('<option value="">None</option>');
+            if (parentId) {
+                loadDistricts(parentId);
+            }
+        });
+
+        // When district changes
+        $('#district_id').change(function () {
+            var districtId = this.value;
+            $("#locality_id").html('<option value="">None</option>');
+            if (districtId) {
+                loadLocalities(districtId);
+            }
+        });
+
+        // Function to load administrative areas (provinces/states)
+        function loadAdministrativeAreas(countryId) {
+            $.ajax({
+                url: '/organization/get-parents-by-country',
+                type: "GET",
+                data: {
+                    id: countryId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.parents) {
+                        $.each(result.parents, function (key, value) {
+                            $("#parent_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+                    }
+                }
+            });
+        }
+
+        // Function to load districts
+        function loadDistricts(parentId) {
+            $.ajax({
+                url: '/organization/get-districts-by-parent',
+                type: "GET",
+                data: {
+                    id: parentId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.districts) {
+                        $.each(result.districts, function (key, value) {
+                            $("#district_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+                    }
+                }
+            });
+        }
+
+        // Function to load localities
+        function loadLocalities(districtId) {
+            $.ajax({
+                url: '/organization/get-localities-by-district',
+                type: "GET",
+                data: {
+                    id: districtId,
+                    _token: '{{ csrf_token() }}'
+                },
+                dataType: 'json',
+                success: function (result) {
+                    if (result.localities) {
+                        $.each(result.localities, function (key, value) {
+                            $("#locality_id").append('<option value="' + key + '">' + value + '</option>');
+                        });
+                    }
+                }
+            });
+        }
+        {{--$('#country_id').change(function () {--}}
+        {{--    var idcountry = this.value;--}}
+        {{--    $("#parent_id").html('<option value="">None</option>');--}}
+        {{--    if (idcountry) {--}}
+        {{--        $.ajax({--}}
+        {{--            url: '/organization/get-parents-by-country',--}}
+        {{--            type: "GET",--}}
+        {{--            data: {--}}
+        {{--                id: idcountry,--}}
+        {{--                _token: '{{ csrf_token() }}'--}}
+        {{--            },--}}
+        {{--            dataType: 'json',--}}
+        {{--            success: function (result) {--}}
+        {{--                if (result.parents) {--}}
+        {{--                    $.each(result.parents, function (key, value) {--}}
+        {{--                        $("#parent_id").append('<option value="' + key + '">' + value + '</option>');--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--});--}}
+        {{--$('#parent_id').change(function () {--}}
+        {{--    var idparent = this.value;--}}
+        {{--    $("#district_id").html('<option value="">None</option>');--}}
+        {{--    if (idparent) {--}}
+        {{--        $.ajax({--}}
+        {{--            url: '/organization/get-districts-by-parent',--}}
+        {{--            type: "GET",--}}
+        {{--            data: {--}}
+        {{--                id: idparent,--}}
+        {{--                _token: '{{ csrf_token() }}'--}}
+        {{--            },--}}
+        {{--            dataType: 'json',--}}
+        {{--            success: function (result) {--}}
+        {{--                if (result.$districts) {--}}
+        {{--                    $.each(result.$districts, function (key, value) {--}}
+        {{--                        $("#district_id").append('<option value="' + key + '">' + value + '</option>');--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--});--}}
+        {{--$('#district_id').change(function () {--}}
+        {{--    var iddistrict = this.value;--}}
+        {{--    $("#locality_id").html('<option value="">None</option>');--}}
+        {{--    if (iddistrict) {--}}
+        {{--        $.ajax({--}}
+        {{--            url: '/organization/get-localities-by-district',--}}
+        {{--            type: "GET",--}}
+        {{--            data: {--}}
+        {{--                id: iddistrict,--}}
+        {{--                _token: '{{ csrf_token() }}'--}}
+        {{--            },--}}
+        {{--            dataType: 'json',--}}
+        {{--            success: function (result) {--}}
+        {{--                if (result.$localities) {--}}
+        {{--                    $.each(result.$localities, function (key, value) {--}}
+        {{--                        $("#locality_id").append('<option value="' + key + '">' + value + '</option>');--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--});--}}
         // $('#country_id').trigger('change');
         // $('#country_id').select2();
         $('#parent_id').select2();
         $('.select-country').select2();
         $('.select-type').select2();
         $('.select-university').select2();
-
+        $('.district').select2();
+        $('.locality').select2();
     });
 </script>

@@ -11,7 +11,6 @@ class Organization extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = [
-        'administrative_area_id',
         'name',
         'slug',
         'logo',
@@ -31,7 +30,8 @@ class Organization extends Model
         'total_view',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'locality_id'
     ];
 
     protected $table = 'organizations';
@@ -48,6 +48,7 @@ class Organization extends Model
         return $this->belongsTo(Stream::class,'stream_id','id');
     }
 
+
     public function level(){
         return $this->belongsTo(Level::class,'level_id','id');
     }
@@ -58,6 +59,10 @@ class Organization extends Model
 
     public function country(){
         return $this->belongsTo(Country::class,'country_id','id');
+    }
+
+    public function locality(){
+        return $this->belongsTo(Locality::class,'locality_id','id');
     }
 
     public function socialMediaLinks()
@@ -84,6 +89,4 @@ class Organization extends Model
     public function organizationfacilities(){
         return $this->hasMany(OrganizationFacilities::class,'organization_id','id');
     }
-
-
 }

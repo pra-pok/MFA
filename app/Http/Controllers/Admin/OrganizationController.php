@@ -9,6 +9,7 @@ use App\Models\Country;
 use App\Models\Course;
 use App\Models\Facilities;
 use App\Models\GalleryCategory;
+use App\Models\Locality;
 use App\Models\Organization;
 use App\Models\Level;
 use App\Models\OrganizationCourse;
@@ -109,14 +110,44 @@ class OrganizationController extends DM_BaseController
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = [];
         $data['university'] = University::pluck('title', 'id');
+        $data['locality'] = locality::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
+
     public function getParentsByCountry(Request $request)
     {
         $countryId = $request->id;
-        $parents = AdministrativeArea::where('country_id', $countryId)->whereNull('parent_id')->pluck('name', 'id');
+        $parents = AdministrativeArea::where('country_id', $countryId)
+            ->whereNull('parent_id')
+            ->pluck('name', 'id');
         return response()->json(['parents' => $parents]);
     }
+
+    public function getDistrictsByParent(Request $request)
+    {
+        $parentId = $request->id;
+        $districts = AdministrativeArea::where('parent_id', $parentId)->pluck('name', 'id');
+        return response()->json(['districts' => $districts]);
+    }
+
+    public function getLocalitiesByDistrict(Request $request)
+    {
+        $districtId = $request->id;
+        $localities = Locality::where('administrative_area_id', $districtId)->pluck('name', 'id');
+        return response()->json(['localities' => $localities]);
+    }
+    public function getParentDetailsByLocality(Request $request)
+    {
+        $localityId = $request->id;
+        $locality = Locality::find($localityId);
+        $district = $locality->parent;
+        $province = $district ? $district->parent : null;
+        return response()->json([
+            'province' => $province ? $province->id : null,
+            'district' => $district ? $district->id : null
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -232,6 +263,7 @@ class OrganizationController extends DM_BaseController
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = OrganizationFacilities::where('organization_id', $id)->pluck('facility_id')->toArray();
         $data['university'] = University::pluck('title', 'id');
+        $data['locality'] = locality::pluck('name', 'id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
     /**

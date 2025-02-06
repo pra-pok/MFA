@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('localites', function (Blueprint $table) {
+        Schema::create('localities', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('administrative_area_id');
             $table->string('name');
@@ -26,12 +26,11 @@ return new class extends Migration
 
         });
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('localites');
+        Schema::dropIfExists('localities');
     }
 };
