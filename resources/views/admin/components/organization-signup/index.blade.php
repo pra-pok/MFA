@@ -137,7 +137,9 @@
                 <span> ${data.phone} </span>
             </td>
             <td>${data.address}</td>
-            <td>${statusBadge}</td>
+            <td>${statusBadge}
+                <div style="white-space: pre-wrap; word-wrap: break-word;">${data.comment ?? ''}</div>
+            </td>
             <td>
                 ${modifiedByName}<br>
                 ${modifiedDate}
@@ -179,22 +181,48 @@
                 });
             });
         });
-        // function showBasicModalBlock(id) {
+        // function showBasicModalBlock(id, status) {
         //     $("#block_id").val(id);
+        //     $("#block_status").val(status);
+        //
+        //     if (status === 1) {
+        //         $("#commentField").hide();
+        //     } else {
+        //         $("#commentField").show();
+        //     }
         //     var myBlockModal = new bootstrap.Modal(document.getElementById("basicModalBlock"));
         //     myBlockModal.show();
         // }
-        function showBasicModalBlock(id, status) {
-            $("#block_id").val(id);
-            $("#block_status").val(status);
-            if (status === 1) {
-                $("#commentField").hide();
-            } else {
-                $("#commentField").show();
-            }
-            var myBlockModal = new bootstrap.Modal(document.getElementById("basicModalBlock"));
-            myBlockModal.show();
+        function showBasicModalBlock(id) {
+            $.ajax({
+                url: '{{ route("organization-signup.getDataMessage") }}',
+                method: 'GET',
+                data: { id: id, _token: '{{ csrf_token() }}' },
+                success: function(response) {
+                    if (response.success && response.data) {
+                        $('#block_id').val(id);
+                        $('#block_status').val(response.data.status);
+                        $('#modalTitle').text(response.data.full_name);
+                        $('#userFullName').text(response.data.full_name);
+                        if (response.data.comment) {
+                            $('#comment').text(response.data.comment);
+                        } else {
+                            $('#comment').text(" ");
+                        }
+
+                        var myBlockModal = new bootstrap.Modal(document.getElementById('basicModalBlock'));
+                        myBlockModal.show();
+                    } else {
+                        alert("Failed to fetch data.");
+                    }
+                },
+                error: function(xhr) {
+                    console.error('Error fetching data:', xhr);
+                    alert("An error occurred while fetching data.");
+                }
+            });
         }
+
         $(document).ready(function () {
             $("#blockForm").submit(function (e) {
                 e.preventDefault();
@@ -210,21 +238,35 @@
                     contentType: false,
                     success: function (response) {
                         if (response.success) {
-                            $("#basicModalBlock").modal("hide"); // Close modal
-
-                            // Update the button dynamically
+                            $("#basicModalBlock").modal("hide");
                             let button = $("#block-btn-" + organizationId);
                             if (response.status === 1) {
-                                button.html('<i class="bx bx-block"></i> Block'); // Change to "Block"
-                                button.removeClass("text-success").addClass("text-danger"); // Change color
-                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-success">Active</span>'); // Change status badge
-                                location.reload();
+                                button.html('<i class="bx bx-block"></i> Block');
+                                button.removeClass("text-success").addClass("text-danger");
+                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-success">Active</span>');
+                                $("#commentField").hide();
+                                $("#commentField textarea").val('');
+                                $.ajax({
+                                    url: "{{ route('organization-signup.clearComment') }}",
+                                    type: "POST",
+                                    data: { id: organizationId, _token: "{{ csrf_token() }}" },
+                                    success: function(clearResponse) {
+                                        if (clearResponse.success) {
+                                            console.log('Comment cleared successfully');
+                                        } else {
+                                            console.error('Failed to clear comment');
+                                        }
+                                    },
+                                    error: function(xhr) {
+                                        console.error("Error clearing comment: " + (xhr.responseJSON?.message || "Something went wrong!"));
+                                    }
+                                });
                             } else {
-                                button.html('<i class="bx bx-check-circle"></i> Unblock'); // Change to "Unblock"
-                                button.removeClass("text-danger").addClass("text-success"); // Change color
-                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-danger">In-Active</span>'); // Change status badge
-                                location.reload();
+                                button.html('<i class="bx bx-check-circle"></i> Unblock');
+                                button.removeClass("text-danger").addClass("text-success");
+                                $(`#status-badge-${organizationId}`).html('<span class="badge bg-label-danger">In-Active</span>');
                             }
+                            location.reload();
                         } else {
                             alert(response.message);
                         }

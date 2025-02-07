@@ -4,7 +4,7 @@
         <div class="row g-6">
             <div class="col-md-12">
                 <div class="card">
-                    <h5 class="card-header">View {{ $_panel }}</h5>
+                    <h5 class="card-header text-center">{{$data['record']->name}}</h5>
                     @include('admin.includes.buttons.button-back')
                     @include('admin.includes.flash_message_error')
                     <ul class="nav nav-tabs nav-fill" role="tablist">

@@ -31,7 +31,8 @@ class Organization extends Model
         'status',
         'created_by',
         'updated_by',
-        'locality_id'
+        'locality_id',
+        'google_map',
     ];
 
     protected $table = 'organizations';

@@ -75,44 +75,6 @@ class OrganizationSignupController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    //    public function store(OrganizationSignupRequest $request)
-    //    {
-    //        try {
-    //
-    //            $defaultRoleId = 'Super admin';
-    //            if($defaultRoleId) {
-    //                $defaultRoleId = OrganizationRole::create($defaultRoleId);
-    //            }
-    //
-    //            $defaultTenantId = 'full_name_tenant';
-    //            $request->request->add(['created_by' => auth()->user()->id]);
-    //            $data = $request->except(['password_confirmation']);
-    //            $data['password'] = Hash::make($request->password);
-    //            $data['organization_role_id'] = $request->organization_role_id ?? $defaultRoleId;
-    //            $data['tenant_id'] = $request->tenant_id ?? $defaultTenantId;
-    //            $organization_signup = $this->model->create($data);
-    //            if ($organization_signup) {
-    //                logUserAction(
-    //                    auth()->user()->id,
-    //                    auth()->user()->team_id,
-    //                    $this->panel . ' created successfully!',
-    //                    [$data]
-    //                );
-    //                $request->session()->flash('alert-success', $this->panel . ' created successfully!');
-    //            } else {
-    //                logUserAction(
-    //                    auth()->user()->id,
-    //                    auth()->user()->team_id,
-    //                    $this->panel . ' creation failed.',
-    //                    [$data]
-    //                );
-    //                $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
-    //            }
-    //        } catch (\Exception $exception) {
-    //            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
-    //        }
-    //        return redirect()->route($this->base_route . '.index');
-    //    }
 
     public function store(OrganizationSignupRequest $request)
     {
@@ -382,7 +344,21 @@ class OrganizationSignupController extends DM_BaseController
     //        }
     //        return redirect()->route($this->base_route . '.index');
     //    }
-
+    public function getDataMessage(Request $request)
+    {
+        $organization = OrganizationSignup::find($request->id);
+        if ($organization) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'full_name' => $organization->full_name,
+                    'comment' => $organization->comment,
+                    'status' => $organization->status
+                ]
+            ]);
+        }
+        return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
+    }
     public function block(Request $request)
     {
         $request->validate([
@@ -407,6 +383,18 @@ class OrganizationSignupController extends DM_BaseController
         } catch (\Exception $exception) {
             return response()->json(['success' => false, 'message' => 'Database Error: ' . $exception->getMessage()], 500);
         }
+    }
+    public function clearComment(Request $request)
+    {
+        $organization = OrganizationSignup::find($request->id);
+        if ($organization) {
+            $organization->comment = null;
+            $organization->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not found']);
     }
 }
 

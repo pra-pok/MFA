@@ -57,7 +57,13 @@ class OrganizationController extends DM_BaseController
                     },
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
-                    }
+                    },
+                    'country' => function ($query) {
+                        $query->select('id', 'name');
+                    },
+                    'locality' => function ($query) {
+                        $query->with('administrativeArea.parent.country');
+                    },
                 ])
                     ->orderBy('created_at', 'desc')
                     ->get();

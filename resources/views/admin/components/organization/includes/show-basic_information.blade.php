@@ -1,7 +1,7 @@
 <table class="table table-bordered">
     <tr>
-        <th>ID</th>
-        <td>{{$data['record']->id}}</td>
+        <th>College/School Name</th>
+        <td>{{$data['record']->name}}</td>
     </tr>
     <tr>
         <th>Country</th>
@@ -22,10 +22,6 @@
     <tr>
         <th>Type</th>
         <td>{{ $data['record']->type }}</td>
-    </tr>
-    <tr>
-        <th>College/School Name</th>
-        <td>{{$data['record']->name}}</td>
     </tr>
     <tr>
         <th>Slug</th>
@@ -73,6 +69,10 @@
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="Banner" class="img-thumbnail" width="200"/>
             @endif
         </td>
+    </tr>
+    <tr>
+        <th>Google Map</th>
+        <td>{!!  $data['record']->google_map  !!} </td>
     </tr>
     <tr>
         <th>Description</th>

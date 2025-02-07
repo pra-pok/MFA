@@ -156,4 +156,75 @@ class UserController extends Controller
             ->route('user.index')
             ->withSuccess('Roles assigned successfully');
     }
+    public function reset(Request $request)
+    {
+        $request->validate([
+            'password' => 'nullable',
+        ]);
+        try {
+            $user = User::findOrFail($request->id);
+            $user->password = Hash::make($request->password);
+            $user->save();
+            if ($user) {
+                $request->session()->flash('alert-success', $this->panel . ' Password Change successfully!');
+            } else {
+                $request->session()->flash('alert-danger', $this->panel . ' creation failed!');
+            }
+        } catch (\Exception $exception) {
+            $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
+        }
+        return redirect()->route( 'user.index');
+    }
+    public function block(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:users,id',
+            'comment' => $request->status == 0 ? 'nullable' : 'nullable',
+        ]);
+        try {
+            $user = User::findOrFail($request->id);
+            $newStatus = $user->status == 1 ? 0 : 1;
+            if ($newStatus == 0 && !$request->comment) {
+                return response()->json(['success' => false, 'message' => 'Comment is required to block.'], 422);
+            }
+            $user->status = $newStatus;
+            $user->comment = $request->comment ?? $user->comment;
+            $user->save();
+            return response()->json([
+                'success' => true,
+                'status' => $user->status,
+                'message' => $newStatus == 1 ? 'Organization Unblocked successfully!' : 'Organization Blocked successfully!',
+            ]);
+        } catch (\Exception $exception) {
+            return response()->json(['success' => false, 'message' => 'Database Error: ' . $exception->getMessage()], 500);
+        }
+    }
+    public function clearComment(Request $request)
+    {
+        $user = User::find($request->user_id);
+        if ($user) {
+            $user->comment = null;
+            $user->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not found']);
+    }
+
+    public function getDataMessage(Request $request)
+    {
+        $user = User::find($request->id);
+        if ($user) {
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'name' => $user->name,
+                    'comment' => $user->comment,
+                    'status' => $user->status
+                ]
+            ]);
+        }
+        return response()->json(['success' => false, 'message' => 'Organization not found'], 404);
+    }
 }

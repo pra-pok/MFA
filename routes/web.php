@@ -59,6 +59,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/user/{user}/assign-roles', [UserController::class, 'assignRoles'])->name('user.assign-roles');
     Route::post('/user/{user}/assign-roles', [UserController::class, 'saveAssignRoles'])->name('user.assign-roles.save');
     Route::post('/log-user-action', [UserActionController::class, 'logUserAction']);
+    Route::post('/user/reset-password', [UserController::class, 'reset'])->name('user.reset');
+    Route::post('/user/block', [UserController::class, 'block'])->name('user.block');
+    Route::post('/user/clear-comment', [UserController::class, 'clearComment'])->name('user.clearComment');
+    Route::get('/user/getData', [UserController::class, 'getDataMessage'])->name('user.getDataMessage');
 
     Route::resource('article', ArticleController::class);
 
@@ -133,7 +137,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('force-delete/{id}', [OrganizationSignupController::class, 'forceDeleteData'])->name('organization-signup.force_delete');
     Route::delete('{id}', [OrganizationSignupController::class, 'destroy'])->name('organization-signup.destroy');
     Route::post('/reset-password', [OrganizationSignupController::class, 'reset'])->name('organization-signup.reset');
+    Route::get('/getData', [OrganizationSignupController::class, 'getDataMessage'])->name('organization-signup.getDataMessage');
     Route::post('/block', [OrganizationSignupController::class, 'block'])->name('organization-signup.block');
+    Route::post('/clear-comment', [OrganizationSignupController::class, 'clearComment'])->name('organization-signup.clearComment');
 
     Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;

@@ -26,6 +26,7 @@
                             <th width="8%" class="text-center">SN</th>
                             <th>College/School Name</th>
                             <th width="10%">Logo</th>
+                            <th width="15%">Address</th>
                             <th>Email/Phone No.</th>
                             <th class="text-center">Status</th>
                             <th>Modified By/At</th>
@@ -59,10 +60,12 @@
                 {data: 'name'},
                 {data: 'address'},
                 {data: 'email'},
+                {data: 'locality.name'},
                 {data: 'status'},
                 {data: 'createds.username'},
             ],
             rowCallback: function (row, data, index) {
+
                 const pageInfo = $('#datatable').DataTable().page.info();
                 const pageIndex = pageInfo.page;
                 const pageLength = pageInfo.length;
@@ -81,13 +84,26 @@
                     ? `<img src="{{ url('/image-serve/') }}/${folder}/${data.logo}" alt="logo" class="img-thumbnail" >`
                     : '';
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
+
+                // Extract locality and its related information
+                const localities = data.locality ? data.locality.name : '';
+                const dataDistrict = data.locality && data.locality.administrative_area
+                    ? data.locality.administrative_area.name
+                    : '';
+                const dataProvince = data.locality && data.locality.administrative_area && data.locality.administrative_area.parent
+                    ? data.locality.administrative_area.parent.name
+                    : '';
+                const dataCountry = data.locality && data.locality.administrative_area && data.locality.administrative_area.parent && data.locality.administrative_area.parent.country
+                    ? data.locality.administrative_area.parent.country.name
+                    : '';
+
                 const rowContent = `
-            <td class="text-center" >${serialNumber}</td>
+            <td class="text-center">${serialNumber}</td>
             <td class="position-relative">
-               <a href="${showUrl}" class="text-decoration-none" >  ${data.name}  </a>
-               <a href="${data.website}" target="blank" >
-                   <i class="bx bx-right-top-arrow-circle"></i>
-               </a>
+                <a href="${showUrl}" class="text-decoration-none">${data.name}</a>
+                <a href="${data.website}" target="blank">
+                    <i class="bx bx-right-top-arrow-circle"></i>
+                </a>
                 <div class="dropdown d-inline-block">
                     <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y " data-bs-toggle="dropdown">
                         <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
@@ -110,14 +126,26 @@
                     </ul>
                 </div>
                 <br>
-                <span class="d-block text-muted mt-1" style="font-size: 13px;"> ${data.address || ' '} </span>
+                <span class="d-block text-muted mt-1" style="font-size: 13px;">${data.address || ' '}</span>
             </td>
+            <td>${logoUrl}</td>
+           <td>
+                ${localities ? localities + ',' : ''}
+                <br>
+                <span style="font-size: 13px;">
+                    ${dataDistrict ? dataDistrict + ',' : ''}
+                </span>
+                <span style="font-size: 13px;">
+                    ${dataProvince ? dataProvince + ',' : ''}
+                </span>
+                <br>
+                <span style="font-size: 13px;">
+                    ${dataCountry || ''}
+                </span>
+           </td>
             <td>
-               ${logoUrl}
-            </td>
-            <td>
-               ${data.email}
-                <br> <span style="font-size: 13px;"> ${data.phone || '-'} </span>
+                ${data.email}
+                <br><span style="font-size: 13px;">${data.phone || ''}</span>
             </td>
             <td class="text-center">${statusBadge}</td>
             <td>
@@ -125,12 +153,14 @@
                 ${modifiedDate}
             </td>
         `;
+
                 $(row).html(rowContent);
             },
             pageLength: 10,
             lengthMenu: [10, 25, 50, 75, 100, 150],
             responsive: true
         });
+
     </script>
     @include('admin.includes.javascript.display_none')
 @endsection

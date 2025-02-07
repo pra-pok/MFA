@@ -92,7 +92,10 @@
             <input type="file" name="banner_file" class="form-control " id="banner"/>
         </div>
     </div>
-
+    <div class="mb-3">
+        <label for="google_map" class="form-label">Google Map</label>
+        <input type="text" name="google_map" class="form-control " id="google_map"/>
+    </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
         <textarea class="form-control editor" name="description" ></textarea>

@@ -9,7 +9,7 @@
         </div>
         <div class="modal-body">
             <div>
-                <span id="comment"> </span>
+                <span id="comment"></span>
             </div>
             <div id="commentField" class="mt-3">
                 <label for="comment" class="form-label">Comment</label>
