@@ -11,19 +11,17 @@
 
         <div class="card">
             <h5 class="card-header">{{$_panel}}</h5>
+            <div class="card-body">
             @include('admin.includes.buttons.button-back')
             @include('admin.includes.flash_message')
             <div class="table-responsive text-nowrap">
-                <table class="table">
+                <table id="datatable" class="table table-bordered">
                     <thead>
                     <tr>
                         <th>SN</th>
-                        <th>Title</th>
+                        <th>Name</th>
                         <th>Slug</th>
-                        <th>Rank</th>
-                        <th>Created By</th>
-                        <th>Updated_By</th>
-                        <th>Deleted_By</th>
+                        <th class="text-center">Deleted_By</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -32,12 +30,9 @@
                     @foreach ($data['records'] as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $item->title }}</td>
+                            <td>{{ $item->name }}</td>
                             <td>{{ $item->slug }}</td>
-                            <td>{{ $item->rank }}</td>
-                            <td>{{ $item->createds->name }}</td>
-                            <td>{{$item->updated_by}}</td>
-                            <td>{{$item->deleted_at}}</td>
+                            <td class="text-center">{{$item->deleted_at}}</td>
                             <td>
                                 @include('admin.includes.buttons.display_status',['status' => $item->status])
                             </td>
@@ -55,6 +50,22 @@
                     </tbody>
                 </table>
             </div>
+            </div>
+
         </div>
     </div>
+@endsection
+@section('js')
+    <script>
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+            });
+        });
+    </script>
 @endsection

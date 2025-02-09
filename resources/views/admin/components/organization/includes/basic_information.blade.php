@@ -27,8 +27,8 @@
             </select>
         </div>
         <div class="col-md-3">
-            <label for="locality_id" class="form-label">Locality</label>
-            <select class="form-select locality required" id="locality_id" name="locality_id" aria-label="Locality">
+            <label for="locality_id" class="form-label">Municipality</label>
+            <select class="form-select locality required" id="locality_id" name="locality_id" aria-label="Municipality">
                 <option value="">None</option>
             </select>
         </div>

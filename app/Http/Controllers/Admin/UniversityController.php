@@ -219,7 +219,7 @@ class UniversityController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id): \Illuminate\Http\Response
+    public function destroy($id)
     {
         $record = $this->model->find($id);
         if (!$record) {
