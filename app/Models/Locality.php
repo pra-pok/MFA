@@ -27,11 +27,9 @@ class Locality extends Model
     public function updatedBy(){
         return $this->belongsTo(User::class,'updated_by','id');
     }
-
-    public function administrativeArea(){
+    public function state(){
         return $this->belongsTo(AdministrativeArea::class,'administrative_area_id','id');
     }
-
     public function organizations()
     {
         return $this->hasMany(Organization::class);

@@ -27,6 +27,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Admin\LocalityController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -140,6 +141,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/getData', [OrganizationSignupController::class, 'getDataMessage'])->name('organization-signup.getDataMessage');
     Route::post('/block', [OrganizationSignupController::class, 'block'])->name('organization-signup.block');
     Route::post('/clear-comment', [OrganizationSignupController::class, 'clearComment'])->name('organization-signup.clearComment');
+
+    Route::resource('locality', LocalityController::class);
 
     Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;

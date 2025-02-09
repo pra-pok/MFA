@@ -48,37 +48,25 @@ class OrganizationController extends DM_BaseController
      */
     public function index(Request $request)
     {
-        $data['folder'] = $this->folder;
+
         try {
             if ($request->ajax()) {
-                $data = $this->model->with([
+                $data = $this->model->with(relations: [
                     'createds' => function ($query) {
                         $query->select('id', 'username');
                     },
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
                     },
-                    'country' => function ($query) {
-                        $query->select('id', 'name');
-                    },
-                    'locality' => function ($query) {
-                        $query->with('administrativeArea.parent.country');
-                    },
-                ])
-                    ->orderBy('created_at', 'desc')
-                    ->get();
 
+                ])->orderBy('created_at', 'desc')->get();
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
         } catch (\Exception $exception) {
 
-            return response()->json([
-                'data' => [],
-                'message' => 'An error occurred while retrieving data.',
-                'status' => 'error'
-            ], 500);
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO([], 'An error occurred while retrieving data.', 'error'));
         }
-        return view(parent::loadView($this->view_path . '.index'));
+         return view(parent::loadView($this->view_path . '.index'));
     }
 
 

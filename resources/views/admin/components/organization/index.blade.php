@@ -85,7 +85,6 @@
                     : '';
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
 
-                // Extract locality and its related information
                 const localities = data.locality ? data.locality.name : '';
                 const dataDistrict = data.locality && data.locality.administrative_area
                     ? data.locality.administrative_area.name

@@ -32,7 +32,7 @@ class AdministrativeArea extends Model
     }
 
     public function parent(){
-        return $this->belongsTo(AdministrativeArea::class,'parent_id','id');
+        return $this->belongsTo(AdministrativeArea::class,'parent_id', 'id');
     }
     public function children(){
         return $this->hasMany(AdministrativeArea::class,'parent_id','id');

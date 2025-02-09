@@ -107,38 +107,12 @@
                 </li>
         </ul>
     </li>
-
     {{-- Disable Modules for Super Admin Team --}}
     @if (auth()->user()->team_id != 1)
         <!-- Modules -->
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Modules</span>
         </li>
-{{--
-        @canAny(['article__read', 'article__create'])
-            <li class="menu-item">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-news"></i>
-                    <div class="text-truncate">Articles</div>
-                </a>
-                <ul class="menu-sub">
-                    @can('article__create')
-                        <li class="menu-item">
-                            <a href="{{ route('article.create') }}" class="menu-link">
-                                <div class="text-truncate">Add Article</div>
-                            </a>
-                        </li>
-                    @endcan
-                    @can('article__read')
-                        <li class="menu-item">
-                            <a href="{{ route('article.index') }}" class="menu-link">
-                                <div class="text-truncate">List Article</div>
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </li>
-        @endcan --}}
     @endif
     <li class="menu-item ">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -158,11 +132,30 @@
             </li>
         </ul>
     </li>
-    <li class="menu-item ">
-        <a href="{{route('admin.country.index')}}" class="menu-link">
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-globe"></i>
-            <div class="text-truncate" data-i18n="Basic Inputs">Country</div>
+            <div class="text-truncate" data-i18n="Basic Inputs">Address</div>
         </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.country.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Country</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('admin.administrative_area.index')}}" class="menu-link">
+
+                    <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('locality.index')}}" class="menu-link">
+
+                    <div class="text-truncate" data-i18n="Form Elements">Locality</div>
+                </a>
+            </li>
+        </ul>
     </li>
     <li class="menu-item ">
         <a href="{{route('admin.university.index')}}" class="menu-link">

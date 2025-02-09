@@ -4,8 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
 use App\Http\Requests\AdministrativeAreaRequest;
-use App\Models\AdministrativeArea;
+use App\Models\Locality;
 use App\Models\Country;
+use App\Models\AdministrativeArea;
 use App\Models\Level;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -17,18 +18,18 @@ use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use App\Utils;
 
-class AdministrativeAreaController extends DM_BaseController
+class LocalityController extends DM_BaseController
 {
-    protected $panel = 'Administrative Area';
-    protected $base_route = 'admin.administrative_area';
-    protected $view_path = 'admin.components.administrative_area';
+    protected $panel = 'Locality';
+    protected $base_route = 'locality';
+    protected $view_path = 'admin.components.locality';
     protected $model;
     protected $table;
 
 
-    public function __construct(Request $request, AdministrativeArea $administrative_area)
+    public function __construct(Request $request, Locality $locality)
     {
-        $this->model = $administrative_area;
+        $this->model = $locality;
     }
     /**
      * Display a listing of the resource.
@@ -38,19 +39,12 @@ class AdministrativeAreaController extends DM_BaseController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->with(['createds', 'parent','country', 'parent.country' ])
-                ->orderBy('created_at', 'desc')->get();
+            $data = $this->model->with(['createds', 'state.parent.country'])
+                ->orderBy('created_at', 'desc')
+                ->get();
             return response()->json($data);
         }
-        $data['parents'] = AdministrativeArea::whereNull('parent_id')->pluck('name' , 'id');
-        $data['country'] = Country::pluck('name', 'id');
-        return view(parent::loadView($this->view_path . '.index'), compact('data'));
-    }
-    public function getParentsByCountry(Request $request)
-    {
-        $countryId = $request->id;
-        $parents = AdministrativeArea::where('country_id', $countryId)->whereNull('parent_id')->pluck('name', 'id');
-        return response()->json(['parents' => $parents]);
+        return view(parent::loadView($this->view_path . '.index'));
     }
     /**
      * Show the form for creating a new resource.

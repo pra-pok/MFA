@@ -79,7 +79,8 @@
                         data: 'country.name'
                     },
                     {
-                        data: 'name'
+                        data: 'name',
+                        data: 'parent.name'
                     },
                     {
                         data: 'slug'
@@ -113,9 +114,10 @@
 
                     //const editUrl = `{{ url('admin/administrative_area/${data.id}/edit') }}`;
                     const deleteUrl = `{{ url('admin/administrative_area/${data.id}') }}`;
+                    const countryName = data.country?.name || (data.parent?.country?.name || '');
                     const rowContent = `
                      <td class="text-center" >${serialNumber}</td>
-                     <td>${data.country?.name || ' '}</td>
+                     <td>${countryName}</td>
                     <td class="position-relative">
                     ${data.name}
                        <br> <span style="font-size: 13px;"> ${data.parent?.name || ''} </span>
