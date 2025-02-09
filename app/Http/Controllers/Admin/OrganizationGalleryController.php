@@ -366,7 +366,6 @@ class OrganizationGalleryController extends DM_BaseController
                 );
             }
         } catch (\Exception $exception) {
-            Log::error('Error updating organization gallery data', ['error' => $exception->getMessage()]);
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($data, 'An error occurred while updating gallery items.', 'error')
             );

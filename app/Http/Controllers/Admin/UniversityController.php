@@ -227,7 +227,6 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($record->delete()) {
-            Log::info($this->panel . ' moved to trash successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
             request()->session()->flash('alert-success', $this->panel . ' moved to trash successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' trash failed!');
@@ -249,7 +248,6 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . '.trash');
         }
         if ($record->restore()) {
-            Log::info($this->panel . ' restore successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
             request()->session()->flash('alert-success', $this->panel . ' restore successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' restore failed!');
@@ -271,7 +269,6 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($record->forceDelete()) {
-            Log::info($this->panel . ' deleted successfully!', ['user_id' => auth()->user()->name, 'data' => request()->all()]);
             request()->session()->flash('alert-success', $this->panel . ' deleted successfully!');
         } else {
             request()->session()->flash('alert-danger', $this->panel . ' delete failed!');

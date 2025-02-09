@@ -46,9 +46,6 @@ class GalleryCategoryController extends DM_BaseController
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
         } catch (\Exception $exception) {
-            \Log::error('Error in index method: ' . $exception->getMessage(), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
 
             return response()->json([
                 'data' => [],
@@ -118,7 +115,6 @@ class GalleryCategoryController extends DM_BaseController
                     'data' => $request->all(),
                 ]
             );
-            Log::error('Database Error', ['error' => $exception->getMessage()]);
             $request->session()->flash('alert-danger', 'Database Error: ' . $exception->getMessage());
         }
         return redirect()->route($this->base_route . '.index');

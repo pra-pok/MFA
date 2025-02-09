@@ -142,8 +142,6 @@ class RoleController extends Controller
         if ($role->name == 'Super Admin') {
             return redirect()->route('role.index')->withError('Super Admin cannot be assigned permissions');
         }
-        // Log the permissions to debug
-        \Log::info('Permissions:', $request->permissions);
 
         // Sync permissions
         $role->syncPermissions($request->permissions);

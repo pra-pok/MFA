@@ -44,10 +44,6 @@ class PageCategoryController extends DM_BaseController
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
         } catch (\Exception $exception) {
-            \Log::error('Error in index method: ' . $exception->getMessage(), [
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
             return response()->json([
                 'data' => [],
                 'message' => 'An error occurred while retrieving data.',
