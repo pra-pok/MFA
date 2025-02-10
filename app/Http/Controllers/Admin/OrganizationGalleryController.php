@@ -158,9 +158,165 @@ class OrganizationGalleryController extends DM_BaseController
 //            );
 //        }
 //    }
+//    public function store(Request $request)
+//    {
+//        //dd($request->all());
+//        try {
+//            $organization_id = $request->input('organization_id');
+//            $gallery_category_ids = $request->input('gallery_category_id');
+//            $captions = $request->input('caption');
+//            $ranks = $request->input('rank');
+//            $created_by = auth()->id();
+//            $updated_by = auth()->id();
+//            foreach ($gallery_category_ids as $index => $category_id) {
+//                $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
+//                    ->where('gallery_category_id', $category_id)
+//                    ->first();
+//                if ($galleryItem) {
+//                    $galleryItem->caption = $captions[$index];
+//                    $galleryItem->rank = $ranks[$index];
+//                    $galleryItem->updated_by = $updated_by;
+//                    if ($request->hasFile("media_file.$index")) {
+//                        foreach ($request->file("media_file.$index") as $file) {
+//                            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+//                            if (!file_exists($fileDirectory)) {
+//                                mkdir($fileDirectory, 0777, true);
+//                            }
+//                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                            $file->move($fileDirectory, $media_file_name);
+//                            OrganizationGallery::create([
+//                                'organization_id' => $organization_id,
+//                                'gallery_category_id' => $category_id,
+//                                'caption' => $captions[$index],
+//                                'rank' => $ranks[$index],
+//                                'type' => 1,
+//                                'media' => $media_file_name,
+//                                'created_by' => $created_by,
+//                                'updated_by' => $updated_by,
+//                            ]);
+//                        }
+//                    }
+//                } else {
+//                    if ($request->hasFile("media_file.$index")) {
+//                        foreach ($request->file("media_file.$index") as $file) {
+//                            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+//                            if (!file_exists($fileDirectory)) {
+//                                mkdir($fileDirectory, 0777, true);
+//                            }
+//                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                            $file->move($fileDirectory, $media_file_name);
+//                            OrganizationGallery::create([
+//                                'organization_id' => $organization_id,
+//                                'gallery_category_id' => $category_id,
+//                                'caption' => $captions[$index],
+//                                'rank' => $ranks[$index],
+//                                'type' => 1,
+//                                'media' => $media_file_name,
+//                                'created_by' => $created_by,
+//                                'updated_by' => $updated_by,
+//                            ]);
+//                        }
+//                    }
+//                    if (!empty($request->input("media.$index"))) {
+//                        OrganizationGallery::create([
+//                            'organization_id' => $organization_id,
+//                            'gallery_category_id' => $category_id,
+//                            'caption' => $captions[$index],
+//                            'rank' => $ranks[$index],
+//                            'type' => 0,
+//                            'media' => $request->input("media.$index"),
+//                            'created_by' => $created_by,
+//                            'updated_by' => $updated_by,
+//                        ]);
+//                    }
+//                }
+//            }
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'Gallery items stored/updated successfully.', 'success')
+//            );
+//        } catch (\Exception $exception) {
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'An error occurred while saving/updating gallery items.', 'error')
+//            );
+//        }
+////    }
+//    public function store(Request $request)
+//    {
+//        try {
+//            $organization_id = $request->input('organization_id');
+//            $gallery_category_ids = $request->input('gallery_category_id');
+//            $captions = $request->input('caption');
+//            $ranks = $request->input('rank');
+//            $created_by = auth()->id();
+//            $updated_by = auth()->id();
+//            foreach ($gallery_category_ids as $index => $category_id) {
+//                $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
+//                    ->where('gallery_category_id', $category_id)
+//                    ->first();
+//                if ($galleryItem) {
+//                    $galleryItem->caption = $captions[$index];
+//                    $galleryItem->rank = $ranks[$index];
+//                    $galleryItem->updated_by = $updated_by;
+//                    $galleryItem->save();
+//                } else {
+//                    $galleryItem = new OrganizationGallery();
+//                    $galleryItem->organization_id = $organization_id;
+//                    $galleryItem->gallery_category_id = $category_id;
+//                    $galleryItem->caption = $captions[$index];
+//                    $galleryItem->rank = $ranks[$index];
+//                    $galleryItem->created_by = $created_by;
+//                    $galleryItem->updated_by = $updated_by;
+//                }
+//                if ($request->input("media.$index")) {
+//                    $media_url = $request->input("media.$index");
+//                    if (filter_var($media_url, FILTER_VALIDATE_URL) && strpos($media_url, 'youtube.com') !== false) {
+//                        OrganizationGallery::create([
+//                            'organization_id' => $organization_id,
+//                            'gallery_category_id' => $category_id,
+//                            'caption' => $captions[$index],
+//                            'rank' => $ranks[$index],
+//                            'type' => 0,
+//                            'media' => $media_url,
+//                            'created_by' => $created_by,
+//                            'updated_by' => $updated_by,
+//                        ]);
+//                    }
+//                }
+//                if ($request->hasFile("media_file.$index")) {
+//                    foreach ($request->file("media_file.$index") as $file) {
+//                        $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+//                        if (!file_exists($fileDirectory)) {
+//                            mkdir($fileDirectory, 0777, true);
+//                        }
+//                        if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp'])) {
+//                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+//                            $file->move($fileDirectory, $media_file_name);
+//                            OrganizationGallery::create([
+//                                'organization_id' => $organization_id,
+//                                'gallery_category_id' => $category_id,
+//                                'caption' => $captions[$index],
+//                                'rank' => $ranks[$index],
+//                                'type' => 1,
+//                                'media' => $media_file_name,
+//                                'created_by' => $created_by,
+//                                'updated_by' => $updated_by,
+//                            ]);
+//                        }
+//                    }
+//                }
+//
+//            }
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'Gallery items stored/updated successfully.', 'success')
+//            );
+//        } catch (\Exception $exception) {
+//            return Utils\ResponseUtil::wrapResponse(
+//                new ResponseDTO(null, 'An error occurred while saving/updating gallery items.', 'error')
+//            );
+//        }
+//    }
     public function store(Request $request)
     {
-        //dd($request->all());
         try {
             $organization_id = $request->input('organization_id');
             $gallery_category_ids = $request->input('gallery_category_id');
@@ -172,79 +328,85 @@ class OrganizationGalleryController extends DM_BaseController
                 $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
                     ->where('gallery_category_id', $category_id)
                     ->first();
+
                 if ($galleryItem) {
                     $galleryItem->caption = $captions[$index];
                     $galleryItem->rank = $ranks[$index];
                     $galleryItem->updated_by = $updated_by;
-                    if ($request->hasFile("media_file.$index")) {
-                        foreach ($request->file("media_file.$index") as $file) {
-                            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
-                            if (!file_exists($fileDirectory)) {
-                                mkdir($fileDirectory, 0777, true);
-                            }
-                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                            $file->move($fileDirectory, $media_file_name);
-                            OrganizationGallery::create([
-                                'organization_id' => $organization_id,
-                                'gallery_category_id' => $category_id,
-                                'caption' => $captions[$index],
-                                'rank' => $ranks[$index],
-                                'type' => 1,
-                                'media' => $media_file_name,
-                                'created_by' => $created_by,
-                                'updated_by' => $updated_by,
-                            ]);
-                        }
-                    }
-                    if (!empty($request->input("media.$index"))) {
-                        $galleryItem->type = 0; // Video type
-                        $galleryItem->media = $request->input("media.$index");
-                        $galleryItem->save();
-                    }
                 } else {
-                    if ($request->hasFile("media_file.$index")) {
-                        foreach ($request->file("media_file.$index") as $file) {
-                            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
-                            if (!file_exists($fileDirectory)) {
-                                mkdir($fileDirectory, 0777, true);
-                            }
-                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
-                            $file->move($fileDirectory, $media_file_name);
+                    $galleryItem = new OrganizationGallery();
+                    $galleryItem->organization_id = $organization_id;
+                    $galleryItem->gallery_category_id = $category_id;
+                    $galleryItem->caption = $captions[$index];
+                    $galleryItem->rank = $ranks[$index];
+                    $galleryItem->created_by = $created_by;
+                    $galleryItem->updated_by = $updated_by;
+                }
+                if ($request->input("media.$index")) {
+                    $media_url = $request->input("media.$index");
+                    if (filter_var($media_url, FILTER_VALIDATE_URL) && strpos($media_url, 'youtube.com') !== false) {
+                        $existingMedia = OrganizationGallery::where('organization_id', $organization_id)
+                            ->where('gallery_category_id', $category_id)
+                            ->where('media', $media_url)
+                            ->first();
+                        if (!$existingMedia) {
                             OrganizationGallery::create([
                                 'organization_id' => $organization_id,
                                 'gallery_category_id' => $category_id,
                                 'caption' => $captions[$index],
                                 'rank' => $ranks[$index],
-                                'type' => 1, // Image type
-                                'media' => $media_file_name,
+                                'type' => 0, // Video
+                                'media' => $media_url,
                                 'created_by' => $created_by,
                                 'updated_by' => $updated_by,
                             ]);
                         }
-                    }
-                    if (!empty($request->input("media.$index"))) {
-                        OrganizationGallery::create([
-                            'organization_id' => $organization_id,
-                            'gallery_category_id' => $category_id,
-                            'caption' => $captions[$index],
-                            'rank' => $ranks[$index],
-                            'type' => 0,
-                            'media' => $request->input("media.$index"),
-                            'created_by' => $created_by,
-                            'updated_by' => $updated_by,
-                        ]);
                     }
                 }
+                if ($request->hasFile("media_file.$index")) {
+                    foreach ($request->file("media_file.$index") as $file) {
+                        $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+                      if (!file_exists($fileDirectory)) {
+                          mkdir($fileDirectory, 0777, true);
+                      }
+
+                        if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp'])) {
+                            $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                            $file->move($fileDirectory, $media_file_name);
+                            $existingImage = OrganizationGallery::where('organization_id', $organization_id)
+                                ->where('gallery_category_id', $category_id)
+                                ->where('media', $media_file_name)
+                                ->first();
+
+                            if (!$existingImage) {
+                                OrganizationGallery::create([
+                                    'organization_id' => $organization_id,
+                                    'gallery_category_id' => $category_id,
+                                    'caption' => $captions[$index],
+                                    'rank' => $ranks[$index],
+                                    'type' => 1, // Image
+                                    'media' => $media_file_name,
+                                    'created_by' => $created_by,
+                                    'updated_by' => $updated_by,
+                                ]);
+                            }
+                        }
+                    }
+                }
+                $galleryItem->save();
             }
+
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO(null, 'Gallery items stored/updated successfully.', 'success')
             );
+
         } catch (\Exception $exception) {
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO(null, 'An error occurred while saving/updating gallery items.', 'error')
             );
         }
     }
+
     /**
      * Display the specified resource.
      *

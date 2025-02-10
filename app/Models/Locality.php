@@ -30,6 +30,9 @@ class Locality extends Model
     public function state(){
         return $this->belongsTo(AdministrativeArea::class,'administrative_area_id','id');
     }
+    public function administrativeArea(){
+        return $this->belongsTo(AdministrativeArea::class, 'administrative_area_id');
+    }
     public function organizations()
     {
         return $this->hasMany(Organization::class);

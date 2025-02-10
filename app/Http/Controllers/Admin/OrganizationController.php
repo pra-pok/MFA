@@ -58,7 +58,9 @@ class OrganizationController extends DM_BaseController
                     'updatedBy' => function ($query) {
                         $query->select('id', 'username');
                     },
-
+                    'locality' => function ($query) {
+                        $query->with('administrativeArea.parent.country');
+                    },
                 ])->orderBy('created_at', 'desc')->get();
                 return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data retrieved successfully.', 'success'));
             }
