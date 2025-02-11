@@ -4,7 +4,6 @@
     <table id="datatable" class="table table-bordered">
         <thead>
         <tr>
-            <th>SN</th>
             <th>Category</th>
             <th width="150">Type</th>
             <th>Caption</th>
@@ -16,7 +15,6 @@
         <tbody>
         @forelse ($data['record']->organizationGalleries ?? [] as $index => $gallery)
             <tr>
-                <td>{{ $loop->iteration }}</td>
                 <td>
                     <input type="hidden" name="id[{{ $index }}]" value="{{ $gallery->id }}">
                     <select class="form-select" name="gallery_category_id[{{ $index }}]">
@@ -52,7 +50,6 @@
             </tr>
         @empty
             <tr>
-                <td>1</td>
                 <td>
                     <select class="form-select" name="gallery_category_id[0]">
                         <option selected disabled>Select Category</option>

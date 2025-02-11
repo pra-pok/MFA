@@ -4,7 +4,6 @@
     <table class="table table-bordered">
         <thead>
         <tr>
-            <th width="50">SN</th>
             <th width="300">Social Media</th>
             <th>Link</th>
         </tr>
@@ -12,7 +11,6 @@
         <tbody class="table-border-bottom-0">
         @foreach($data['social'] as $key => $item)
             <tr>
-                <td>{{ $loop->iteration }}</td>
                 <td>
                     <i class="icon-base {{ $item['icon'] }} icon-sm"></i>
                     {{ $item['name'] }}

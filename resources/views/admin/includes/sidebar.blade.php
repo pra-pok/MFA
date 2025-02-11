@@ -158,6 +158,12 @@
         </ul>
     </li>
     <li class="menu-item ">
+        <a href="{{route('menu.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-menu"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Menu</div>
+        </a>
+    </li>
+    <li class="menu-item ">
         <a href="{{route('admin.university.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-building-house"></i>
             <div class="text-truncate" data-i18n="Basic Inputs">University</div>
@@ -185,12 +191,12 @@
             <div class="text-truncate" data-i18n="Form Elements">Course</div>
         </a>
     </li>
-    <li class="menu-item ">
-        <a href="{{route('admin.administrative_area.index')}}" class="menu-link">
-            <i class="menu-icon tf-icons bx bx-area"></i>
-            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>
-        </a>
-    </li>
+{{--    <li class="menu-item ">--}}
+{{--        <a href="{{route('admin.administrative_area.index')}}" class="menu-link">--}}
+{{--            <i class="menu-icon tf-icons bx bx-area"></i>--}}
+{{--            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>--}}
+{{--        </a>--}}
+{{--    </li>--}}
     <li class="menu-item ">
         <a href="{{route('admin.gallery_category.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-images"></i>

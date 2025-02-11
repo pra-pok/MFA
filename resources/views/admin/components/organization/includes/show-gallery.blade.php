@@ -1,7 +1,6 @@
 <table id="datatable" class="table table-bordered">
     <thead>
     <tr>
-        <th>ID</th>
         <th>Gallery Category</th>
         <th>Caption</th>
         <th>Rank</th>
@@ -14,7 +13,6 @@
     <tbody class="table-border-bottom-0">
     @foreach($data['record']->organizationGalleries as $item)
         <tr>
-            <td>{{$item->id}}</td>
             <td>
                 {{$item->galleryCategory->name ?? ''}}
             </td>

@@ -3,7 +3,7 @@
         <div class="col-md-12"> <!-- Each card takes 1/4th of the row -->
             <div class="card mb-5">
                 <div class="card-body">
-                    <h5 class="card-title">{{$item->course->title}}</h5>
+                    <h5 class="card-title">{{$item->course->title ?? ''}}</h5>
                     <p><strong>Min Fee Range:</strong> {{$item->start_fee}} to {{$item->end_fee}}</p>
                     <p><strong>Description:</strong> {!! $item->description !!}</p>
                     <p>
