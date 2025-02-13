@@ -90,4 +90,10 @@ class Organization extends Model
     public function organizationfacilities(){
         return $this->hasMany(OrganizationFacilities::class,'organization_id','id');
     }
+    public function organizationCatalog(){
+        return $this->hasMany(OrganizationCatalog::class,'organization_id','id');
+    }
+    public function catalog(){
+        return $this->belongsToMany(Catalog::class,'organization_catalogs','organization_id','catalog_id');
+    }
 }

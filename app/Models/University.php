@@ -42,4 +42,13 @@ class University extends Model
     {
         return $this->hasMany(OrganizationCourse::class, 'university_id', 'id');
     }
+
+    public function universityCatalogs()
+    {
+        return $this->hasMany(UniversityCatalog::class, 'university_id', 'id');
+    }
+    public function catalogs()
+    {
+        return $this->belongsToMany(Catalog::class, 'university_catalogs', 'university_id', 'catalog_id');
+    }
 }

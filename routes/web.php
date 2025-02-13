@@ -29,6 +29,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin\LocalityController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\CatalogController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -146,7 +147,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('locality', LocalityController::class);
     Route::resource('menu', MenuController::class);
     Route::get('/menu/get-all-data/{role_id}', [MenuController::class, 'getAllData']);
-
+    Route::resource('catalog', CatalogController::class);
+    Route::get('trash', [CatalogController::class, 'trash'])->name('catalog.trash');
+    Route::get('restore/{id}', [CatalogController::class, 'restore'])->name('catalog.restore');
+    Route::delete('force-delete/{id}', [CatalogController::class, 'forceDeleteData'])->name('catalog.force_delete');
+    Route::delete('{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
     Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
         $path = "/data/mfa/images/$folder/$filename";

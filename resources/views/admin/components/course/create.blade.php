@@ -104,6 +104,18 @@
                                 <textarea class="form-control editor" name="syllabus" rows="3" ></textarea>
                             </div>
                             @include('admin.includes.create_meta')
+                            <br>
+                            <div class="row">
+                                <label for="search_keywords" class="form-label">Catalog</label>
+                                @foreach($data['catalog'] as $id => $title)
+                                    <div class="col-auto mb-2">
+                                        <div class="form-check">
+                                            <input type="checkbox" name="catalog_id[]" value="{{ $id }}" class="form-check-input checkbox"/>
+                                            <label class="form-check-label">{{ $title ?? ''}}</label>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                             @include('admin.includes.create_status')
                             <div class="mt-3">
                                 <button type="submit" class="btn btn-primary">Create</button>

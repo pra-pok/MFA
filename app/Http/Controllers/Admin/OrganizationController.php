@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Dtos\ResponseDTO;
 use App\Http\Requests\OrganizationRequest;
 use App\Models\AdministrativeArea;
+use App\Models\Catalog;
 use App\Models\Country;
 use App\Models\Course;
 use App\Models\Facilities;
@@ -12,6 +13,7 @@ use App\Models\GalleryCategory;
 use App\Models\Locality;
 use App\Models\Organization;
 use App\Models\Level;
+use App\Models\OrganizationCatalog;
 use App\Models\OrganizationCourse;
 use App\Models\OrganizationFacilities;
 use App\Models\PageCategory;
@@ -97,13 +99,14 @@ class OrganizationController extends DM_BaseController
             'Linkedin' => ['name' => 'Linkedin', 'icon' => 'bx bxl-linkedin'],
             'Tiktok' => ['name' => 'Tiktok', 'icon' => 'bx bxl-tiktok'],
         ];
-        $data['courses'] = Course::pluck('title', 'id');
         $data['country'] = Country::pluck('name', 'id');
+        $data['courses'] = Course::pluck('title', 'id');
         $data['page'] = PageCategory::pluck('title', 'id');
         $data['faculty'] = Facilities::where('status', '1')->get();
         $data['Facilities'] = [];
         $data['university'] = University::pluck('title', 'id');
         $data['locality'] = locality::pluck('name', 'id');
+        $data['catalog'] = Catalog::where('type', 'College')->pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -153,6 +156,7 @@ class OrganizationController extends DM_BaseController
        // dd($request->all());
         try {
             $request->request->add(['created_by' => auth()->user()->id]);
+            $request->request->add(['updated_by' => auth()->user()->id]);
             if ($request->hasfile('logo_file')) {
                 $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
                 if (!file_exists($fileDirectory)) {
@@ -172,6 +176,19 @@ class OrganizationController extends DM_BaseController
                 $request->request->add(['banner_image' => $banner_file]);
             }
             $organization = $this->model->create($request->all());
+            if ($request->has('catalog_id')) {
+                $catalogIds = $request->catalog_id;
+                $organizationCatalogs = [];
+                foreach ($catalogIds as $catalogId) {
+                    $organizationCatalogs[] = [
+                        'organization_id' => $organization->id,
+                        'catalog_id' => $catalogId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                OrganizationCatalog::insert($organizationCatalogs);
+            }
             logUserAction(
                 auth()->user()->id,
                 auth()->user()->team_id,
@@ -257,6 +274,8 @@ class OrganizationController extends DM_BaseController
         $data['Facilities'] = OrganizationFacilities::where('organization_id', $id)->pluck('facility_id')->toArray();
         $data['university'] = University::pluck('title', 'id');
         $data['locality'] = locality::pluck('name', 'id');
+        $data['catalog'] = Catalog::where('type', 'College')->pluck('title', 'id');
+        $data['selectedCatalogIds'] = $data['record']->organizationCatalog->pluck('catalog_id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
     /**
@@ -266,7 +285,7 @@ class OrganizationController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(OrganizationRequest  $request, $id)
+    public function update(OrganizationRequest $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
@@ -279,12 +298,11 @@ class OrganizationController extends DM_BaseController
                 mkdir($fileDirectory, 0777, true);
             }
             $logo_file = time() . '.' . $request->file('logo_file')->getClientOriginalExtension();
-
             $request->file('logo_file')->move($fileDirectory, $logo_file);
-            $request->request->add(['logo' => $logo_file]);
-            if ($data['record']->logo && file_exists(public_path($fileDirectory . $data['record']->logo))) {
-                unlink(public_path($fileDirectory . $data['record']->logo));
+            if ($data['record']->logo && file_exists(($fileDirectory . $data['record']->logo))) {
+                unlink(($fileDirectory . $data['record']->logo));
             }
+            $request->request->add(['logo' => $logo_file]);
         } else {
             $request->request->add(['logo' => $data['record']->logo]);
         }
@@ -295,43 +313,61 @@ class OrganizationController extends DM_BaseController
             }
             $banner_file = time() . '.' . $request->file('banner_file')->getClientOriginalExtension();
             $request->file('banner_file')->move($fileDirectory, $banner_file);
-            $request->request->add(['banner_image' => $banner_file]);
-            if ($data['record']->banner_image && file_exists(public_path($fileDirectory . $data['record']->banner_image))) {
-                unlink(public_path($fileDirectory . $data['record']->banner_image));
+
+            if ($data['record']->banner_image && file_exists(($fileDirectory . $data['record']->banner_image))) {
+                unlink(($fileDirectory . $data['record']->banner_image));
             }
+            $request->request->add(['banner_image' => $banner_file]);
         } else {
             $request->request->add(['banner_image' => $data['record']->banner_image]);
         }
         $request->request->add(['updated_by' => auth()->user()->id]);
 
         try {
+            DB::beginTransaction();
+
             $category = $data['record']->update($request->all());
-            if ($category) {
-                // Custom log for success
-                logUserAction(
-                    auth()->user()->id, // User ID
-                    auth()->user()->team_id, // Team ID
-                    $this->panel . ' updated successfully!',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
-//                $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
-                return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data updated successfully.', 'success'));
-            } else {
-                // Custom log for failure
-                logUserAction(
-                    auth()->user()->id,
-                    auth()->user()->team_id,
-                    $this->panel . ' update failed.',
-                    [
-                        'data' => $request->all(),
-                    ]
-                );
-                $request->session()->flash('alert-danger', $this->panel . ' update failed!');
+            if ($request->has('catalog_id')) {
+                $existingDocuments = $data['record']->organizationCatalog()->get();
+                $catalogIds = $request->catalog_id;
+
+                $catalogIdsToRemove = $existingDocuments->pluck('catalog_id')->diff($catalogIds);
+                foreach ($catalogIdsToRemove as $catalogId) {
+                    $data['record']->organizationCatalog()->where('catalog_id', $catalogId)->delete();
+                }
+                foreach ($catalogIds as $catalogId) {
+                    $existingDocument = $existingDocuments->where('catalog_id', $catalogId)->first();
+
+                    if ($existingDocument) {
+                        $existingDocument->update([
+                            'organization_id' => $data['record']->id,
+                            'catalog_id' => $catalogId,
+                            'updated_at' => now(),
+                        ]);
+                    } else {
+                        // Create new catalog
+                        $data['record']->organizationCatalog()->create([
+                            'organization_id' => $data['record']->id,
+                            'catalog_id' => $catalogId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ]);
+                    }
+                }
             }
+            DB::commit();
+            logUserAction(
+                auth()->user()->id, // User ID
+                auth()->user()->team_id, // Team ID
+                $this->panel . ' updated successfully!',
+                [
+                    'data' => $request->all(),
+                ]
+            );
+
+            return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data, 'Data updated successfully.', 'success'));
         } catch (\Exception $exception) {
-            // Custom log for errors
+            DB::rollback();
             logUserAction(
                 auth()->user()->id,
                 auth()->user()->team_id,
@@ -341,12 +377,11 @@ class OrganizationController extends DM_BaseController
                     'data' => $request->all(),
                 ]
             );
+
+            // Return error response
             return response()->json(['success' => false, 'error' => $exception->getMessage()], 500);
         }
-
-//        return redirect()->route($this->base_route . '.index');
     }
-
 
     /**
      * Remove the specified resource from storage.

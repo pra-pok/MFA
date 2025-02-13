@@ -139,6 +139,20 @@
         <textarea class="form-control" name="search_keywords" id="search_keywords" rows="3">{{$data['record']->search_keywords}}</textarea>
     </div>
     @include('admin.includes.edit_meta')
+    <div class="row">
+        <label for="search_keywords" class="form-label">Catalog</label>
+        @foreach($data['catalog'] as $id => $title)
+            <div class="col-auto mb-2">
+                <div class="form-check">
+                    <input type="checkbox" name="catalog_id[]" value="{{ $id }}" class="form-check-input checkbox"
+                        {{ in_array($id, $data['selectedCatalogIds']->toArray()) ? 'checked' : '' }}
+                    />
+                    <label class="form-check-label">{{ $title ?? ''}}</label>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    <br>
     @include('admin.includes.edit_status')
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

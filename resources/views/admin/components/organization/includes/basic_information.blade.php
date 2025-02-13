@@ -98,16 +98,26 @@
     </div>
     <div class="mb-3">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control editor" name="description" ></textarea>
+        <textarea class="form-control editor" name="description"></textarea>
     </div>
-
     <div class="mb-3">
         <label for="search_keywords" class="form-label">Search Keywords</label>
         <textarea class="form-control" name="search_keywords" id="search_keywords" rows="3"></textarea>
-
     </div>
-
     @include('admin.includes.create_meta')
+    <br>
+    <div class="row">
+        <label for="search_keywords" class="form-label">Catalog</label>
+        @foreach($data['catalog'] as $id => $title)
+            <div class="col-auto mb-2">
+                <div class="form-check">
+                    <input type="checkbox" name="catalog_id[]" value="{{ $id }}" class="form-check-input checkbox"/>
+                    <label class="form-check-label">{{ $title ?? ''}}</label>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    <br>
     @include('admin.includes.create_status')
 
 </form>

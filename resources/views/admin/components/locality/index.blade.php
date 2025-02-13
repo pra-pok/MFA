@@ -13,10 +13,6 @@
 
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
-                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#basicModal">
-                        <i class="icon-base bx bx-plus icon-sm"></i>
-                    </button>
-
                     <div class="ml-auto">
                         @include('admin.includes.buttons.button_display_trash')
                     </div>

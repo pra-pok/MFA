@@ -42,6 +42,19 @@
                             <td>{{$data['record']->rank}}</td>
                         </tr>
                         <tr>
+                            <th>Catalog</th>
+                            <td>
+                                @if ($data['record']->courseCatalogs->isNotEmpty())
+                                    @foreach ($data['record']->courseCatalogs as $catalog)
+                                        {{ $catalog->catalog->title ?? '' }}
+                                        @if (!$loop->last), @endif
+                                    @endforeach
+                                @else
+
+                                @endif
+                            </td>
+                        </tr>
+                        <tr>
                             <th>Description</th>
                             <td>{!! $data['record']->description !!}</td>
                         </tr>

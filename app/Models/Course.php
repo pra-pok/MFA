@@ -51,4 +51,12 @@ class Course extends Model
     {
         return $this->belongsToMany(Organization::class, 'organization_courses', 'course_id', 'organization_id');
     }
+    public function catalogs()
+    {
+        return $this->belongsToMany(Catalog::class, 'course_catalogs', 'course_id', 'catalog_id');
+    }
+    public function courseCatalogs()
+    {
+        return $this->hasMany(CourseCatalog::class, 'course_id', 'id');
+    }
 }

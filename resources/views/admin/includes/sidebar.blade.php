@@ -164,6 +164,12 @@
         </a>
     </li>
     <li class="menu-item ">
+        <a href="{{route('catalog.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-no-entry"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Catalog</div>
+        </a>
+    </li>
+    <li class="menu-item ">
         <a href="{{route('admin.university.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-building-house"></i>
             <div class="text-truncate" data-i18n="Basic Inputs">University</div>

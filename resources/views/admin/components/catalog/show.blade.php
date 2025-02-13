@@ -19,12 +19,20 @@
                             <td>{{$data['record']->id}}</td>
                         </tr>
                         <tr>
-                            <th>Country Name</th>
-                            <td>{{$data['record']->country->name ?? 'No Country'}}</td>
+                            <th>Stream Name</th>
+                            <td>{{$data['record']->stream->title ?? 'No Stream'}}</td>
+                        </tr>
                         <tr>
-                            <th>University Name</th>
+                            <th>Level Name</th>
+                            <td>{{$data['record']->level->title ?? 'No Level'}}</td>
+                        </tr>
+                        <tr>
+                            <th>Course Name</th>
                             <td>{{$data['record']->title}}</td>
                         </tr>
+                        <tr>
+                            <th>Short Title</th>
+                            <td>{{$data['record']->short_title}}</td>
                         <tr>
                             <th>Slug</th>
                             <td>{{$data['record']->slug}}</td>
@@ -34,37 +42,20 @@
                             <td>{{$data['record']->rank}}</td>
                         </tr>
                         <tr>
-                            <th>Types</th>
-                            <td>{{$data['record']->types}}</td>
-                        </tr>
-                        <tr>
-                            <th>Catalog</th>
-                            <td>
-                                @if ($data['record']->universityCatalogs->isNotEmpty())
-                                    @foreach ($data['record']->universityCatalogs as $catalog)
-                                        {{ $catalog->catalog->title ?? '' }}
-                                        @if (!$loop->last), @endif
-                                    @endforeach
-                                @else
-
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>Logo</th>
-                            <td>
-                                @if(!empty($data['record']->logo))
-                                    <a href="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}" target="_blank">
-                                        <img src="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}" alt="{{$data['record']->title}}" width="150px" />
-                                    </a>
-                                @else
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="{{$data['record']->title}}" width="200px" />
-                                @endif
-                            </td>
-                        </tr>
-                        <tr>
                             <th>Description</th>
                             <td>{!! $data['record']->description !!}</td>
+                        </tr>
+                        <tr>
+                            <th>Job Prospects</th>
+                            <td>{!! $data['record']->job_prospects !!}</td>
+                        </tr>
+                        <tr>
+                            <th>Eligibility</th>
+                            <td>{!! $data['record']->eligibility !!}</td>
+                        </tr>
+                        <tr>
+                            <th>Syllabus</th>
+                            <td>{!! $data['record']->syllabus !!}</td>
                         </tr>
                         <tr>
                             <th>Meta Title</th>
@@ -84,7 +75,7 @@
                         </tr>
                         <tr>
                             <th>Created By</th>
-                            <td>{{$data['record']->createds->name}}</td>
+                            <td>{{$data['record']->createdBy->name}}</td>
                         </tr>
                         @if($data['record']->updated_by != null)
                             <tr>

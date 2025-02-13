@@ -43,7 +43,7 @@
     </tr>
     <tr>
         <th>Website</th>
-        <td>{{ $data['record']->website }}</td>
+        <td><a href="{{ $data['record']->website }}" target="_blank" >{{ $data['record']->website }}</a></td>
     </tr>
     <tr>
         <th>Established Year</th>
@@ -77,6 +77,19 @@
     <tr>
         <th>Description</th>
         <td>{!! $data['record']->description !!}</td>
+    </tr>
+    <tr>
+        <th>Catalog</th>
+        <td>
+            @if ($data['record']->organizationCatalog->isNotEmpty())
+                @foreach ($data['record']->organizationCatalog as $catalog)
+                    {{ $catalog->catalog->title ?? '' }}
+                    @if (!$loop->last), @endif
+                @endforeach
+            @else
+
+            @endif
+        </td>
     </tr>
     <tr>
         <th>Search Keyword</th>

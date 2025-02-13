@@ -3,25 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Dtos\ResponseDTO;
-use App\Http\Requests\MenuRequest;
-use App\Models\AdministrativeArea;
+use App\Http\Requests\CatalogRequest;
+use App\Models\Catalog;
 use App\Models\Country;
-use App\Models\Menu;
 use App\Utils;
 use Illuminate\Http\Request;
 
-class MenuController extends DM_BaseController
+class CatalogController extends DM_BaseController
 {
-    protected $panel = 'Menu';
-    protected $base_route = 'menu';
-    protected $view_path = 'admin.components.menu';
+    protected $panel = 'Catalog';
+    protected $base_route = 'catalog';
+    protected $view_path = 'admin.components.catalog';
     protected $model;
     protected $table;
 
 
-    public function __construct(Request $request, Menu $menu)
+    public function __construct(Request $request, Catalog $catalog)
     {
-        $this->model = $menu;
+        $this->model = $catalog;
     }
     /**
      * Display a listing of the resource.
@@ -31,12 +30,13 @@ class MenuController extends DM_BaseController
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Menu::with(['createds:id,username', 'updatedBy:id,username', 'parent:id,name'])
+            $data = Catalog::with(['createds', 'updatedBy'])
                 ->orderBy('created_at', 'desc')
                 ->get();
             return response()->json(['data' => $data]);
         }
-        return view(parent::loadView($this->view_path . '.index'));
+        $data['type'] = ['College' => 'College', 'Course' => 'Course', 'University' => 'University', 'Other' => 'Other'];
+        return view(parent::loadView($this->view_path . '.index'),compact('data'));
     }
     /**
      * Show the form for creating a new resource.
@@ -46,26 +46,9 @@ class MenuController extends DM_BaseController
      */
     public function create(Request $request)
     {
-       $data['role'] = ['Module' => 'Module', 'Sub Module' => 'Sub Module', 'Menuline' => 'Menuline', 'Sub Menuline' => 'Sub Menuline'];
-        $data['parents'] = Menu::whereNull('parent_id')->pluck('name', 'id');
+       $data['type'] = ['College' => 'College', 'Course' => 'Course', 'University' => 'University', 'Other' => 'Other'];
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
-
-    public function getAllData($role_id)
-    {
-        $modules = Menu::whereNull('parent_id')->get(['id', 'name']);
-        $subModules = Menu::whereIn('parent_id', $modules->pluck('id'))->get(['id', 'name', 'parent_id']);
-        $menuLines = Menu::whereIn('parent_id', $subModules->pluck('id'))->get(['id', 'name', 'parent_id']);
-
-        return response()->json([
-            'modules' => $modules,
-            'subModules' => $subModules,
-            'menuLines' => $menuLines
-        ]);
-    }
-
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -73,7 +56,7 @@ class MenuController extends DM_BaseController
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
-    public function store(MenuRequest  $request)
+    public function store(CatalogRequest  $request)
     {
         //dd($request->all());
         $request->request->add(['created_by' => auth()->user()->id]);
@@ -150,40 +133,16 @@ class MenuController extends DM_BaseController
 
     public function edit($id)
     {
-        $data['record'] = $this->model::with('directParent' ,'directParent.grandParent',
-            'directParent.grandParent.greatGrandParent')->find($id);
+        $data['record'] = $this->model->find($id);
         if (!$data['record']) {
             return redirect()->route($this->base_route . '.index')->with('alert-danger', 'Invalid Request');
         }
-        $data['role'] = ['Module' => 'Module', 'Sub Module' => 'Sub Module', 'Menuline' => 'Menuline', 'Sub Menuline' => 'Sub Menuline'];
-        $data['parents'] = Menu::whereNull('parent_id')->pluck('name', 'id');
-
-        if ($data['record']->role === 'Module') {
-            $data['moduleDataId'] = $data['record']->directParent->id ?? '';
-            $data['subModuleDataId'] = '';
-            $data['menulineDataId'] = '';
-        } elseif ($data['record']->role === 'Sub Module') {
-            $data['moduleDataId'] = $data['record']->directParent->grandParent->id ?? '';
-            $data['subModuleDataId'] = $data['record']->directParent->id ?? '';
-            $data['menulineDataId'] = '';
-        } elseif ($data['record']->role === 'Menuline') {
-            $data['moduleDataId'] = $data['record']->directParent->grandParent->id ?? '';
-            $data['subModuleDataId'] = $data['record']->directParent->id ?? '';
-            $data['menulineDataId'] = $data['record']->directParent->id ?? '';
-        } elseif ($data['record']->role === 'Sub Menuline') {
-            $data['moduleDataId'] = $data['record']->directParent->grandParent->greatGrandParent->id ?? '';
-            $data['subModuleDataId'] = $data['record']->directParent->grandParent->id ?? '';
-            $data['menulineDataId'] = $data['record']->directParent->id ?? '';
-        }
-
+        $data['type'] = ['College' => 'College', 'Course' => 'Course', 'University' => 'University', 'Other' => 'Other'];
         if (request()->ajax()) {
             return Utils\ResponseUtil::wrapResponse(new ResponseDTO($data['record'], 'Record fetched successfully.', 'success'));
         }
-
-        return view(parent::loadView($this->view_path . '.edit'), compact('data'));
+        return view('admin.gallery_category.edit', compact('data'));
     }
-
-
 
     /**
      * Update the specified resource in storage.
@@ -192,7 +151,7 @@ class MenuController extends DM_BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(MenuRequest  $request, $id)
+    public function update(CatalogRequest  $request, $id)
     {
         $data['record'] = $this->model->find($id);
         if (!$data['record']) {
@@ -203,10 +162,9 @@ class MenuController extends DM_BaseController
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
-                // Custom log for success
                 logUserAction(
-                    auth()->user()->id, // User ID
-                    auth()->user()->team_id, // Team ID
+                    auth()->user()->id,
+                    auth()->user()->team_id,
                     $this->panel . ' updated successfully!',
                     [
                         'data' => $request->all(),
@@ -214,7 +172,6 @@ class MenuController extends DM_BaseController
                 );
                 $request->session()->flash('alert-success', $this->panel . ' updated successfully!');
             } else {
-                // Custom log for failure
                 logUserAction(
                     auth()->user()->id,
                     auth()->user()->team_id,
@@ -226,7 +183,6 @@ class MenuController extends DM_BaseController
                 $request->session()->flash('alert-danger', $this->panel . ' update failed!');
             }
         } catch (\Exception $exception) {
-            // Custom log for errors
             logUserAction(
                 auth()->user()->id,
                 auth()->user()->team_id,
@@ -240,8 +196,6 @@ class MenuController extends DM_BaseController
         }
         return redirect()->route($this->base_route . '.index');
     }
-
-
     /**
      * Remove the specified resource from storage.
      *

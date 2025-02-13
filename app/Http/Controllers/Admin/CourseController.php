@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\CourseRequest;
+use App\Models\Catalog;
 use App\Models\Course;
+use App\Models\CourseCatalog;
 use App\Models\Level;
 use App\Models\Stream;
 use Illuminate\Http\Request;
@@ -59,6 +61,7 @@ class CourseController extends DM_BaseController
     {
         $data['stream'] = Stream::pluck('title', 'id');
         $data['level'] = Level::pluck('title', 'id');
+        $data['catalog'] = Catalog::where('type', 'Course')->pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -75,6 +78,19 @@ class CourseController extends DM_BaseController
         $request->request->add(['created_by' => auth()->user()->id]);
             try {
                 $category = $this->model->create($request->all());
+                if ($request->has('catalog_id')) {
+                    $catalogIds = $request->catalog_id;
+                    $courseCatalogs = [];
+                    foreach ($catalogIds as $catalogId) {
+                        $courseCatalogs[] = [
+                            'course_id' => $category->id,
+                            'catalog_id' => $catalogId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    CourseCatalog::insert($courseCatalogs);
+                }
                 if ($category) {
                     logUserAction(
                         auth()->user()->id, // User ID
@@ -150,7 +166,8 @@ class CourseController extends DM_BaseController
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-
+        $data['catalog'] = Catalog::where('type', 'Course')->pluck('title', 'id');
+        $data['selectedCatalogIds'] = $data['record']->courseCatalogs->pluck('catalog_id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 
@@ -174,6 +191,20 @@ class CourseController extends DM_BaseController
         try {
             $category = $data['record']->update($request->all());
             if ($category) {
+                if ($request->has('catalog_id')) {
+                    $catalogIds = $request->catalog_id;
+                    $courseCatalogs = [];
+                    foreach ($catalogIds as $catalogId) {
+                        $courseCatalogs[] = [
+                            'course_id' => $data['record']->id,
+                            'catalog_id' => $catalogId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    CourseCatalog::where('course_id', $data['record']->id)->delete();
+                    CourseCatalog::insert($courseCatalogs);
+                }
                 // Custom log for success
                 logUserAction(
                     auth()->user()->id, // User ID

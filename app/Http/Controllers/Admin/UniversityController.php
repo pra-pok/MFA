@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UniversityRequest;
+use App\Models\Catalog;
 use App\Models\Country;
 use App\Models\University;
+use App\Models\UniversityCatalog;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +59,7 @@ class UniversityController extends DM_BaseController
     {
         $data['type'] = ['Affiliated' => 'Affiliated', 'Foreign Affiliated' => 'Foreign Affiliated'];
         $data['country'] = Country::pluck('name', 'id');
+        $data['catalog'] = Catalog::where('type', 'University')->pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -82,6 +85,19 @@ class UniversityController extends DM_BaseController
         }
             try {
                 $category = $this->model->create($request->all());
+                if ($request->has('catalog_id')) {
+                    $catalogIds = $request->catalog_id;
+                    $universityCatalogs = [];
+                    foreach ($catalogIds as $catalogId) {
+                        $universityCatalogs[] = [
+                            'university_id' => $category->id,
+                            'catalog_id' => $catalogId,
+                            'created_at' => now(),
+                            'updated_at' => now(),
+                        ];
+                    }
+                    UniversityCatalog::insert($universityCatalogs);
+                }
                 if ($category) {
                     logUserAction(
                         auth()->user()->id,
@@ -148,7 +164,8 @@ class UniversityController extends DM_BaseController
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
         }
-
+        $data['catalog'] = Catalog::where('type', 'University')->pluck('title', 'id');
+        $data['selectedCatalogIds'] = $data['record']->universityCatalogs->pluck('catalog_id');
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
 
@@ -186,6 +203,20 @@ class UniversityController extends DM_BaseController
         $request->request->add(['updated_by' => auth()->user()->id]);
         try {
             $category = $data['record']->update($request->all());
+            if ($request->has('catalog_id')) {
+                $catalogIds = $request->catalog_id;
+                $universityCatalogs = [];
+                foreach ($catalogIds as $catalogId) {
+                    $universityCatalogs[] = [
+                        'university_id' => $data['record']->id,
+                        'catalog_id' => $catalogId,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+                UniversityCatalog::where('university_id', $data['record']->id)->delete();
+                UniversityCatalog::insert($universityCatalogs);
+            }
             if ($category) {
                 logUserAction(
                     auth()->user()->id,
