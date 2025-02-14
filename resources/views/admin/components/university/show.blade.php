@@ -54,8 +54,8 @@
                             <th>Logo</th>
                             <td>
                                 @if(!empty($data['record']->logo))
-                                    <a href="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}" target="_blank">
-                                        <img src="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}" alt="{{$data['record']->title}}" width="150px" />
+                                    <a href="{{ url('/file/' . $folder . '/' . $data['record']->logo) }}" target="_blank">
+                                        <img src="{{ url('/file/' . $folder . '/' . $data['record']->logo) }}" alt="{{$data['record']->title}}" width="150px" />
                                     </a>
                                 @else
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="{{$data['record']->title}}" width="200px" />

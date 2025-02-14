@@ -152,7 +152,7 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [CatalogController::class, 'restore'])->name('catalog.restore');
     Route::delete('force-delete/{id}', [CatalogController::class, 'forceDeleteData'])->name('catalog.force_delete');
     Route::delete('{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
-    Route::get('/image-serve/{folder}/{filename}', function ($folder, $filename) {
+    Route::get('/file/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
         $path = "/data/mfa/images/$folder/$filename";
 
@@ -163,7 +163,7 @@ Route::middleware('auth')->group(function () {
         $type = File::mimeType($path);
         return Response::make($file, 200)->header("Content-Type", $type);
     });
-    Route::get('/image-serve-banner/{folder}/{filename}', function ($folder, $filename) {
+    Route::get('/file-banner/{folder}/{filename}', function ($folder, $filename) {
         $path = "/data/mfa/images/$folder/banner/$filename";
         if (!File::exists($path)) {
             abort(404);
@@ -172,7 +172,7 @@ Route::middleware('auth')->group(function () {
         $type = File::mimeType($path);
         return Response::make($file, 200)->header("Content-Type", $type);
     });
-    Route::get('/image-serve-organization/{filename}', function ($filename) {
+    Route::get('/file-organization/{filename}', function ($filename) {
         $path = "/data/mfa/images/organization-gallery/$filename";
         if (!File::exists($path)) {
             abort(404);

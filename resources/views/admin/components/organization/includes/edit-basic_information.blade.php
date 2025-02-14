@@ -91,11 +91,11 @@
             <input type="file" name="logo_file" class="form-control" id="logo" />
             <div class="mt-3">
                 @if($data['record']->logo)
-                    <img src="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}"
+                    <img src="{{ url('/file/' . $folder . '/' . $data['record']->logo) }}"
                          alt="logo" class="img-thumbnail clickable-image"
                          style="width: 100px; height: 100px;"
                          data-bs-toggle="modal" data-bs-target="#imageModal"
-                         data-bs-image="{{ url('/image-serve/' . $folder . '/' . $data['record']->logo) }}">
+                         data-bs-image="{{ url('/file/' . $folder . '/' . $data['record']->logo) }}">
                 @else
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
                          alt="No logo available" class="img-thumbnail clickable-image"
@@ -110,12 +110,12 @@
             <input type="file" name="banner_file" class="form-control" id="banner" />
             <div class="mt-3">
                 @if($data['record']->banner_image)
-                    <img src="{{ url('/image-serve-banner/' . $folder . '/' . $data['record']->banner_image) }}"
+                    <img src="{{ url('/file-banner/' . $folder . '/' . $data['record']->banner_image) }}"
 
                          alt="banner" class="img-thumbnail clickable-image"
                          style="width: 100px; height: 100px;"
                          data-bs-toggle="modal" data-bs-target="#imageModal"
-                         data-bs-image="{{ url('/image-serve-banner/' . $folder . '/' . $data['record']->banner_image) }}">
+                         data-bs-image="{{ url('/file-banner/' . $folder . '/' . $data['record']->banner_image) }}">
                 @else
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
                          alt="No banner available" class="img-thumbnail clickable-image"

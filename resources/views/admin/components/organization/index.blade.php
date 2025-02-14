@@ -81,7 +81,7 @@
                     : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
                 const folder = 'organization';
                 const logoUrl = data.logo
-                    ? `<img src="{{ url('/image-serve/') }}/${folder}/${data.logo}" alt="logo" class="img-thumbnail" >`
+                    ? `<img src="{{ url('/file/') }}/${folder}/${data.logo}" alt="logo" class="img-thumbnail" >`
                     : '';
                 const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
 

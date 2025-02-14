@@ -38,7 +38,7 @@
                     <input type="text" name="media[{{ $index }}]" class="form-control media-text" style="display: {{ $gallery->type == 0 ? 'block' : 'none' }};" value="{{ $gallery->media }}">
                     <input type="file" name="media_file[{{ $index }}][]" class="form-control media-file" style="display: {{ $gallery->type == 1 ? 'block' : 'none' }};" multiple>
                     @if ($gallery->type == 1 && $gallery->media)
-                        <img src="{{ url('/image-serve-organization/' . $gallery->media) }}" class="img-thumbnail" style="width: 100px; height: 100px; margin-top: 10px;">
+                        <img src="{{ url('/file-organization/' . $gallery->media) }}" class="img-thumbnail" style="width: 100px; height: 100px; margin-top: 10px;">
                     @elseif ($gallery->type == 0)
                         <span>No media available</span>
                     @endif
