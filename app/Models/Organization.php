@@ -71,6 +71,11 @@ class Organization extends Model
         return $this->hasMany(OrganizationSocialMedia::class);
     }
 
+    public function organizationsocialMedia()
+    {
+        return $this->hasMany(OrganizationSocialMedia::class);
+    }
+
     public function galleryCategory(){
         return $this->hasMany(GalleryCategory::class,'organization_id','id');
     }

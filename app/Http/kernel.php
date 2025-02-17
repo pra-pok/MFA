@@ -27,12 +27,15 @@ class kernel extends HttpKernel
            //
             \App\Http\Middleware\ActivityLogger::class,
             \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\HandleCors::class,
         ],
 
         'api' => [
             'throttle:60,1',
             'bindings',
             \App\Http\Middleware\ActivityLogger::class,
+            \App\Http\Middleware\Authenticate::class,
+            \App\Http\Middleware\HandleCors::class,
         ],
     ];
 
@@ -44,8 +47,9 @@ class kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-       'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth' => \App\Http\Middleware\Authenticate::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'api' => \App\Http\Middleware\HandleCors::class,
     ];
 
     /**

@@ -11,6 +11,8 @@ use App\Models\Stream;
 use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Dtos\ResponseDTO;
+use App\Utils;
 use OpenApi\Annotations as OA;
 
 /**
@@ -40,66 +42,243 @@ class HomeController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-      //  $data['home'] = Catalog::where('type', 'College')->with('organization')->get();
-//        $data['university'] = University::where('status', 1)->get();
-//        $data['course'] = Course::where('status', 1)->get();
-//        $data['stream'] = Stream::where('status', 1)->get();
-//        $data['level'] = Level::where('status', 1)->get();
-//        $data['college'] = Organization::where('status', 1)->get();
+        try {
+            $data['catalog'] = [];
 
-        $data['catalog'] = [];
+            // College
+            $catalogs = DB::select("
+            SELECT c.id, c.title, c.type
+            FROM catalogs c
+            WHERE c.type = 'College'
+        ");
+            if (empty($catalogs)) {
+                // If no catalogs found
+                return Utils\ResponseUtil::wrapResponse(
+                    new ResponseDTO(null, 'No College catalogs found.', 'error', 404)
+                );
+            }
+            foreach ($catalogs as $catalog) {
+                $organizations = DB::select("
+                SELECT o.id, o.name, o.slug, o.address, o.email, o.phone,
+                       o.website, o.established_year, o.type, o.description, o.logo , o.banner_image, o.google_map
+                FROM organizations o
+                JOIN organization_catalogs oc ON o.id = oc.organization_id
+                WHERE oc.catalog_id = ?", [$catalog->id]);
 
-        $catalogs = DB::select("
-    SELECT c.id, c.title
-    FROM catalogs c
-    WHERE c.type = 'College'
-");
+                // Formatting the catalog with nested organization data
+                $data['catalog'][] = [
+                    'id' => $catalog->id,
+                    'title' => $catalog->title,
+                    'type' => $catalog->type,
+                    'data' => array_map(function ($org) {
+                        return [
+                            'id' => $org->id,
+                            'name' => $org->name,
+                            'logo' => !empty($org->logo)
+                                ? url('/file/organization' . '/' . $org->logo)
+                                : null,
+                            'slug' => $org->slug,
+                            'address' => $org->address,
+                            'email' => $org->email,
+                            'phone' => $org->phone,
+                            'website' => $org->website,
+                            'established_year' => $org->established_year,
+                            'banner_image' => !empty($org->banner_image)
+                                ? url('/file-banner/organization' . '/' . $org->banner_image)
+                                : null,
+                            'type' => $org->type,
+                            'description' => $org->description,
+                            'google_map' => $org->google_map,
+                        ];
+                    }, $organizations)
+                ];
+            }
+            // Course
+            $catalog_course = DB::select("
+            SELECT cc.id, cc.title, cc.type
+            FROM catalogs cc
+            WHERE cc.type = 'Course'
+        ");
 
-        foreach ($catalogs as $catalog) {
-            $organizations = DB::select("
-        SELECT o.id, o.name, o.slug, o.address, o.email, o.phone,
-               o.website, o.established_year, o.type, o.description, o.logo , o.google_map
-        FROM organizations o
-        JOIN organization_catalogs oc ON o.id = oc.organization_id
-        WHERE oc.catalog_id = ?", [$catalog->id]);
-
-            // Formatting the catalog with nested organization data
-            $data['catalog'][] = [
-                'id'   => $catalog->id,
-                'name' => $catalog->title,
-
-                'data' => array_map(function ($org)  {
-                    return [
-                        'id'                => $org->id,
-                        'name'              => $org->name,
-                        'logo'              => !empty($org->logo)
-                            ? url('/file/organization'  . '/' . $org->logo)
-                            : null,
-                        'slug'              => $org->slug,
-                        'address'           => $org->address,
-                        'email'             => $org->email,
-                        'phone'             => $org->phone,
-                        'website'           => $org->website,
-                        'established_year'  => $org->established_year,
-                        'type'              => $org->type,
-                        'description'       => $org->description,
-                        'google_map'        => $org->google_map,
-                    ];
-                }, $organizations)
-            ];
+            if (empty($catalog_course)) {
+                return Utils\ResponseUtil::wrapResponse(
+                    new ResponseDTO(null, 'No Course catalogs found.', 'error', 404)
+                );
+            }
+            foreach ($catalog_course as $catalog) {
+                $courses = DB::select("
+                SELECT c.id, c.title, c.slug, c.short_title, c.eligibility, c.job_prospects,
+                       c.syllabus, c.description, c.stream_id, c.level_id, s.title AS stream_title,
+                       l.title AS level_title
+                FROM courses c
+                JOIN course_catalogs ccc ON c.id = ccc.course_id
+                LEFT JOIN streams s ON c.stream_id = s.id
+                LEFT JOIN levels l ON c.level_id = l.id
+                WHERE ccc.catalog_id = ?", [$catalog->id]);
+                $data['catalog'][] = [
+                    'id' => $catalog->id,
+                    'title' => $catalog->title,
+                    'type' => $catalog->type,
+                    'data' => array_map(function ($course) {
+                        return [
+                            'id' => $course->id,
+                            'stream_id' => $course->stream_id,
+                            'stream_title' => $course->stream_title,
+                            'level_id' => $course->level_id,
+                            'level_title' => $course->level_title,
+                            'title' => $course->title,
+                            'slug' => $course->slug,
+                            'short_title' => $course->short_title,
+                            'eligibility' => $course->eligibility,
+                            'job_prospects' => $course->job_prospects,
+                            'syllabus' => $course->syllabus,
+                            'description' => $course->description,
+                        ];
+                    }, $courses)
+                ];
+            }
+            // University
+            $country = $request->input('country');
+            $catalog_university = DB::select("
+            SELECT c.id, c.title, c.type
+            FROM catalogs c
+            WHERE c.type = 'University'
+        ");
+            if (empty($catalog_university)) {
+                return Utils\ResponseUtil::wrapResponse(
+                    new ResponseDTO(null, 'No University catalogs found.', 'error', 404)
+                );
+            }
+            foreach ($catalog_university as $catalog) {
+                $university = DB::select("
+                SELECT u.id, u.title, u.slug, u.types, u.logo, u.description
+                FROM universities u
+                JOIN university_catalogs uc ON u.id = uc.university_id
+                JOIN countries c ON u.country_id = c.id
+                WHERE uc.catalog_id = ? AND c.iso_code = ?
+            ", [$catalog->id, $country]);
+                $data['catalog'][] = [
+                    'id' => $catalog->id,
+                    'title' => $catalog->title,
+                    'type' => $catalog->type,
+                    'data' => array_map(function ($university) {
+                        return [
+                            'id' => $university->id,
+                            'title' => $university->title,
+                            'slug' => $university->slug,
+                            'types' => $university->types,
+                            'logo' => !empty($university->logo)
+                                ? url('/file/university/' . $university->logo)
+                                : null,
+                            'description' => $university->description,
+                        ];
+                    }, $university)
+                ];
+            }
+            // Success Response
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO($data, '', 'success', 200)
+            );
+        } catch (\Exception $e) {
+            // Handle unexpected errors
+            return Utils\ResponseUtil::wrapResponse(
+                new ResponseDTO(null, 'An error occurred: ' . $e->getMessage(), 'error', 500)
+            );
         }
-        return response()->json(['data' => $data]);
     }
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function collegeDetail($id)
     {
-        //
-    }
+        $college = Organization::with([
+            'organizationGalleries',
+            'organizationCourses',
+            'organizationPages',
+            'organizationsocialMedia',
+            'organizationfacilities',
+            'locality.administrativeArea.parent',
+            'country'
+        ])->find($id);
+        if (!$college) {
+            return response()->json([
+                'message' => 'College not found!',
+                'status' => 'error',
+            ], 404);
+        }
+        $college->makeHidden([
+            'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+            'total_view', 'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
+        ]);
+        foreach (['organizationGalleries', 'organizationCourses', 'organizationPages', 'organizationsocialMedia', 'organizationfacilities'] as $relation) {
+            if ($college->$relation) {
+                $college->$relation->each(function ($item) {
+                    $item->makeHidden([
+                        'id', 'title', 'organization_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by','university',
+                        'gallery_category_id', 'course_id', 'page_id', 'social_media_id', 'facility_id','university_id','page_category_id'
+                    ]);
+                });
+            }
+        }
+        if (!empty($college->organizationGalleries)) {
+            foreach ($college->organizationGalleries as $gallery) {
+                $gallery->media = ($gallery->type == 1 && !empty($gallery->media))
+                    ? url('/file-organization/' . $gallery->media)
+                    : null;
 
+                $gallery->gallery_category_name = $gallery->galleryCategory->name ?? '';
+                unset($gallery->galleryCategory);
+            }
+        }
+        if (!empty($college->organizationCourses)) {
+            foreach ($college->organizationCourses as $course) {
+                $course->course_title = $course->course->title ?? '';
+                $course->University_name = $course->university->title ?? '' ;
+                unset($course->course);
+            }
+        }
+        if (!empty($college->organizationPages)) {
+            foreach ($college->organizationPages as $page) {
+                $page->page_title = $page->page->title ?? '';
+                unset($page->page);
+            }
+        }
+        if (!empty($college->organizationfacilities)) {
+            foreach ($college->organizationfacilities as $facility) {
+                $facility->facility_title = $facility->facility->title ?? '';
+                unset($facility->facility);
+            }
+        }
+        $responseData = [
+            'country' => $college->country->name ?? '',
+            'administrative_area' => $college->locality->administrativeArea->parent->name ?? '',
+            'District' => $college->locality->administrativeArea->name ?? '',
+            'Locality' => $college->locality->name ?? '',
+            'name' => $college->name,
+            'slug' => $college->slug,
+            'logo' => !empty($college->logo) ? url('/file/organization/' . $college->logo) : '',
+            'banner_image' => !empty($college->banner_image) ? url('/file-banner/organization/' . $college->banner_image) : '',
+            'address' => $college->address,
+            'phone' => $college->phone,
+            'email' => $college->email,
+            'website' => $college->website,
+            'description' => $college->description,
+            'type' => $college->type,
+            'established_year' => $college->established_year,
+            'google_map' => $college->google_map,
+            'organizationGalleries' => $college->organizationGalleries,
+            'organizationCourses' => $college->organizationCourses,
+            'organizationPages' => $college->organizationPages,
+            'organizationsocialMedia' => $college->organizationsocialMedia,
+            'organizationfacilities' => $college->organizationfacilities,
+        ];
+        return response()->json([
+            'message' => '',
+            'status' => 'success',
+            'data' => [
+                'college' => $responseData
+            ],
+        ], 200);
+    }
     /**
      * Display the specified resource.
      */

@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::get('/v1/home', [HomeController::class, 'index']);
+Route::get('/v1/org/{id}', [HomeController::class, 'collegeDetail']);
 // Grouping the routes under the version "v1"
 Route::group(['prefix' => 'v1', 'as' => 'v1.', 'namespace' => 'V1\Admin'], function () {
 
