@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\DM_BaseController;
 use Illuminate\Support\Facades\Log;
 use App\Utils;
+
 class OrganizationGalleryController extends DM_BaseController
 {
     protected $panel = 'Organization Gallery';
@@ -22,22 +23,22 @@ class OrganizationGalleryController extends DM_BaseController
     protected $folder = 'organization-gallery';
 
 
-
     public function __construct(Request $request, OrganizationGallery $organization_gallery)
     {
         $this->model = $organization_gallery;
     }
+
     /**
      * Display a listing of the resource.
-     *@return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = $this->model->with(['createds' => function($query) {
+            $data = $this->model->with(['createds' => function ($query) {
                 $query->select('id', 'username');
-            }, 'updatedBy' => function($query) {
+            }, 'updatedBy' => function ($query) {
                 $query->select('id', 'username');
             }])->get();
             return response()->json($data);
@@ -57,13 +58,13 @@ class OrganizationGalleryController extends DM_BaseController
         $data['gallery'] = GalleryCategory::pluck('name', 'id');
         $data['organization'] = Organization::pluck('name', 'id');
         $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
-        return view(parent::loadView($this->view_path . '.create'),compact('data'));
+        return view(parent::loadView($this->view_path . '.create'), compact('data'));
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
@@ -317,6 +318,7 @@ class OrganizationGalleryController extends DM_BaseController
 //    }
     public function store(Request $request)
     {
+        //dd($request->all());
         try {
             $organization_id = $request->input('organization_id');
             $gallery_category_ids = $request->input('gallery_category_id');
@@ -325,26 +327,15 @@ class OrganizationGalleryController extends DM_BaseController
             $created_by = auth()->id();
             $updated_by = auth()->id();
             foreach ($gallery_category_ids as $index => $category_id) {
-                $galleryItem = OrganizationGallery::where('organization_id', $organization_id)
-                    ->where('gallery_category_id', $category_id)
-                    ->first();
+                $galleryItem = OrganizationGallery::firstOrNew([
+                    'organization_id' => $organization_id,
+                    'gallery_category_id' => $category_id,
+                ]);
 
-                if ($galleryItem) {
-                    $galleryItem->caption = $captions[$index];
-                    $galleryItem->rank = $ranks[$index];
-                    $galleryItem->updated_by = $updated_by;
-                } else {
-                    $galleryItem = new OrganizationGallery();
-                    $galleryItem->organization_id = $organization_id;
-                    $galleryItem->gallery_category_id = $category_id;
-                    $galleryItem->caption = $captions[$index];
-                    $galleryItem->rank = $ranks[$index];
-                    $galleryItem->created_by = $created_by;
-                    $galleryItem->updated_by = $updated_by;
-                }
-                if ($request->input("media.$index")) {
-                    $media_url = $request->input("media.$index");
-                    if (filter_var($media_url, FILTER_VALIDATE_URL) && strpos($media_url, 'youtube.com') !== false) {
+                if ($request->has("media.$index")) {
+                    $media_urls = $request->input("media.$index");
+                    $media_urls = is_array($media_urls) ? $media_urls : [$media_urls];
+                    foreach ($media_urls as $media_url) {
                         $existingMedia = OrganizationGallery::where('organization_id', $organization_id)
                             ->where('gallery_category_id', $category_id)
                             ->where('media', $media_url)
@@ -366,9 +357,9 @@ class OrganizationGalleryController extends DM_BaseController
                 if ($request->hasFile("media_file.$index")) {
                     foreach ($request->file("media_file.$index") as $file) {
                         $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
-                      if (!file_exists($fileDirectory)) {
-                          mkdir($fileDirectory, 0777, true);
-                      }
+                        if (!file_exists($fileDirectory)) {
+                            mkdir($fileDirectory, 0777, true);
+                        }
 
                         if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif', 'bmp'])) {
                             $media_file_name = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -393,7 +384,6 @@ class OrganizationGalleryController extends DM_BaseController
                         }
                     }
                 }
-                $galleryItem->save();
             }
 
             return Utils\ResponseUtil::wrapResponse(
@@ -410,7 +400,7 @@ class OrganizationGalleryController extends DM_BaseController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      * @return \Illuminate\Contracts\View\View
      */
@@ -428,13 +418,13 @@ class OrganizationGalleryController extends DM_BaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response|\Illuminate\Contracts\View\View
      */
     public function edit($id): \Illuminate\Http\Response|\Illuminate\Contracts\View\View
@@ -443,7 +433,7 @@ class OrganizationGalleryController extends DM_BaseController
         $data['organization'] = Organization::pluck('name', 'id');
         $data['type'] = ['Video' => 'Video', 'Image' => 'Image'];
         $data['record'] = $this->model->find($id);
-       // dd($data['record']);
+        // dd($data['record']);
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
@@ -454,8 +444,8 @@ class OrganizationGalleryController extends DM_BaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
 
@@ -538,7 +528,7 @@ class OrganizationGalleryController extends DM_BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

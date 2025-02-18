@@ -49,10 +49,17 @@
             </select>
         </div>
     </div>
-    <div class="mb-3">
-        <label for="name" class="form-label">College/School Name</label>
-        <input type="text" name="name" class="form-control required" id="name"
-               value="{{$data['record']->name}}"/>
+    <div class="row">
+        <div class="col-md-9 mb-3">
+            <label for="name" class="form-label">College/School Name</label>
+            <input type="text" name="name" class="form-control required" id="name"
+                   value="{{$data['record']->name}}"/>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="short_name" class="form-label">College/School Short Name</label>
+            <input type="text" name="short_name" class="form-control required" id="short_name"
+                   value="{{$data['record']->short_name}}"/>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6">

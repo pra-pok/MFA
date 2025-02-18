@@ -42,10 +42,17 @@
             </select>
         </div>
     </div>
-    <div class="mb-3">
-        <label for="name" class="form-label">College/School Name</label>
-        <input type="text" name="name" class="form-control required" id="name"
-               placeholder="Enter The College/School Name"/>
+    <div class="row">
+        <div class="col-md-9 mb-3">
+            <label for="name" class="form-label">College/School Name</label>
+            <input type="text" name="name" class="form-control required" id="name"
+                   placeholder="Enter The College/School Name"/>
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="short_name" class="form-label">College/School Short Name</label>
+            <input type="text" name="short_name" class="form-control required" id="short_name"
+                   placeholder="Enter The College/School Short Name"/>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-6">

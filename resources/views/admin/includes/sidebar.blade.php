@@ -221,5 +221,11 @@
             <div class="text-truncate" data-i18n="Form Elements">Facilities</div>
         </a>
     </li>
+    <li class="menu-item ">
+        <a href="{{route('admin.news_event.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-news"></i>
+            <div class="text-truncate" data-i18n="Form Elements">News & Event</div>
+        </a>
+    </li>
 
 </ul>

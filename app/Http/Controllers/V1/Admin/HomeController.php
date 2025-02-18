@@ -206,6 +206,8 @@ class HomeController extends Controller
                 'status' => 'error',
             ], 404);
         }
+        $reviewCount = Review::where('organization_id', $id)->count();
+        $averageRating = Review::where('organization_id', $id)->avg('rating');
         $college->makeHidden([
             'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
             'total_view', 'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
@@ -225,7 +227,6 @@ class HomeController extends Controller
                 $gallery->media = ($gallery->type == 1 && !empty($gallery->media))
                     ? url('/file-organization/' . $gallery->media)
                     : null;
-
                 $gallery->gallery_category_name = $gallery->galleryCategory->name ?? '';
                 unset($gallery->galleryCategory);
             }
@@ -246,6 +247,7 @@ class HomeController extends Controller
         if (!empty($college->organizationfacilities)) {
             foreach ($college->organizationfacilities as $facility) {
                 $facility->facility_title = $facility->facility->title ?? '';
+                $facility->facility_icon = $facility->facility->icon ?? '';
                 unset($facility->facility);
             }
         }
@@ -271,6 +273,8 @@ class HomeController extends Controller
             'organizationPages' => $college->organizationPages,
             'organizationsocialMedia' => $college->organizationsocialMedia,
             'organizationfacilities' => $college->organizationfacilities,
+            'review_count' => $reviewCount,
+            'average_rating' => round($averageRating, 1) ?? 0,
         ];
         return response()->json([
             'message' => '',
@@ -280,7 +284,6 @@ class HomeController extends Controller
             ],
         ], 200);
     }
-
     public function reviewStore( Request $request )
     {
         try {
@@ -293,7 +296,6 @@ class HomeController extends Controller
                 ->where('email', $request->email)
                 ->where('organization_id', $request->organization_id)
                 ->first();
-
             if ($existingReview) {
                 return response()->json([
                     'message' => 'A review from this user for this organization already exists!',

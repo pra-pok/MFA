@@ -1,7 +1,10 @@
 <table class="table table-bordered">
     <tr>
         <th>College/School Name</th>
-        <td>{{$data['record']->name}}</td>
+        <td>
+            {{$data['record']->name}}
+            {{ ($data['record']->short_name != null) ? ' ('.$data['record']->short_name.')' : ''}}
+        </td>
     </tr>
     <tr>
         <th>Country</th>

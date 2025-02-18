@@ -12,6 +12,7 @@ class Organization extends Model
     use SoftDeletes;
     protected $fillable = [
         'name',
+        'short_name',
         'slug',
         'logo',
         'banner_image',
@@ -100,5 +101,13 @@ class Organization extends Model
     }
     public function catalog(){
         return $this->belongsToMany(Catalog::class,'organization_catalogs','organization_id','catalog_id');
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'organization_id', 'id');
+    }
+    public function organizationReviews()
+    {
+        return $this->hasMany(Review::class, 'organization_id', 'id');
     }
 }

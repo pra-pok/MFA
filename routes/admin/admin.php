@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\AdministrativeAreaController;
 use App\Http\Controllers\Admin\GalleryCategoryController;
 use App\Http\Controllers\Admin\OrganizationGalleryController;
 use App\Http\Controllers\Admin\PageCategoryController;
+use App\Http\Controllers\Admin\NewEventController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {
@@ -112,5 +113,17 @@ Route::group(['prefix' =>'gallery_category', 'as' => 'gallery_category.'], funct
     Route::get('{id}/edit',[GalleryCategoryController::class,'edit'])->name('edit');
     Route::put('{id}',[GalleryCategoryController::class,'update'])->name('update');
 });
-
+Route::group(['prefix' =>'news_event', 'as' => 'news_event.'], function() {
+    Route::get('trash',[NewEventController::class,'trash'])->name('trash');
+    Route::get('restore/{id}',[NewEventController::class,'restore'])->name('restore');
+    Route::delete('force-delete/{id}',[NewEventController::class,'forceDeleteData'])->name('force_delete');
+    Route::get('create',[NewEventController::class,'create'])->name('create');
+    Route::post('/',[NewEventController::class,'store'])->name('store');
+    Route::get('/',[NewEventController::class,'index'])->name('index');
+    Route::get('/all-data',[NewEventController::class,'getData'])->name('getData');
+    Route::get('{id}/show',[NewEventController::class,'show'])->name('show');
+    Route::delete('{id}',[NewEventController::class,'destroy'])->name('destroy');
+    Route::get('{id}/edit',[NewEventController::class,'edit'])->name('edit');
+    Route::put('{id}',[NewEventController::class,'update'])->name('update');
+});
 
