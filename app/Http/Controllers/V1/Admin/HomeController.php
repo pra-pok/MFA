@@ -7,6 +7,7 @@ use App\Models\Catalog;
 use App\Models\Course;
 use App\Models\Level;
 use App\Models\Organization;
+use App\Models\Review;
 use App\Models\Stream;
 use App\Models\University;
 use Illuminate\Http\Request;
@@ -278,6 +279,46 @@ class HomeController extends Controller
                 'college' => $responseData
             ],
         ], 200);
+    }
+
+    public function reviewStore( Request $request )
+    {
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'email' => 'required|email',
+                'organization_id' => 'required|integer',
+            ]);
+            $existingReview = Review::where('name', $request->name)
+                ->where('email', $request->email)
+                ->where('organization_id', $request->organization_id)
+                ->first();
+
+            if ($existingReview) {
+                return response()->json([
+                    'message' => 'A review from this user for this organization already exists!',
+                    'status' => 'error',
+                ], 409);
+            }
+            $review = new Review();
+            $review->name = $request->name;
+            $review->email = $request->email;
+            $review->phone = $request->phone;
+            $review->message = $request->message;
+            $review->rating = $request->rating;
+            $review->organization_id = $request->organization_id;
+            $review->save();
+            return response()->json([
+                'message' => 'Review added successfully!',
+                'status' => 'success',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred: ' . $e->getMessage(),
+                'status' => 'error',
+            ], 500);
+        }
+
     }
     /**
      * Display the specified resource.

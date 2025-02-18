@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('organization_id');
             $table->string('name');
-            $table->text('message');
+            $table->string('email');
+            $table->string('phone')->nullable();
+            $table->text('message')->nullable();
             $table->integer('rating')->nullable();
             $table->foreign('organization_id')->references('id')->on('organizations');
             $table->timestamps();
