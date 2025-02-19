@@ -21,7 +21,6 @@
                             <th>SN</th>
                             <th>Title</th>
                             <th>Slug</th>
-                            <th>Rank</th>
                             <th>Created By</th>
                             <th>Updated_By</th>
                             <th>Deleted_By</th>
@@ -35,7 +34,6 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->title }}</td>
                                 <td>{{ $item->slug }}</td>
-                                <td>{{ $item->rank }}</td>
                                 <td>{{ $item->createds->username }}</td>
                                 <td>{{$item->updated_by}}</td>
                                 <td>{{$item->deleted_at}}</td>

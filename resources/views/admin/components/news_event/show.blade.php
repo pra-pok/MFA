@@ -11,46 +11,46 @@
         <div class="card">
             <h5 class="card-header">{{$_panel}}</h5>
             @include('admin.includes.buttons.button-back')
-            <div class="card-body" >
-                <div >
+            <div class="card-body">
+                <div>
                     <table class="table table-bordered">
                         <tr>
-                            <th>ID</th>
-                            <td>{{$data['record']->id}}</td>
-                        </tr>
-                        <tr>
-                            <th>Stream Name</th>
-                            <td>{{$data['record']->stream->title ?? 'No Stream'}}</td>
-                        </tr>
-                        <tr>
-                            <th>Level Name</th>
-                            <td>{{$data['record']->level->title ?? 'No Level'}}</td>
-                        </tr>
-                        <tr>
-                            <th>Course Name</th>
+                            <th>Title</th>
                             <td>{{$data['record']->title}}</td>
                         </tr>
-                        <tr>
-                            <th>Short Title</th>
-                            <td>{{$data['record']->short_title}}</td>
                         <tr>
                             <th>Slug</th>
                             <td>{{$data['record']->slug}}</td>
                         </tr>
                         <tr>
-                            <th>Rank</th>
-                            <td>{{$data['record']->rank}}</td>
+                            <th>Thumbnail</th>
+                            <td>
+                                @if(!empty($data['record']->thumbnail != null))
+                                    <a href="{{ url('/file/' . $folder . '/' . $data['record']->thumbnail) }}"
+                                       target="_blank">
+                                        <img src="{{ url('/file/' . $folder . '/' . $data['record']->thumbnail) }}"
+                                             alt="{{$data['record']->title}}" width="150px"/>
+                                    </a>
+                                @else
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
+                                        alt="{{$data['record']->title}}" width="200px"/>
+                                @endif
+                            </td>
                         </tr>
                         <tr>
-                            <th>Catalog</th>
+                            <th>File</th>
                             <td>
-                                @if ($data['record']->courseCatalogs->isNotEmpty())
-                                    @foreach ($data['record']->courseCatalogs as $catalog)
-                                        {{ $catalog->catalog->title ?? '' }}
-                                        @if (!$loop->last), @endif
-                                    @endforeach
+                                @if(!empty($data['record']->file != null))
+                                    <a href="{{ url('/pdf-file/' . $folder . '/' . $data['record']->file) }}"
+                                       target="_blank">
+                                        <img src="{{ url('/pdf-file/' . $folder . '/' . $data['record']->file) }}"
+                                             alt="{{$data['record']->title}}" width="150px"/>
+                                    </a>
                                 @else
-
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
+                                        alt="{{$data['record']->title}}" width="200px"/>
                                 @endif
                             </td>
                         </tr>
@@ -59,16 +59,21 @@
                             <td>{!! $data['record']->description !!}</td>
                         </tr>
                         <tr>
-                            <th>Job Prospects</th>
-                            <td>{!! $data['record']->job_prospects !!}</td>
+                            <th>Short Description</th>
+                            <td>{!! $data['record']->short_description !!}</td>
                         </tr>
                         <tr>
-                            <th>Eligibility</th>
-                            <td>{!! $data['record']->eligibility !!}</td>
-                        </tr>
-                        <tr>
-                            <th>Syllabus</th>
-                            <td>{!! $data['record']->syllabus !!}</td>
+                            <th>School/College</th>
+                            <td>
+                                @if ($data['record']->organizationNewEvents->isNotEmpty())
+                                    @foreach ($data['record']->organizationNewEvents as $item)
+                                        {{ $item->organization->name ?? '' }}
+                                        @if (!$loop->last), @endif
+                                    @endforeach
+                                @else
+
+                                @endif
+                            </td>
                         </tr>
                         <tr>
                             <th>Meta Title</th>

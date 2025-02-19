@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Catalog;
 use App\Models\Course;
 use App\Models\Level;
+use App\Models\NewEvent;
 use App\Models\Organization;
 use App\Models\Review;
 use App\Models\Stream;
@@ -26,7 +27,7 @@ use OpenApi\Annotations as OA;
  *      )
  * )
  */
-class HomeController extends Controller
+class HomeRestApiController extends Controller
 {
     /**
      * @OA\Get(
@@ -47,7 +48,6 @@ class HomeController extends Controller
     {
         try {
             $data['catalog'] = [];
-
             // College
             $catalogs = DB::select("
             SELECT c.id, c.title, c.type
@@ -102,7 +102,6 @@ class HomeController extends Controller
             FROM catalogs cc
             WHERE cc.type = 'Course'
         ");
-
             if (empty($catalog_course)) {
                 return Utils\ResponseUtil::wrapResponse(
                     new ResponseDTO(null, 'No Course catalogs found.', 'error', 404)
@@ -178,6 +177,23 @@ class HomeController extends Controller
                     }, $university)
                 ];
             }
+            $data['news'] = NewEvent::where('status', 1)
+                ->orderBy('created_at', 'desc')
+                ->limit(5)
+                ->get()
+                ->makeHidden([
+                    'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                    'meta_title', 'meta_keywords', 'meta_description',
+                ]);
+
+            $data['news']->transform(function ($item) {
+                $item->thumbnail = $item->thumbnail ? url('/file/news_event/' . $item->thumbnail) : '';
+                return $item;
+            });
+            $data['news']->transform(function ($item) {
+                $item->file = $item->file ? url('/pdf-file/news_event/' . $item->file) : '';
+                return $item;
+            });
             // Success Response
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($data, '', 'success', 200)
@@ -189,102 +205,7 @@ class HomeController extends Controller
             );
         }
     }
-    public function collegeDetail($id)
-    {
-        $college = Organization::with([
-            'organizationGalleries',
-            'organizationCourses',
-            'organizationPages',
-            'organizationsocialMedia',
-            'organizationfacilities',
-            'locality.administrativeArea.parent',
-            'country'
-        ])->find($id);
-        if (!$college) {
-            return response()->json([
-                'message' => 'College not found!',
-                'status' => 'error',
-            ], 404);
-        }
-        $reviewCount = Review::where('organization_id', $id)->count();
-        $averageRating = Review::where('organization_id', $id)->avg('rating');
-        $college->makeHidden([
-            'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-            'total_view', 'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
-        ]);
-        foreach (['organizationGalleries', 'organizationCourses', 'organizationPages', 'organizationsocialMedia', 'organizationfacilities'] as $relation) {
-            if ($college->$relation) {
-                $college->$relation->each(function ($item) {
-                    $item->makeHidden([
-                        'id', 'title', 'organization_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by','university',
-                        'gallery_category_id', 'course_id', 'page_id', 'social_media_id', 'facility_id','university_id','page_category_id'
-                    ]);
-                });
-            }
-        }
-        if (!empty($college->organizationGalleries)) {
-            foreach ($college->organizationGalleries as $gallery) {
-                $gallery->media = ($gallery->type == 1 && !empty($gallery->media))
-                    ? url('/file-organization/' . $gallery->media)
-                    : null;
-                $gallery->gallery_category_name = $gallery->galleryCategory->name ?? '';
-                unset($gallery->galleryCategory);
-            }
-        }
-        if (!empty($college->organizationCourses)) {
-            foreach ($college->organizationCourses as $course) {
-                $course->course_title = $course->course->title ?? '';
-                $course->University_name = $course->university->title ?? '' ;
-                unset($course->course);
-            }
-        }
-        if (!empty($college->organizationPages)) {
-            foreach ($college->organizationPages as $page) {
-                $page->page_title = $page->page->title ?? '';
-                unset($page->page);
-            }
-        }
-        if (!empty($college->organizationfacilities)) {
-            foreach ($college->organizationfacilities as $facility) {
-                $facility->facility_title = $facility->facility->title ?? '';
-                $facility->facility_icon = $facility->facility->icon ?? '';
-                unset($facility->facility);
-            }
-        }
-        $responseData = [
-            'country' => $college->country->name ?? '',
-            'administrative_area' => $college->locality->administrativeArea->parent->name ?? '',
-            'District' => $college->locality->administrativeArea->name ?? '',
-            'Locality' => $college->locality->name ?? '',
-            'name' => $college->name,
-            'slug' => $college->slug,
-            'logo' => !empty($college->logo) ? url('/file/organization/' . $college->logo) : '',
-            'banner_image' => !empty($college->banner_image) ? url('/file-banner/organization/' . $college->banner_image) : '',
-            'address' => $college->address,
-            'phone' => $college->phone,
-            'email' => $college->email,
-            'website' => $college->website,
-            'description' => $college->description,
-            'type' => $college->type,
-            'established_year' => $college->established_year,
-            'google_map' => $college->google_map,
-            'organizationGalleries' => $college->organizationGalleries,
-            'organizationCourses' => $college->organizationCourses,
-            'organizationPages' => $college->organizationPages,
-            'organizationsocialMedia' => $college->organizationsocialMedia,
-            'organizationfacilities' => $college->organizationfacilities,
-            'review_count' => $reviewCount,
-            'average_rating' => round($averageRating, 1) ?? 0,
-        ];
-        return response()->json([
-            'message' => '',
-            'status' => 'success',
-            'data' => [
-                'college' => $responseData
-            ],
-        ], 200);
-    }
-    public function reviewStore( Request $request )
+    public function reviewStore(Request $request)
     {
         try {
             $request->validate([
@@ -321,28 +242,5 @@ class HomeController extends Controller
             ], 500);
         }
 
-    }
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

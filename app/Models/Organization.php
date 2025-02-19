@@ -110,4 +110,9 @@ class Organization extends Model
     {
         return $this->hasMany(Review::class, 'organization_id', 'id');
     }
+
+    public function organizationNewsEvents()
+    {
+        return $this->belongsToMany(NewEvent::class, 'organization_new_events', 'organization_id', 'new_event_id');
+    }
 }

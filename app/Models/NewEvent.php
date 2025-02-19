@@ -37,5 +37,8 @@ class NewEvent extends Model
     {
         return $this->belongsToMany(Organization::class, 'organization_new_events', 'new_event_id', 'organization_id');
     }
-
+    public function organizationNewEvents()
+    {
+        return $this->hasMany(OrganizationNewEvent::class, 'new_event_id', 'id');
+    }
 }

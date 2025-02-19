@@ -86,6 +86,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/get-localities-by-district', [OrganizationController::class, 'getLocalitiesByDistrict'])->name('get_locality_district');
         Route::get('/get-localities-by-country', [OrganizationController::class, 'getParentDetailsByLocality']);
     });
+
     Route::group(['prefix' => 'organization_gallery', 'as' => 'organization_gallery.'], function () {
         Route::get('trash', [OrganizationGalleryController::class, 'trash'])->name('trash');
         Route::get('restore/{id}', [OrganizationGalleryController::class, 'restore'])->name('restore');
@@ -155,6 +156,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/file/{folder}/{filename}', function ($folder, $filename) {
 //        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
         $path = "/data/mfa/images/$folder/$filename";
+
+        if (!File::exists($path)) {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        return Response::make($file, 200)->header("Content-Type", $type);
+    });
+    Route::get('/pdf-file/{folder}/{filename}', function ($folder, $filename) {
+        $path = "/data/mfa/file/$folder/$filename";
 
         if (!File::exists($path)) {
             abort(404);

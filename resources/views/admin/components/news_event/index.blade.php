@@ -1,4 +1,5 @@
 @extends('admin.layouts.app')
+
 @section('content')
     <div class="container-fluid flex-grow-1 container-p-y">
         <nav>
@@ -24,8 +25,8 @@
                         <thead>
                             <tr>
                                 <th width="6%">SN</th>
-                                <th>Stream /Level Name</th>
                                 <th>Title</th>
+                                <th>Short Description</th>
                                 <th>Status</th>
                                 <th>Modified By/At</th>
                             </tr>
@@ -55,8 +56,8 @@
         },
         columns: [
             { data: null },
-            {data: 'stream.title'},
             { data: 'title' },
+            { data: 'short_description' },
             { data: 'status' },
             { data: 'createds.username' },
         ],
@@ -64,19 +65,17 @@
             const statusBadge = data.status === 1
                 ? '<span class="badge bg-label-success me-1">Active</span>'
                 : '<span class="badge bg-label-danger">De-Active</span>';
-            const editUrl = `{{ url('admin/course/${data.id}/edit') }}`;
-            const showUrl = `{{ url('admin/course/${data.id}/show') }}`;
-            const deleteUrl = `{{ url('admin/course/${data.id}') }}`;
+            const editUrl = `{{ url('admin/news_event/${data.id}/edit') }}`;
+            const showUrl = `{{ url('admin/news_event/${data.id}/show') }}`;
+            const deleteUrl = `{{ url('admin/news_event/${data.id}') }}`;
+            const short_description = data.short_description ? `${data.short_description}` : '';
             const modifiedByName = data.updatedBy && data.updatedBy.username
                 ? data.updatedBy.username
                 : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
             const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
             const rowContent = `
             <td>${index + 1}</td>
-            <td>${data.stream.title}<br>
-               <span> ${data.level.title} </span>
-            </td>
-            <td class="position-relative"> <a href="${showUrl}">  ${data.title}  <br> <span> (${data.short_title}) </span> </a>
+            <td class="position-relative"> <a href="${showUrl}">  ${data.title}  </a>
                 <div class="dropdown d-inline-block">
                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="dropdown">
                             <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
@@ -94,6 +93,9 @@
                         </form>
                     </div>
                 </div>
+            </td>
+            <td>
+              <div style="white-space:pre-wrap;">${short_description}</div>
             </td>
             <td>${statusBadge}</td>
             <td>

@@ -10,6 +10,7 @@
                     <div class="card-body">
                         <form action="{{ route($_base_route . '.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+
                             <div class="row">
                                 <div class="col-md-6 mt-3">
                                     <label for="title" class="form-label">Title</label>
@@ -52,12 +53,17 @@
                             </div>
                             <div class="mt-3">
                                 <label for="short_description" class="form-label">Short Description</label>
-                                <textarea class="form-control editor" name="short_description" rows="3"></textarea>
+                                <textarea class="form-control" name="short_description" rows="3"></textarea>
                             </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control editor" name="description" rows="3"></textarea>
                             </div>
+                            <div class="mt-3">
+                                <label for="organization_id" class="form-label">College/School</label>
+                                <select name="organization_id[]" id="organization_id" class="form-control select2-ajax" multiple></select>
+                            </div>
+
                             @include('admin.includes.create_meta')
                             @include('admin.includes.create_status')
                             <div class="mt-3">
@@ -74,7 +80,31 @@
     @include('admin.includes.slug')
     <script>
         $(document).ready(function () {
-            $('.select-course').select2();
+            $('#organization_id').select2({
+                placeholder: "Search for a College/School",
+                allowClear: true,
+                ajax: {
+                    url: "{{ route($_base_route . '.search') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term // Search query
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    id: item.id,
+                                    text: item.name
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
         });
     </script>
 

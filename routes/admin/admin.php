@@ -120,10 +120,10 @@ Route::group(['prefix' =>'news_event', 'as' => 'news_event.'], function() {
     Route::get('create',[NewEventController::class,'create'])->name('create');
     Route::post('/',[NewEventController::class,'store'])->name('store');
     Route::get('/',[NewEventController::class,'index'])->name('index');
-    Route::get('/all-data',[NewEventController::class,'getData'])->name('getData');
     Route::get('{id}/show',[NewEventController::class,'show'])->name('show');
     Route::delete('{id}',[NewEventController::class,'destroy'])->name('destroy');
     Route::get('{id}/edit',[NewEventController::class,'edit'])->name('edit');
     Route::put('{id}',[NewEventController::class,'update'])->name('update');
+    Route::get('/search', [NewEventController::class, 'search'])->name('search');
 });
 
