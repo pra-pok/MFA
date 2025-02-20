@@ -48,14 +48,6 @@
             alert("You must have at least one row.");
         }
     });
-    // $(document).on('click', '.remove-row-page', function () {
-    //     if ($('.clone-file-page').length > 1) {
-    //         $(this).closest('.clone-file-page').remove();
-    //     } else {
-    //         alert("You must have at least one row.");
-    //     }
-    // });
-    // Toggle Status Checkbox
     function toggleStatus() {
         $('.checkbox').on('change', function () {
             const hiddenInput = $(this).siblings('input[type="hidden"]');
@@ -64,44 +56,4 @@
     }
     toggleStatus();
 
-    // $('#add-row-page').on('click', function () {
-    //     const newRow = $('.clone-file-page:first').clone();
-    //     newRow.find('select').prop('selectedIndex', 0);
-    //     newRow.find('textarea').val('');
-    //     newRow.find('input').val('');
-    //     newRow.find('input[type="checkbox"][value="1"]').prop('checked', false);
-    //     newRow.find(".ck-editor").remove();
-    //     newRow.find('textarea').each(function () {
-    //         $(this).val('');
-    //         const newTextarea = $(this).clone();
-    //         newTextarea.removeAttr('id');
-    //         $(this).replaceWith(newTextarea);
-    //         initializeEditor(newTextarea[0]);
-    //     });
-    //     $('.file-block-page').append(newRow);
-    //     newRow.find('.select-page').select2();
-    // });
-    // $(document).on('click', '.remove-row', function () {
-    //     if ($('.file-block .clone-file').length > 1) {
-    //         const row = $(this).closest('.clone-file');
-    //         const textareaId = row.find('textarea').attr('id');
-    //         if (editors[textareaId]) {
-    //             editors[textareaId].destroy();
-    //             delete editors[textareaId];
-    //         }
-    //         row.remove();
-    //     } else {
-    //         alert("You must have at least one row.");
-    //     }
-    // });
-    // function toggleStatus() {
-    //     var visibleCheckbox = $('#status');
-    //     var hiddenCheckbox = $('input[name="status"][value="0"]');
-    //
-    //     if (visibleCheckbox.prop('checked')) {
-    //         hiddenCheckbox.prop('checked', false);
-    //     } else {
-    //         hiddenCheckbox.prop('checked', true);
-    //     }
-    // }
 </script>

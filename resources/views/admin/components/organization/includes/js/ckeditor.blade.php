@@ -48,29 +48,6 @@
             alert("You must have at least one row.");
         }
     });
-    // $(document).on('click', '.remove-row', function () {
-    //     if ($('.file-block .clone-file').length > 1) {
-    //         const row = $(this).closest('.clone-file');
-    //         const textareaId = row.find('textarea').attr('id');
-    //         if (editors[textareaId]) {
-    //             editors[textareaId].destroy();
-    //             delete editors[textareaId];
-    //         }
-    //         row.remove();
-    //     } else {
-    //         alert("You must have at least one row.");
-    //     }
-    // });
-    // function toggleStatus() {
-    //     var visibleCheckbox = $('#status');
-    //     var hiddenCheckbox = $('input[name="status"][value="0"]');
-
-    //     if (visibleCheckbox.prop('checked')) {
-    //         hiddenCheckbox.prop('checked', false);
-    //     } else {
-    //         hiddenCheckbox.prop('checked', true);
-    //     }
-    // }
     function toggleStatus() {
         $('.checkbox').on('change', function () {
             const hiddenInput = $(this).siblings('input[type="hidden"]');

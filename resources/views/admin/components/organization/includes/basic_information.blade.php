@@ -50,7 +50,7 @@
         </div>
         <div class="col-md-3 mb-3">
             <label for="short_name" class="form-label">College/School Short Name</label>
-            <input type="text" name="short_name" class="form-control required" id="short_name"
+            <input type="text" name="short_name" class="form-control" id="short_name"
                    placeholder="Enter The College/School Short Name"/>
         </div>
     </div>

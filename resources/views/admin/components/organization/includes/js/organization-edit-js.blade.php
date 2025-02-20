@@ -134,20 +134,27 @@
             e.preventDefault();
             const lastRow = tableBody.find("tr:last");
             const newRow = lastRow.clone();
-            const rowCount = tableBody.find("tr").length + 1;
+            const rowCount = tableBody.find("tr").length;
             newRow.find("td:first").text(rowCount);
             newRow.find("input, select").each(function () {
                 const input = $(this);
+                const name = input.attr("name");
+                if (name) {
+                    const newName = name.replace(/\[\d+\]/, `[${rowCount}]`);
+                    input.attr("name", newName);
+                }
                 if (input.is("select")) {
                     const originalValue = tableBody.find("tr:first select").val();
                     input.val(originalValue);
-                } else if (input.is(":text") || input.is(":file")) {
+                } else if (input.is(":text") || input.is(":file") || input.is("input[type='number']")) {
                     input.val("");
                 } else if (input.is(":radio")) {
-                    const baseName = input.attr("name").split("-")[0];
-                    input.attr("name", `${baseName}-${rowCount}`);
+                    const baseName = name.match(/[a-zA-Z_]+/)[0];
+                    input.attr("name", `${baseName}[${rowCount}]`);
                     input.attr("id", input.attr("id").split("-")[0] + `-${rowCount}`);
-                    input.prop("checked", input.is("[defaultChecked]"));
+                    input.prop("checked", input.val() === "1");
+                } else if (input.is(":checkbox")) {
+                    input.prop("checked", false);
                 }
             });
             tableBody.append(newRow);

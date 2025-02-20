@@ -1,5 +1,6 @@
 <script>
     $(document).ready(function () {
+        $('.nav-tabs button').removeAttr('role data-bs-toggle');
         const updateButtonsVisibility = () => {
             const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
             const totalTabs = $('.nav-tabs .nav-link').length;
@@ -171,24 +172,54 @@
             e.preventDefault();
             const lastRow = tableBody.find("tr:last");
             const newRow = lastRow.clone();
-            const rowCount = tableBody.find("tr").length + 1;
+            const rowCount = tableBody.find("tr").length;
             newRow.find("td:first").text(rowCount);
             newRow.find("input, select").each(function () {
                 const input = $(this);
+                const name = input.attr("name");
+                if (name) {
+                    const newName = name.replace(/\[\d+\]/, `[${rowCount}]`);
+                    input.attr("name", newName);
+                }
                 if (input.is("select")) {
                     const originalValue = tableBody.find("tr:first select").val();
                     input.val(originalValue);
-                } else if (input.is(":text") || input.is(":file")) {
+                } else if (input.is(":text") || input.is(":file") || input.is("input[type='number']")) {
                     input.val("");
                 } else if (input.is(":radio")) {
-                    const baseName = input.attr("name").split("-")[0];
-                    input.attr("name", `${baseName}-${rowCount}`);
+                    const baseName = name.match(/[a-zA-Z_]+/)[0];
+                    input.attr("name", `${baseName}[${rowCount}]`);
                     input.attr("id", input.attr("id").split("-")[0] + `-${rowCount}`);
-                    input.prop("checked", input.is("[defaultChecked]"));
+                    input.prop("checked", input.val() === "1");
+                } else if (input.is(":checkbox")) {
+                    input.prop("checked", false);
                 }
             });
             tableBody.append(newRow);
         });
+        // const tableBody = $("#datatable tbody");
+        // tableBody.on("click", ".add-row", function (e) {
+        //     e.preventDefault();
+        //     const lastRow = tableBody.find("tr:last");
+        //     const newRow = lastRow.clone();
+        //     const rowCount = tableBody.find("tr").length + 1;
+        //     newRow.find("td:first").text(rowCount);
+        //     newRow.find("input, select").each(function () {
+        //         const input = $(this);
+        //         if (input.is("select")) {
+        //             const originalValue = tableBody.find("tr:first select").val();
+        //             input.val(originalValue);
+        //         } else if (input.is(":text") || input.is(":file")) {
+        //             input.val("");
+        //         } else if (input.is(":radio")) {
+        //             const baseName = input.attr("name").split("-")[0];
+        //             input.attr("name", `${baseName}-${rowCount}`);
+        //             input.attr("id", input.attr("id").split("-")[0] + `-${rowCount}`);
+        //             input.prop("checked", input.is("[defaultChecked]"));
+        //         }
+        //     });
+        //     tableBody.append(newRow);
+        // });
         tableBody.on("click", ".remove-row", function (e) {
             e.preventDefault();
             const rows = tableBody.find("tr");
@@ -313,74 +344,6 @@
                 }
             });
         }
-        {{--$('#country_id').change(function () {--}}
-        {{--    var idcountry = this.value;--}}
-        {{--    $("#parent_id").html('<option value="">None</option>');--}}
-        {{--    if (idcountry) {--}}
-        {{--        $.ajax({--}}
-        {{--            url: '/organization/get-parents-by-country',--}}
-        {{--            type: "GET",--}}
-        {{--            data: {--}}
-        {{--                id: idcountry,--}}
-        {{--                _token: '{{ csrf_token() }}'--}}
-        {{--            },--}}
-        {{--            dataType: 'json',--}}
-        {{--            success: function (result) {--}}
-        {{--                if (result.parents) {--}}
-        {{--                    $.each(result.parents, function (key, value) {--}}
-        {{--                        $("#parent_id").append('<option value="' + key + '">' + value + '</option>');--}}
-        {{--                    });--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
-        {{--$('#parent_id').change(function () {--}}
-        {{--    var idparent = this.value;--}}
-        {{--    $("#district_id").html('<option value="">None</option>');--}}
-        {{--    if (idparent) {--}}
-        {{--        $.ajax({--}}
-        {{--            url: '/organization/get-districts-by-parent',--}}
-        {{--            type: "GET",--}}
-        {{--            data: {--}}
-        {{--                id: idparent,--}}
-        {{--                _token: '{{ csrf_token() }}'--}}
-        {{--            },--}}
-        {{--            dataType: 'json',--}}
-        {{--            success: function (result) {--}}
-        {{--                if (result.$districts) {--}}
-        {{--                    $.each(result.$districts, function (key, value) {--}}
-        {{--                        $("#district_id").append('<option value="' + key + '">' + value + '</option>');--}}
-        {{--                    });--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
-        {{--$('#district_id').change(function () {--}}
-        {{--    var iddistrict = this.value;--}}
-        {{--    $("#locality_id").html('<option value="">None</option>');--}}
-        {{--    if (iddistrict) {--}}
-        {{--        $.ajax({--}}
-        {{--            url: '/organization/get-localities-by-district',--}}
-        {{--            type: "GET",--}}
-        {{--            data: {--}}
-        {{--                id: iddistrict,--}}
-        {{--                _token: '{{ csrf_token() }}'--}}
-        {{--            },--}}
-        {{--            dataType: 'json',--}}
-        {{--            success: function (result) {--}}
-        {{--                if (result.$localities) {--}}
-        {{--                    $.each(result.$localities, function (key, value) {--}}
-        {{--                        $("#locality_id").append('<option value="' + key + '">' + value + '</option>');--}}
-        {{--                    });--}}
-        {{--                }--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--    }--}}
-        {{--});--}}
-        // $('#country_id').trigger('change');
-        // $('#country_id').select2();
         $('#parent_id').select2();
         $('.select-country').select2();
         $('.select-type').select2();

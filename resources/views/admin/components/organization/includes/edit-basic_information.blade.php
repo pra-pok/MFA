@@ -57,7 +57,7 @@
         </div>
         <div class="col-md-3 mb-3">
             <label for="short_name" class="form-label">College/School Short Name</label>
-            <input type="text" name="short_name" class="form-control required" id="short_name"
+            <input type="text" name="short_name" class="form-control" id="short_name"
                    value="{{$data['record']->short_name}}"/>
         </div>
     </div>
@@ -68,14 +68,14 @@
         </div>
         <div class="col-md-6 mb-3">
             <label for="established_year" class="form-label ">Established Year</label>
-            <input type="text" name="established_year" class="form-control " id="established_year"
+            <input type="text" name="established_year" class="form-control" id="established_year"
                    value="{{$data['record']->established_year}}"/>
         </div>
     </div>
     <div class="row">
         <div class="col-md-6">
             <label for="address" class="form-label">Address</label>
-            <input type="text" name="address" class="form-control " id="address" value="{{$data['record']->address}}"/>
+            <input type="text" name="address" class="form-control" id="address" value="{{$data['record']->address}}"/>
         </div>
         <div class="col-md-6 mb-3">
             <label for="email" class="form-label">Email</label>
