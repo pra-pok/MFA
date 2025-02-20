@@ -98,9 +98,16 @@ class CollegeRestApiController extends Controller
             $event->thumbnail = !empty($event->thumbnail) ? url('/file/news_event/' . $event->thumbnail) : '';
             $event->file = !empty($event->file) ? url('/pdf-file/news_event/' . $event->file) : '';
         });
+        $review = Review::where('organization_id', $id)->get();
+        $review->each(function ($item) {
+            $item->makeHidden([
+                'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'organization_id'
+            ]);
+        });
         $college->makeHidden([
             'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-            'total_view', 'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
+             'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
         ]);
         foreach (['organizationGalleries', 'organizationCourses', 'organizationPages', 'organizationsocialMedia', 'organizationfacilities'] as $relation) {
             if ($college->$relation) {
@@ -114,13 +121,18 @@ class CollegeRestApiController extends Controller
         }
         if (!empty($college->organizationGalleries)) {
             foreach ($college->organizationGalleries as $gallery) {
-                $gallery->media = ($gallery->type == 1 && !empty($gallery->media))
-                    ? url('/file-organization/' . $gallery->media)
-                    : null;
+                if ($gallery->type == 1 && !empty($gallery->media)) {
+                    $gallery->media = url('/file-organization/' . $gallery->media);
+                } elseif ($gallery->type == 0 && !empty($gallery->media)) {
+                    $gallery->media = $gallery->media;
+                } else {
+                    $gallery->media = null;
+                }
                 $gallery->gallery_category_name = $gallery->galleryCategory->name ?? '';
                 unset($gallery->galleryCategory);
             }
         }
+
         if (!empty($college->organizationCourses)) {
             foreach ($college->organizationCourses as $course) {
                 $course->course_title = $course->course->title ?? '';
@@ -141,6 +153,7 @@ class CollegeRestApiController extends Controller
                 unset($facility->facility);
             }
         }
+
         $responseData = [
             'country' => $college->country->name ?? '',
             'administrative_area' => $college->locality->administrativeArea->parent->name ?? '',
@@ -158,6 +171,7 @@ class CollegeRestApiController extends Controller
             'type' => $college->type,
             'established_year' => $college->established_year,
             'google_map' => $college->google_map,
+            'view_count' => $college->increment('total_view'),
             'organizationGalleries' => $college->organizationGalleries,
             'organizationCourses' => $college->organizationCourses,
             'organizationPages' => $college->organizationPages,
@@ -166,7 +180,10 @@ class CollegeRestApiController extends Controller
             'review_count' => $reviewCount,
             'average_rating' => round($averageRating, 1) ?? 0,
             'organization_new_events' => $newsEvents,
+            'review' => $review,
+
         ];
+
         return response()->json([
             'message' => '',
             'status' => 'success',

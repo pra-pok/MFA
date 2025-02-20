@@ -44,6 +44,9 @@ Route::get('/logout', function () {
 Route::get('/login', function () {
     abort(404);
 });
+Route::fallback(function () {
+    abort(404);
+});
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
     //        return view('dashboard');

@@ -124,8 +124,8 @@ class OrganizationGalleryController extends DM_BaseController
                                     'gallery_category_id' => $category_id,
                                     'caption' => $captions[$index] ?? null,
                                     'rank' => $ranks[$index] ?? 0,
-                                    'type' => 1, // Image
-                                    'media' => $media_file_name, // ✅ FIX: Ensure media field is assigned
+                                    'type' => 1,
+                                    'media' => $media_file_name,
                                     'created_by' => $created_by,
                                     'updated_by' => $updated_by,
                                 ]);

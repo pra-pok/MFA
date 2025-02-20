@@ -48,14 +48,12 @@ class HomeRestApiController extends Controller
     {
         try {
             $data['catalog'] = [];
-            // College
             $catalogs = DB::select("
             SELECT c.id, c.title, c.type
             FROM catalogs c
             WHERE c.type = 'College'
         ");
             if (empty($catalogs)) {
-                // If no catalogs found
                 return Utils\ResponseUtil::wrapResponse(
                     new ResponseDTO(null, 'No College catalogs found.', 'error', 404)
                 );
@@ -67,8 +65,6 @@ class HomeRestApiController extends Controller
                 FROM organizations o
                 JOIN organization_catalogs oc ON o.id = oc.organization_id
                 WHERE oc.catalog_id = ?", [$catalog->id]);
-
-                // Formatting the catalog with nested organization data
                 $data['catalog'][] = [
                     'id' => $catalog->id,
                     'title' => $catalog->title,
@@ -96,7 +92,6 @@ class HomeRestApiController extends Controller
                     }, $organizations)
                 ];
             }
-            // Course
             $catalog_course = DB::select("
             SELECT cc.id, cc.title, cc.type
             FROM catalogs cc
@@ -139,7 +134,6 @@ class HomeRestApiController extends Controller
                     }, $courses)
                 ];
             }
-            // University
             $country = $request->input('country');
             $catalog_university = DB::select("
             SELECT c.id, c.title, c.type
@@ -194,7 +188,6 @@ class HomeRestApiController extends Controller
                 $item->file = $item->file ? url('/pdf-file/news_event/' . $item->file) : '';
                 return $item;
             });
-            // Success Response
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($data, '', 'success', 200)
             );

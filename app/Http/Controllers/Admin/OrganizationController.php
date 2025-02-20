@@ -214,9 +214,8 @@ class OrganizationController extends DM_BaseController
     {
 //        $data['record'] = $this->model->find($id);
         $data['record'] = $this->model->with(['createds', 'updatedBy', 'socialMediaLinks', 'organizationGalleries' ,
-            'organizationCourses' , 'organizationPages' , 'organizationfacilities' ])  // Eager load any relationships
+            'organizationCourses' , 'organizationPages' , 'organizationfacilities' ])
         ->find($id);
-
         if (!$data['record']) {
             request()->session()->flash('alert-danger', 'Invalid Request');
             return redirect()->route($this->base_route . 'index');
