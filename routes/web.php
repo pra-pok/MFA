@@ -183,9 +183,7 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'mi
 });
 
 Route::get('/file/{folder}/{filename}', function ($folder, $filename) {
-//        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
-    $path = "/home/edigitalnepal/Downloads/data/mfa/images/$folder/$filename";
-
+    $path = "/data/mfa/$folder/$filename";
     if (!File::exists($path)) {
         abort(404);
     }

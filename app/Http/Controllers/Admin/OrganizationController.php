@@ -158,7 +158,7 @@ class OrganizationController extends DM_BaseController
             $request->request->add(['created_by' => auth()->user()->id]);
             $request->request->add(['updated_by' => auth()->user()->id]);
             if ($request->hasfile('logo_file')) {
-                $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+                $fileDirectory = '/data/mfa/' . $this->folder . '/';
                 if (!file_exists($fileDirectory)) {
                     mkdir($fileDirectory, 0777, true);
                 }
@@ -167,7 +167,7 @@ class OrganizationController extends DM_BaseController
                 $request->request->add(['logo' => $logo_file]);
             }
             if ($request->hasfile('banner_file')) {
-                $fileDirectory = '/data/mfa/images/' . $this->folder . '/banner/';
+                $fileDirectory = '/data/mfa/organization_banner/';
                 if (!file_exists($fileDirectory)) {
                     mkdir($fileDirectory, 0777, true);
                 }
@@ -292,7 +292,7 @@ class OrganizationController extends DM_BaseController
             return redirect()->route($this->base_route . '.index');
         }
         if ($request->hasfile('logo_file')) {
-            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/' . $this->folder . '/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }
@@ -306,7 +306,7 @@ class OrganizationController extends DM_BaseController
             $request->request->add(['logo' => $data['record']->logo]);
         }
         if ($request->hasfile('banner_file')) {
-            $fileDirectory = '/data/mfa/images/' . $this->folder . '/banner/';
+            $fileDirectory = '/data/mfa/organization_banner/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }

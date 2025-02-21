@@ -117,12 +117,12 @@
             <input type="file" name="banner_file" class="form-control" id="banner" />
             <div class="mt-3">
                 @if($data['record']->banner_image)
-                    <img src="{{ url('/file-banner/' . $folder . '/' . $data['record']->banner_image) }}"
+                    <img src="{{ url('/file/organization_banner/' . $data['record']->banner_image) }}"
 
                          alt="banner" class="img-thumbnail clickable-image"
                          style="width: 100px; height: 100px;"
                          data-bs-toggle="modal" data-bs-target="#imageModal"
-                         data-bs-image="{{ url('/file-banner/' . $folder . '/' . $data['record']->banner_image) }}">
+                         data-bs-image="{{ url('/file/organization_banner/' . $data['record']->banner_image) }}">
                 @else
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
                          alt="No banner available" class="img-thumbnail clickable-image"

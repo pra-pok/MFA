@@ -106,7 +106,7 @@ class OrganizationGalleryController extends DM_BaseController
                 }
                 if ($request->hasFile("media_file.$index")) {
                     foreach ($request->file("media_file.$index") as $file) {
-                        $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+                        $fileDirectory = '/data/mfa/' . $this->folder . '/';
                         if (!file_exists($fileDirectory)) {
                             mkdir($fileDirectory, 0777, true);
                         }

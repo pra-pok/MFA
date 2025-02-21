@@ -74,7 +74,7 @@ class UniversityController extends DM_BaseController
     {
        // dd($request->all());
         $request->request->add(['created_by' => auth()->user()->id]);
-        $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+        $fileDirectory = '/data/mfa/' . $this->folder . '/';
         if (!file_exists($fileDirectory)) {
             mkdir($fileDirectory, 0777, true);
         }
@@ -185,7 +185,7 @@ class UniversityController extends DM_BaseController
             return redirect()->route($this->base_route . 'index');
         }
         if ($request->hasfile('image_file')) {
-            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/' . $this->folder . '/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }

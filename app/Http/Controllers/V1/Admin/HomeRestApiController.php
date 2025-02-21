@@ -57,7 +57,7 @@ class HomeRestApiController extends Controller
                             'website' => $org->website,
                             'established_year' => $org->established_year,
                             'banner_image' => !empty($org->banner_image)
-                                ? url('/api-file-banner/organization/' . $org->banner_image)
+                                ? url('/file/organization_banner/' . $org->banner_image)
                                 : null,
                             'type' => $org->type,
                             'description' => $org->description,
@@ -138,7 +138,7 @@ class HomeRestApiController extends Controller
                             'slug' => $university->slug,
                             'types' => $university->types,
                             'logo' => !empty($university->logo)
-                                ? url('/api-file/university/' . $university->logo)
+                                ? url('/file/university/' . $university->logo)
                                 : null,
                             'description' => $university->description,
                         ];
@@ -155,11 +155,11 @@ class HomeRestApiController extends Controller
                 ]);
 
             $data['news']->transform(function ($item) {
-                $item->thumbnail = $item->thumbnail ? url('/api-file/news_event/' . $item->thumbnail) : '';
+                $item->thumbnail = $item->thumbnail ? url('/file/news_event/' . $item->thumbnail) : '';
                 return $item;
             });
             $data['news']->transform(function ($item) {
-                $item->file = $item->file ? url('/api-pdf-file/news_event/' . $item->file) : '';
+                $item->file = $item->file ? url('/file/news_event_pdf/' . $item->file) : '';
                 return $item;
             });
             return Utils\ResponseUtil::wrapResponse(

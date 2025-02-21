@@ -71,7 +71,7 @@ class NewEventController extends DM_BaseController
         $request->request->add(['created_by' => auth()->user()->id]);
         $request->request->add(['updated_by' => auth()->user()->id]);
         if ($request->hasfile('thumbnail_file')) {
-            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/' . $this->folder . '/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }
@@ -80,7 +80,7 @@ class NewEventController extends DM_BaseController
             $request->request->add(['thumbnail' => $thumbnail_file]);
         }
         if ($request->hasfile('pdf_file')) {
-            $fileDirectory = '/data/mfa/file/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/news_event_pdf/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }
@@ -195,7 +195,7 @@ class NewEventController extends DM_BaseController
         }
         $request->request->add(['updated_by' => auth()->user()->id]);
         if ($request->hasfile('thumbnail_file')) {
-            $fileDirectory = '/data/mfa/images/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/' . $this->folder . '/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }
@@ -210,7 +210,7 @@ class NewEventController extends DM_BaseController
             $request->request->add(['thumbnail' => $data['record']->thumbnail]);
         }
         if ($request->hasfile('pdf_file')) {
-            $fileDirectory = '/data/mfa/file/' . $this->folder . '/';
+            $fileDirectory = '/data/mfa/news_event_pdf/';
             if (!file_exists($fileDirectory)) {
                 mkdir($fileDirectory, 0777, true);
             }

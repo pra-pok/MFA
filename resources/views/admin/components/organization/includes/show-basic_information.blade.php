@@ -67,7 +67,7 @@
         <th>Banner Image</th>
         <td>
             @if($data['record']->banner_image != null)
-                <img src="{{ url('/file-banner/' . $folder . '/' . $data['record']->banner_image) }}" alt="Banner" class="img-thumbnail" width="200"/>
+                <img src="{{ url('/file/organization_banner/' . $data['record']->banner_image) }}" alt="Banner" class="img-thumbnail" width="200"/>
             @else
                 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png" alt="Banner" class="img-thumbnail" width="200"/>
             @endif

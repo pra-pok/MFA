@@ -62,8 +62,8 @@ class CollegeRestApiController extends Controller
                 'meta_title', 'meta_keywords', 'meta_description', 'total_view',
                     'locality_id','administrative_area_id','country_id','google_map','search_keywords'
             ]);
-            $college->logo = !empty($college->logo) ? url('/api-file/organization/' . $college->logo) : '';
-            $college->banner_image = !empty($college->banner_image) ? url('/api-file-banner/organization/' . $college->banner_image) : '';
+            $college->logo = !empty($college->logo) ? url('/file/organization/' . $college->logo) : '';
+            $college->banner_image = !empty($college->banner_image) ? url('/file/organization_banner/' . $college->banner_image) : '';
         });
         return Utils\ResponseUtil::wrapResponse(new ResponseDTO([
             'data' => $colleges,
@@ -95,8 +95,8 @@ class CollegeRestApiController extends Controller
         })->get();
         $newsEvents->each(function ($event) {
             $event->makeHidden(['id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by']);
-            $event->thumbnail = !empty($event->thumbnail) ? url('/api-file/news_event/' . $event->thumbnail) : '';
-            $event->file = !empty($event->file) ? url('/api-pdf-file/news_event/' . $event->file) : '';
+            $event->thumbnail = !empty($event->thumbnail) ? url('/file/news_event/' . $event->thumbnail) : '';
+            $event->file = !empty($event->file) ? url('/file/news_event_pdf/' . $event->file) : '';
         });
         $review = Review::where('organization_id', $id)->get();
         $review->each(function ($item) {
@@ -122,7 +122,7 @@ class CollegeRestApiController extends Controller
         if (!empty($college->organizationGalleries)) {
             foreach ($college->organizationGalleries as $gallery) {
                 if ($gallery->type == 1 && !empty($gallery->media)) {
-                    $gallery->media = url('/api-file-organization/' . $gallery->media);
+                    $gallery->media = url('/file/organization-gallery/' . $gallery->media);
                 } elseif ($gallery->type == 0 && !empty($gallery->media)) {
                     $gallery->media = $gallery->media;
                 } else {
@@ -161,8 +161,8 @@ class CollegeRestApiController extends Controller
             'Locality' => $college->locality->name ?? '',
             'name' => $college->name,
             'slug' => $college->slug,
-            'logo' => !empty($college->logo) ? url('/api-file/organization/' . $college->logo) : '',
-            'banner_image' => !empty($college->banner_image) ? url('/api-file-banner/organization/' . $college->banner_image) : '',
+            'logo' => !empty($college->logo) ? url('/file/organization/' . $college->logo) : '',
+            'banner_image' => !empty($college->banner_image) ? url('/file/organization_banner/' . $college->banner_image) : '',
             'address' => $college->address,
             'phone' => $college->phone,
             'email' => $college->email,
@@ -206,8 +206,8 @@ class CollegeRestApiController extends Controller
             'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
             'meta_title', 'meta_keywords', 'meta_description',
         ]);
-        $data['news-event']->thumbnail = $data['news-event']->thumbnail ? url('/api-file/news_event/' . $data['news-event']->thumbnail) : '';
-        $data['news-event']->file = $data['news-event']->file ? url('/api-pdf-file/news_event/' . $data['news-event']->file) : '';
+        $data['news-event']->thumbnail = $data['news-event']->thumbnail ? url('/file/news_event/' . $data['news-event']->thumbnail) : '';
+        $data['news-event']->file = $data['news-event']->file ? url('/file/news_event/' . $data['news-event']->file) : '';
         return response()->json([
             'message' => '',
             'status' => 'success',
