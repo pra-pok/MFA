@@ -16,34 +16,8 @@ use Illuminate\Support\Facades\DB;
 use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
-
-/**
- * @OA\Info(
- *      version="1.0.0",
- *      title="My API",
- *      description="API documentation",
- *      @OA\Contact(
- *          email="support@example.com"
- *      )
- * )
- */
 class HomeRestApiController extends Controller
 {
-    /**
-     * @OA\Get(
-     *     path="/api/v1/home",
-     *     summary="Get home data",
-     *     tags={"Home"},
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             @OA\Property(property="message", type="string", example="Welcome to Home API")
-     *         )
-     *     )
-     * )
-     */
     public function index(Request $request)
     {
         try {
@@ -74,7 +48,7 @@ class HomeRestApiController extends Controller
                             'id' => $org->id,
                             'name' => $org->name,
                             'logo' => !empty($org->logo)
-                                ? url('/file/organization' . '/' . $org->logo)
+                                ? url('/api-file/organization/' . $org->logo)
                                 : null,
                             'slug' => $org->slug,
                             'address' => $org->address,
@@ -83,7 +57,7 @@ class HomeRestApiController extends Controller
                             'website' => $org->website,
                             'established_year' => $org->established_year,
                             'banner_image' => !empty($org->banner_image)
-                                ? url('/file-banner/organization' . '/' . $org->banner_image)
+                                ? url('/api-file-banner/organization/' . $org->banner_image)
                                 : null,
                             'type' => $org->type,
                             'description' => $org->description,
@@ -164,7 +138,7 @@ class HomeRestApiController extends Controller
                             'slug' => $university->slug,
                             'types' => $university->types,
                             'logo' => !empty($university->logo)
-                                ? url('/file/university/' . $university->logo)
+                                ? url('/api-file/university/' . $university->logo)
                                 : null,
                             'description' => $university->description,
                         ];
@@ -181,11 +155,11 @@ class HomeRestApiController extends Controller
                 ]);
 
             $data['news']->transform(function ($item) {
-                $item->thumbnail = $item->thumbnail ? url('/file/news_event/' . $item->thumbnail) : '';
+                $item->thumbnail = $item->thumbnail ? url('/api-file/news_event/' . $item->thumbnail) : '';
                 return $item;
             });
             $data['news']->transform(function ($item) {
-                $item->file = $item->file ? url('/pdf-file/news_event/' . $item->file) : '';
+                $item->file = $item->file ? url('/api-pdf-file/news_event/' . $item->file) : '';
                 return $item;
             });
             return Utils\ResponseUtil::wrapResponse(
