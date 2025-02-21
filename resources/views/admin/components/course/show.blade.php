@@ -42,6 +42,18 @@
                             <td>{{$data['record']->rank}}</td>
                         </tr>
                         <tr>
+                            <th>Duration</th>
+                            <td>{{$data['record']->duration}}</td>
+                        </tr>
+                        <tr>
+                            <th>Min Range Fee</th>
+                            <td>{{$data['record']->min_range_fee}}</td>
+                        </tr>
+                        <tr>
+                            <th>Max Range Fee</th>
+                            <td>{{$data['record']->max_range_fee}}</td>
+                        </tr>
+                        <tr>
                             <th>Catalog</th>
                             <td>
                                 @if ($data['record']->courseCatalogs->isNotEmpty())

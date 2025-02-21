@@ -38,38 +38,47 @@ class CollegeRestApiController extends Controller
         if ($limit) {
             $total = $query->count();
             $colleges = $query->limit($limit)->offset($offset)->get();
-            $pagination = [
+            $meta = [
                 'total' => $total,
-                'limit' => (int) $limit,
-                'offset' => (int) $offset,
-                'next_offset' => $offset + $limit < $total ? $offset + $limit : null,
-                'prev_offset' => $offset - $limit >= 0 ? $offset - $limit : null,
+                'per_page' => (int) $limit,
+                'current_page' => (int) ceil(($offset + 1) / $limit),
+                'last_page' => (int) ceil($total / $limit),
+                'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
             ];
         } else {
-            $colleges = $query->paginate($perPage);
-            $pagination = [
-                'total' => $colleges->total(),
-                'per_page' => $colleges->perPage(),
-                'current_page' => $colleges->currentPage(),
-                'last_page' => $colleges->lastPage(),
-                'next_page_url' => $colleges->nextPageUrl(),
-                'prev_page_url' => $colleges->previousPageUrl(),
+            $paginatedColleges = $query->paginate($perPage);
+            $meta = [
+                'total' => $paginatedColleges->total(),
+                'per_page' => $paginatedColleges->perPage(),
+                'current_page' => $paginatedColleges->currentPage(),
+                'last_page' => $paginatedColleges->lastPage(),
+                'next_page_url' => $paginatedColleges->nextPageUrl(),
+                'prev_page_url' => $paginatedColleges->previousPageUrl(),
             ];
+            $colleges = collect($paginatedColleges->items());
         }
         $colleges->each(function ($college) {
+            $college->review_count = Review::where('organization_id', $college->id)->count();
+            $college->average_rating = Review::where('organization_id', $college->id)->avg('rating') ?? 0;
             $college->makeHidden([
                 'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description', 'total_view',
-                    'locality_id','administrative_area_id','country_id','google_map','search_keywords'
+                'locality_id', 'administrative_area_id', 'country_id', 'google_map', 'search_keywords'
             ]);
             $college->logo = !empty($college->logo) ? url('/file/organization/' . $college->logo) : '';
             $college->banner_image = !empty($college->banner_image) ? url('/file/organization_banner/' . $college->banner_image) : '';
         });
-        return Utils\ResponseUtil::wrapResponse(new ResponseDTO([
+
+        return response()->json([
             'data' => $colleges,
-            'pagination' => $pagination
-        ], '', 'success', 200));
+            'meta' => $meta,
+            'message' => '',
+            'status' => true,
+            'timestamp' => now()->toISOString(),
+        ]);
     }
+
     public function collegeDetail($id)
     {
         $college = Organization::with([

@@ -24,47 +24,43 @@ class CourseRestController extends Controller
         $perPage = $request->input('per_page', 10);
         $limit = $request->input('limit');
         $offset = $request->input('offset', 0);
-        $query = Course::with(['stream', 'level'])->where('status', 1)->orderBy('id', 'desc');
+        $query = Course::where('status', 1)->orderBy('id', 'desc');
         if ($limit) {
             $total = $query->count();
             $courses = $query->limit($limit)->offset($offset)->get();
-            $pagination = [
+            $meta = [
                 'total' => $total,
-                'limit' => (int) $limit,
-                'offset' => (int) $offset,
-                'next_offset' => $offset + $limit < $total ? $offset + $limit : null,
-                'prev_offset' => $offset - $limit >= 0 ? $offset - $limit : null,
+                'per_page' => (int) $limit,
+                'current_page' => (int) ceil(($offset + 1) / $limit),
+                'last_page' => (int) ceil($total / $limit),
+                'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
             ];
         } else {
-            $courses = $query->paginate($perPage);
-            $pagination = [
-                'total' => $courses->total(),
-                'per_page' => $courses->perPage(),
-                'current_page' => $courses->currentPage(),
-                'last_page' => $courses->lastPage(),
-                'next_page_url' => $courses->nextPageUrl(),
-                'prev_page_url' => $courses->previousPageUrl(),
+            $paginatedCourses = $query->paginate($perPage);
+            $meta = [
+                'total' => $paginatedCourses->total(),
+                'per_page' => $paginatedCourses->perPage(),
+                'current_page' => $paginatedCourses->currentPage(),
+                'last_page' => $paginatedCourses->lastPage(),
+                'next_page_url' => $paginatedCourses->nextPageUrl(),
+                'prev_page_url' => $paginatedCourses->previousPageUrl(),
             ];
+            $courses = collect($paginatedCourses->items());
         }
         $courses->each(function ($course) {
             $course->makeHidden([
                 'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-                'meta_title', 'meta_keywords', 'meta_description',
+                'meta_title', 'meta_keywords', 'meta_description', 'eligibility', 'job_prospects', 'syllabus'
             ]);
-            foreach (['stream', 'level'] as $relation) {
-                if ($course->$relation) {
-                    $course->$relation->makeHidden([
-                        'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-                        'meta_title', 'meta_keywords', 'meta_description', 'rank'
-                    ]);
-                }
-            }
         });
-        return Utils\ResponseUtil::wrapResponse(new ResponseDTO([
+
+        return response()->json([
             'data' => $courses,
-            'pagination' => $pagination
-        ], '', 'success', 200));
+            'meta' => $meta,
+            'message' => '',
+            'status' => true,
+            'timestamp' => now()->toISOString(),
+        ]);
     }
-
-
 }

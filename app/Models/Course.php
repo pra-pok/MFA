@@ -26,7 +26,10 @@ class Course extends Model
         'meta_description',
         'status',
         'created_by',
-        'updated_by'
+        'updated_by',
+        'duration',
+        'min_range_fee',
+        'max_range_fee',
     ];
 
     protected $table = 'courses';

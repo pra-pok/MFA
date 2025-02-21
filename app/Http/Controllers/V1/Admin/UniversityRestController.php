@@ -28,36 +28,39 @@ class UniversityRestController extends Controller
         if ($limit) {
             $total = $query->count();
             $universities = $query->limit($limit)->offset($offset)->get();
-            $pagination = [
+            $meta = [
                 'total' => $total,
-                'limit' => (int) $limit,
-                'offset' => (int) $offset,
-                'next_offset' => $offset + $limit < $total ? $offset + $limit : null,
-                'prev_offset' => $offset - $limit >= 0 ? $offset - $limit : null,
+                'per_page' => (int) $limit,
+                'current_page' => (int) ceil(($offset + 1) / $limit),
+                'last_page' => (int) ceil($total / $limit),
+                'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
             ];
         } else {
-            $universities = $query->paginate($perPage);
-            $pagination = [
-                'total' => $universities->total(),
-                'per_page' => $universities->perPage(),
-                'current_page' => $universities->currentPage(),
-                'last_page' => $universities->lastPage(),
-                'next_page_url' => $universities->nextPageUrl(),
-                'prev_page_url' => $universities->previousPageUrl(),
+            $paginatedUniversities = $query->paginate($perPage);
+            $meta = [
+                'total' => $paginatedUniversities->total(),
+                'per_page' => $paginatedUniversities->perPage(),
+                'current_page' => $paginatedUniversities->currentPage(),
+                'last_page' => $paginatedUniversities->lastPage(),
+                'next_page_url' => $paginatedUniversities->nextPageUrl(),
+                'prev_page_url' => $paginatedUniversities->previousPageUrl(),
             ];
+            $universities = collect($paginatedUniversities->items());
         }
         $universities->each(function ($university) {
             $university->makeHidden([
                 'id', 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-                'meta_title', 'meta_keywords', 'meta_description','country_id'
+                'meta_title', 'meta_keywords', 'meta_description', 'country_id'
             ]);
             $university->logo = !empty($university->logo) ? url('/file/university/' . $university->logo) : '';
         });
-        return Utils\ResponseUtil::wrapResponse(new ResponseDTO([
+        return response()->json([
             'data' => $universities,
-            'pagination' => $pagination
-        ], '', 'success', 200));
+            'meta' => $meta,
+            'message' => '',
+            'status' => true,
+            'timestamp' => now()->toISOString(),
+        ]);
     }
-
-
 }

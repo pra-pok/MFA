@@ -77,6 +77,24 @@
                                         id="rank" value="{{$data['record']->rank}}"  />
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-4 mt-3">
+                                    <label for="duration" class="form-label">Duration</label>
+                                    <input
+                                        type="text"
+                                        name="duration"
+                                        class="form-control"
+                                        id="duration" value="{{$data['record']->duration}}"  />
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label for="min_range_fee" class="form-label">Min Fee Range</label>
+                                    <input type="number" class="form-control" name="min_range_fee" step="0.01" value="{{$data['record']->min_range_fee}}"/>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <label for="max_range_fee" class="form-label">Max Fee Range</label>
+                                    <input type="number" class="form-control" name="max_range_fee" step="0.01" value="{{$data['record']->max_range_fee}}"/>
+                                </div>
+                            </div>
                             <div class="mt-3">
                                 <label for="description" class="form-label">Description</label>
                                 <textarea class="form-control editor" name="description"  rows="3" >{!! $data['record']->description !!}</textarea>

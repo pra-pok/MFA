@@ -8,6 +8,7 @@ use App\Http\Controllers\V1\Admin\HomeRestApiController;
 use App\Http\Controllers\V1\Admin\CollegeRestApiController;
 use App\Http\Controllers\V1\Admin\CourseRestController;
 use App\Http\Controllers\V1\Admin\UniversityRestController;
+use App\Http\Controllers\V1\Admin\SearchRestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,3 +26,4 @@ Route::get('/v1/news-event/{id}', [CollegeRestApiController::class, 'news_events
 Route::get('/v1/course', [CourseRestController::class, 'getCourse']);
 Route::get('/v1/college', [CollegeRestApiController::class, 'getCollege']);
 Route::get('/v1/university', [UniversityRestController::class, 'getUniversity']);
+Route::get('/v1/search', [SearchRestController::class, 'getSearch']);
