@@ -48,7 +48,7 @@ class HomeRestApiController extends Controller
                             'id' => $org->id,
                             'name' => $org->name,
                             'logo' => !empty($org->logo)
-                                ? url('/api-file/organization/' . $org->logo)
+                                ? url('/file/organization/' . $org->logo)
                                 : null,
                             'slug' => $org->slug,
                             'address' => $org->address,

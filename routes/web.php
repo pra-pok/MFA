@@ -38,15 +38,15 @@ Route::get('/register', function () {
     abort(404);
 });
 
-Route::get('/logout', function () {
-    abort(404);
-});
-Route::get('/login', function () {
-    abort(404);
-});
-Route::fallback(function () {
-    abort(404);
-});
+//Route::get('/logout', function () {
+//    abort(404);
+//});
+//Route::get('/login', function () {
+//    abort(404);
+//});
+//Route::fallback(function () {
+//    abort(404);
+//});
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
     //        return view('dashboard');
@@ -156,45 +156,6 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [CatalogController::class, 'restore'])->name('catalog.restore');
     Route::delete('force-delete/{id}', [CatalogController::class, 'forceDeleteData'])->name('catalog.force_delete');
     Route::delete('{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
-    Route::get('/file/{folder}/{filename}', function ($folder, $filename) {
-//        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
-        $path = "/data/mfa/images/$folder/$filename";
-
-        if (!File::exists($path)) {
-            abort(404);
-        }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        return Response::make($file, 200)->header("Content-Type", $type);
-    });
-    Route::get('/pdf-file/{folder}/{filename}', function ($folder, $filename) {
-        $path = "/data/mfa/file/$folder/$filename";
-
-        if (!File::exists($path)) {
-            abort(404);
-        }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        return Response::make($file, 200)->header("Content-Type", $type);
-    });
-    Route::get('/file-banner/{folder}/{filename}', function ($folder, $filename) {
-        $path = "/data/mfa/images/$folder/banner/$filename";
-        if (!File::exists($path)) {
-            abort(404);
-        }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        return Response::make($file, 200)->header("Content-Type", $type);
-    });
-    Route::get('/file-organization/{filename}', function ($filename) {
-        $path = "/data/mfa/images/organization-gallery/$filename";
-        if (!File::exists($path)) {
-            abort(404);
-        }
-        $file = File::get($path);
-        $type = File::mimeType($path);
-        return Response::make($file, 200)->header("Content-Type", $type);
-    });
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
@@ -219,4 +180,16 @@ Route::middleware('auth')->group(function () {
 
 Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth']], function () {
     include('admin/admin.php');
+});
+
+Route::get('/file/{folder}/{filename}', function ($folder, $filename) {
+//        $path = 'file:///data/mfa/images/' .'$folder/' . $filename;
+    $path = "/home/edigitalnepal/Downloads/data/mfa/images/$folder/$filename";
+
+    if (!File::exists($path)) {
+        abort(404);
+    }
+    $file = File::get($path);
+    $type = File::mimeType($path);
+    return Response::make($file, 200)->header("Content-Type", $type);
 });

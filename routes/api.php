@@ -25,31 +25,3 @@ Route::get('/v1/news-event/{id}', [CollegeRestApiController::class, 'news_events
 Route::get('/v1/course', [CourseRestController::class, 'getCourse']);
 Route::get('/v1/college', [CollegeRestApiController::class, 'getCollege']);
 Route::get('/v1/university', [UniversityRestController::class, 'getUniversity']);
-Route::get('/api-file/{folder}/{filename}', function ($folder, $filename) {
-    $path = "/data/mfa/images/$folder/$filename";
-    if (!File::exists($path)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
-    return response()->file($path);
-});
-Route::get('/api-file-banner/{folder}/{filename}', function ($folder, $filename) {
-    $path = "/data/mfa/images/$folder/banner/$filename";
-    if (!File::exists($path)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
-    return response()->file($path);
-});
-Route::get('/api-file-organization/{filename}', function ($filename) {
-    $path = "/data/mfa/images/organization-gallery/$filename";
-    if (!File::exists($path)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
-    return response()->file($path);
-});
-Route::get('/api-pdf-file/{folder}/{filename}', function ($folder, $filename) {
-    $path = "/data/mfa/file/$folder/$filename";
-    if (!File::exists($path)) {
-        return response()->json(['error' => 'File not found'], 404);
-    }
-    return response()->file($path);
-});
