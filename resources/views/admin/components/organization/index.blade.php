@@ -100,7 +100,7 @@
             <td class="text-center">${serialNumber}</td>
             <td class="position-relative">
                 <a href="${showUrl}" class="text-decoration-none">${data.name}</a>
-                <a href="${data.website}" target="blank">
+                <a href="${data.website ?? ''}" target="blank">
                     <i class="bx bx-right-top-arrow-circle"></i>
                 </a>
                 <div class="dropdown d-inline-block">

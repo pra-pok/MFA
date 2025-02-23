@@ -105,7 +105,7 @@ class CompareRestController extends Controller
             $formattedColleges[] = [
                 "id" => $college->id,
                 "name" => $college->name,
-                "logo" => $college->logo,
+                'logo' => !empty($college->logo) ? url('/file/organization/' . $college->logo) : '',
                 "address" => $college->address,
                 "type" => $college->type,
                 "established_year" => $college->established_year,

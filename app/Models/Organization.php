@@ -115,4 +115,9 @@ class Organization extends Model
     {
         return $this->belongsToMany(NewEvent::class, 'organization_new_events', 'organization_id', 'new_event_id');
     }
+
+    public function organizationMembers ()
+    {
+        return $this->hasMany(OrganizationMember::class,'organization_id','id');
+    }
 }

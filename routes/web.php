@@ -30,6 +30,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Admin\LocalityController;
 use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\CatalogController;
+use App\Http\Controllers\Admin\OrganizationGroupController;
+use App\Http\Controllers\Admin\OrganizationMemberController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -38,15 +40,15 @@ Route::get('/register', function () {
     abort(404);
 });
 
-//Route::get('/logout', function () {
-//    abort(404);
-//});
-//Route::get('/login', function () {
-//    abort(404);
-//});
-//Route::fallback(function () {
-//    abort(404);
-//});
+Route::get('/logout', function () {
+    abort(404);
+});
+Route::get('/login', function () {
+    abort(404);
+});
+Route::fallback(function () {
+    abort(404);
+});
 Route::middleware('auth')->group(function () {
     //    Route::get('/dashboard', function () {
     //        return view('dashboard');
@@ -139,6 +141,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('organization_facilities', OrganizationFacilitiesController::class);
     Route::resource('organization-signup', OrganizationSignupController::class);
+    Route::resource('organization-member', OrganizationMemberController::class);
     Route::get('trash', [OrganizationSignupController::class, 'trash'])->name('organization-signup.trash');
     Route::get('restore/{id}', [OrganizationSignupController::class, 'restore'])->name('organization-signup.restore');
     Route::delete('force-delete/{id}', [OrganizationSignupController::class, 'forceDeleteData'])->name('organization-signup.force_delete');
@@ -156,6 +159,13 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [CatalogController::class, 'restore'])->name('catalog.restore');
     Route::delete('force-delete/{id}', [CatalogController::class, 'forceDeleteData'])->name('catalog.force_delete');
     Route::delete('{id}', [CatalogController::class, 'destroy'])->name('catalog.destroy');
+
+    Route::resource('organization-group', OrganizationGroupController::class);
+    Route::get('trash', [OrganizationGroupController::class, 'trash'])->name('organization-group.trash');
+    Route::get('restore/{id}', [OrganizationGroupController::class, 'restore'])->name('organization-group.restore');
+    Route::delete('force-delete/{id}', [OrganizationGroupController::class, 'forceDeleteData'])->name('organization-group.force_delete');
+    Route::delete('{id}', [OrganizationGroupController::class, 'destroy'])->name('organization-group.destroy');
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

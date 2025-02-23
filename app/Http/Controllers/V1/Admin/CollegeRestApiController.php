@@ -79,7 +79,7 @@ class CollegeRestApiController extends Controller
         ]);
     }
 
-    public function collegeDetail($id)
+    public function collegeDetail(Request $request, $id)
     {
         $college = Organization::with([
             'organizationGalleries',
@@ -162,7 +162,6 @@ class CollegeRestApiController extends Controller
                 unset($facility->facility);
             }
         }
-
         $responseData = [
             'country' => $college->country->name ?? '',
             'administrative_area' => $college->locality->administrativeArea->parent->name ?? '',
@@ -192,6 +191,44 @@ class CollegeRestApiController extends Controller
             'review' => $review,
 
         ];
+        $perPage = $request->input('per_page', 10);
+        $limit = $request->input('limit');
+        $offset = $request->input('offset', 0);
+        $query = Organization::orderBy('id', 'desc');
+        if ($limit) {
+            $total = $query->count();
+            $colleges = $query->limit($limit)->offset($offset)->get();
+            $meta = [
+                'total' => $total,
+                'per_page' => (int) $limit,
+                'current_page' => (int) ceil(($offset + 1) / $limit),
+                'last_page' => (int) ceil($total / $limit),
+                'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
+            ];
+        } else {
+            $paginatedColleges = $query->paginate($perPage);
+            $meta = [
+                'total' => $paginatedColleges->total(),
+                'per_page' => $paginatedColleges->perPage(),
+                'current_page' => $paginatedColleges->currentPage(),
+                'last_page' => $paginatedColleges->lastPage(),
+                'next_page_url' => $paginatedColleges->nextPageUrl(),
+                'prev_page_url' => $paginatedColleges->previousPageUrl(),
+            ];
+            $colleges = collect($paginatedColleges->items());
+        }
+        $colleges->each(function ($college) {
+            $college->review_count = Review::where('organization_id', $college->id)->count();
+            $college->average_rating = Review::where('organization_id', $college->id)->avg('rating') ?? 0;
+            $college->makeHidden([
+                'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'meta_title', 'meta_keywords', 'meta_description', 'total_view',
+                'locality_id', 'administrative_area_id', 'country_id', 'google_map', 'search_keywords'
+            ]);
+            $college->logo = !empty($college->logo) ? url('/file/organization/' . $college->logo) : '';
+            $college->banner_image = !empty($college->banner_image) ? url('/file/organization_banner/' . $college->banner_image) : '';
+        });
 
         return response()->json([
             'message' => '',
@@ -199,6 +236,8 @@ class CollegeRestApiController extends Controller
             'data' => [
                 'college' => $responseData
             ],
+            'college-list' => $colleges,
+            'meta' => $meta,
         ], 200);
     }
 

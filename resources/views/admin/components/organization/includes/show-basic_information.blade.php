@@ -46,7 +46,7 @@
     </tr>
     <tr>
         <th>Website</th>
-        <td><a href="{{ $data['record']->website }}" target="_blank" >{{ $data['record']->website }}</a></td>
+        <td><a href="{{ $data['record']->website ?? '' }}" target="_blank" >{{ $data['record']->website ?? ''}}</a></td>
     </tr>
     <tr>
         <th>Established Year</th>

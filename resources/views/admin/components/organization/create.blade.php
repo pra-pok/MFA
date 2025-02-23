@@ -52,6 +52,14 @@
                                     <i class='bx bxs-face-mask'></i>  Facilities
                                 </button>
                             </li>
+                            <li class="nav-item">
+                                <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                        data-bs-target="#navs-justified-member"
+                                        aria-controls="navs-justified-member"
+                                        aria-selected="false">
+                                    <i class='bx bxs-group'></i>  Members
+                                </button>
+                            </li>
                         </ul>
                         <div class="tab-content mt-3">
                             <!-- Basic Information Tab -->
@@ -77,6 +85,9 @@
                             <div class="tab-pane fade" id="navs-justified-facilities" role="tabpanel">
                                 @include('admin.components.organization.includes.facilities')
                             </div>
+                            <div class="tab-pane fade" id="navs-justified-member" role="tabpanel">
+                                @include('admin.components.organization.includes.member')
+                            </div>
                         </div>
                         <div class="" style="padding:20px;">
                             <div class="d-flex justify-content-between mt-3">
@@ -95,4 +106,5 @@
     @include('admin.components.organization.includes.js.organization-js')
     @include('admin.components.organization.includes.js.ckeditor')
     @include('admin.components.organization.includes.js.page-add-js')
+    @include('admin.components.organization.includes.js.member')
 @endsection

@@ -227,5 +227,10 @@
             <div class="text-truncate" data-i18n="Form Elements">News & Event</div>
         </a>
     </li>
-
+    <li class="menu-item ">
+        <a href="{{route('organization-group.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-group"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Organization Group</div>
+        </a>
+    </li>
 </ul>

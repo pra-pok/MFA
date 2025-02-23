@@ -16,6 +16,7 @@ use App\Models\Level;
 use App\Models\OrganizationCatalog;
 use App\Models\OrganizationCourse;
 use App\Models\OrganizationFacilities;
+use App\Models\OrganizationGroup;
 use App\Models\PageCategory;
 use App\Models\Stream;
 use App\Models\University;
@@ -107,6 +108,7 @@ class OrganizationController extends DM_BaseController
         $data['university'] = University::pluck('title', 'id');
         $data['locality'] = locality::pluck('name', 'id');
         $data['catalog'] = Catalog::where('type', 'College')->pluck('title', 'id');
+        $data['groups'] = OrganizationGroup::pluck('title', 'id');
         return view(parent::loadView($this->view_path . '.create'),compact('data'));
     }
 
@@ -275,6 +277,8 @@ class OrganizationController extends DM_BaseController
         $data['locality'] = locality::pluck('name', 'id');
         $data['catalog'] = Catalog::where('type', 'College')->pluck('title', 'id');
         $data['selectedCatalogIds'] = $data['record']->organizationCatalog->pluck('catalog_id');
+        $data['groups'] = OrganizationGroup::pluck('title', 'id');
+        $data['organization_members'] = $data['record']->organizationMembers;
         return view(parent::loadView($this->view_path . '.edit'), compact('data'));
     }
     /**
