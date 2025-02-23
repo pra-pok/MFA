@@ -9,6 +9,7 @@ use App\Http\Controllers\V1\Admin\CollegeRestApiController;
 use App\Http\Controllers\V1\Admin\CourseRestController;
 use App\Http\Controllers\V1\Admin\UniversityRestController;
 use App\Http\Controllers\V1\Admin\SearchRestController;
+use App\Http\Controllers\V1\Admin\CompareRestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -27,3 +28,5 @@ Route::get('/v1/course', [CourseRestController::class, 'getCourse']);
 Route::get('/v1/college', [CollegeRestApiController::class, 'getCollege']);
 Route::get('/v1/university', [UniversityRestController::class, 'getUniversity']);
 Route::get('/v1/search', [SearchRestController::class, 'getSearch']);
+Route::get('/v1/search-college-course-university', [SearchRestController::class, 'getSimpleSearch']);
+Route::get('/v1/college/compare', [CompareRestController::class, 'Collegecompare']);

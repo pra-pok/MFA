@@ -12,6 +12,7 @@ class University extends Model
     use SoftDeletes;
     protected $fillable = [
         'title',
+        'short_title',
         'slug',
         'rank',
         'types',

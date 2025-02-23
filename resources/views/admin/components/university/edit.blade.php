@@ -38,7 +38,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6 mt-3">
+                                <div class="col-md-5 mt-3">
                                     <label for="title" class="form-label required">Title</label>
                                     <input
                                         type="text"
@@ -47,13 +47,21 @@
                                         id="title"
                                         value="{{$data['record']->title}}" />
                                 </div>
-                                <div class="col-md-6 mt-3">
+                                <div class="col-md-4 mt-3">
                                     <label for="slug" class="form-label">Slug</label>
                                     <input
                                         type="text"
                                         name="slug"
                                         class="form-control required"
                                         id="slug" value="{{$data['record']->slug}}"  />
+                                </div>
+                                <div class="col-md-3 mt-3">
+                                    <label for="short_title" class="form-label">Short Title</label>
+                                    <input
+                                        type="text"
+                                        name="short_title"
+                                        class="form-control required"
+                                        id="short_title" value="{{$data['record']->short_title}}" />
                                 </div>
                             </div>
                             <div class="row">

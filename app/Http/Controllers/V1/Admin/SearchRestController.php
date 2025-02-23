@@ -103,14 +103,54 @@ class SearchRestController extends Controller
         ];
     }
 
-   public function getSimpleSearch(Request $request)
-   {
-       $search = $request->query('keyword', '');
-       $type = $request->query('type', 'simple');
-       $perPage = (int) $request->query('per_page', 10);
-       $limit = $request->query('limit');
-       $offset = (int) $request->query('offset', 0);
+    public function getSimpleSearch(Request $request)
+    {
+        $search = $request->query('keyword', '');
+        $type = $request->query('type', 'simple');
+        $perPage = (int) $request->query('per_page', 10);
+        $page = (int) $request->query('page', 1);
+        $offset = ($page - 1) * $perPage;
+        $query = DB::table('courses')
+            ->select('id', 'title', DB::raw("'course' as type"))
+            ->where('title', 'like', "%$search%")
+            ->orWhere('short_title', 'like', "%$search%")
+            ->union(
+                DB::table('universities')
+                    ->select('id', 'title', DB::raw("'university' as type"))
+                    ->where('title', 'like', "%$search%")
+                    ->orWhere('short_title', 'like', "%$search%")
 
-   }
+            )
+            ->union(
+                DB::table('organizations')
+                    ->select('id', 'name as title', DB::raw("'organization' as type"))
+                    ->where('name', 'like', "%$search%")
+                    ->orWhere('short_name', 'like', "%$search%")
+                    ->orWhere('search_keywords', 'like', "%$search%")
+            );
+        $total = DB::table(DB::raw("({$query->toSql()}) as sub"))
+            ->mergeBindings($query)
+            ->count();
+        $results = DB::table(DB::raw("({$query->toSql()}) as sub"))
+            ->mergeBindings($query)
+            ->offset($offset)
+            ->limit($perPage)
+            ->get();
+        $response = [
+            "data" => $results,
+            "meta" => [
+                "total" => $total,
+                "per_page" => $perPage,
+                "current_page" => $page,
+                "last_page" => ceil($total / $perPage),
+                "next_page_url" => $page < ceil($total / $perPage) ? url()->current() . "?page=" . ($page + 1) . "&per_page=" . $perPage : null,
+                "prev_page_url" => $page > 1 ? url()->current() . "?page=" . ($page - 1) . "&per_page=" . $perPage : null,
+            ],
+            "message" => "",
+            "status" => true,
+            "timestamp" => now()->toIso8601String()
+        ];
 
+        return response()->json($response);
+    }
 }

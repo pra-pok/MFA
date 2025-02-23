@@ -82,7 +82,7 @@
             <td>${index + 1}</td>
             <td>${data.country.name}</td>
             <td class="position-relative">
-                <a href="${showUrl}">  ${data.title} </a>
+                <a href="${showUrl}">  ${data.title} <span> ${(data.short_title) ?? ''} </span> </a>
                <div class="dropdown d-inline-block">
                         <button type="button" class="btn p-0 dropdown-toggle hide-arrow position-absolute top-50 end-0 translate-middle-y" data-bs-toggle="dropdown">
                             <i class="bx bx-dots-vertical-rounded fs-5 d-none"></i>
