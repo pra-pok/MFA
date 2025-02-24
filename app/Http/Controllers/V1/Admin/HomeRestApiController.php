@@ -79,7 +79,7 @@ class HomeRestApiController extends Controller
             foreach ($catalog_course as $catalog) {
                 $courses = DB::select("
                 SELECT c.id, c.title, c.slug, c.short_title, c.eligibility, c.job_prospects,
-                       c.syllabus, c.description, c.stream_id, c.level_id, s.title AS stream_title,
+                       c.syllabus, c.description, c.stream_id, c.level_id, c.duration,c.min_range_fee ,c.max_range_fee , s.title AS stream_title,
                        l.title AS level_title
                 FROM courses c
                 JOIN course_catalogs ccc ON c.id = ccc.course_id
@@ -104,6 +104,9 @@ class HomeRestApiController extends Controller
                             'job_prospects' => $course->job_prospects,
                             'syllabus' => $course->syllabus,
                             'description' => $course->description,
+                            'duration' => $course->duration,
+                            'min_range_fee' => $course->min_range_fee,
+                            'max_range_fee' => $course->max_range_fee,
                         ];
                     }, $courses)
                 ];

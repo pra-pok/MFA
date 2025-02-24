@@ -103,6 +103,57 @@ class SearchRestController extends Controller
         ];
     }
 
+//    public function getSimpleSearch(Request $request)
+//    {
+//        $search = $request->query('keyword', '');
+//        $type = $request->query('type', 'simple');
+//        $perPage = (int) $request->query('per_page', 10);
+//        $page = (int) $request->query('page', 1);
+//        $offset = ($page - 1) * $perPage;
+//        $query = DB::table('courses')
+//            ->select('id', 'title', DB::raw("'course' as type"))
+//            ->where('title', 'like', "%$search%")
+//            ->orWhere('short_title', 'like', "%$search%")
+//            ->union(
+//                DB::table('universities')
+//                    ->select('id', 'title', DB::raw("'university' as type"))
+//                    ->where('title', 'like', "%$search%")
+//                    ->orWhere('short_title', 'like', "%$search%")
+//
+//            )
+//            ->union(
+//                DB::table('organizations')
+//                    ->select('id', 'name as title', DB::raw("'organization' as type"))
+//                    ->where('name', 'like', "%$search%")
+//                    ->orWhere('short_name', 'like', "%$search%")
+//                    ->orWhere('search_keywords', 'like', "%$search%")
+//            );
+//        $total = DB::table(DB::raw("({$query->toSql()}) as sub"))
+//            ->mergeBindings($query)
+//            ->count();
+//        $results = DB::table(DB::raw("({$query->toSql()}) as sub"))
+//            ->mergeBindings($query)
+//            ->offset($offset)
+//            ->limit($perPage)
+//            ->get();
+//        $response = [
+//            "data" => $results,
+//            "meta" => [
+//                "total" => $total,
+//                "per_page" => $perPage,
+//                "current_page" => $page,
+//                "last_page" => ceil($total / $perPage),
+//                "next_page_url" => $page < ceil($total / $perPage) ? url()->current() . "?page=" . ($page + 1) . "&per_page=" . $perPage : null,
+//                "prev_page_url" => $page > 1 ? url()->current() . "?page=" . ($page - 1) . "&per_page=" . $perPage : null,
+//            ],
+//            "message" => "",
+//            "status" => true,
+//            "timestamp" => now()->toIso8601String()
+//        ];
+//
+//        return response()->json($response);
+//    }
+
     public function getSimpleSearch(Request $request)
     {
         $search = $request->query('keyword', '');
@@ -110,34 +161,53 @@ class SearchRestController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $page = (int) $request->query('page', 1);
         $offset = ($page - 1) * $perPage;
-        $query = DB::table('courses')
-            ->select('id', 'title', DB::raw("'course' as type"))
-            ->where('title', 'like', "%$search%")
-            ->orWhere('short_title', 'like', "%$search%")
-            ->union(
-                DB::table('universities')
-                    ->select('id', 'title', DB::raw("'university' as type"))
-                    ->where('title', 'like', "%$search%")
-                    ->orWhere('short_title', 'like', "%$search%")
 
-            )
-            ->union(
-                DB::table('organizations')
-                    ->select('id', 'name as title', DB::raw("'organization' as type"))
-                    ->where('name', 'like', "%$search%")
-                    ->orWhere('short_name', 'like', "%$search%")
-                    ->orWhere('search_keywords', 'like', "%$search%")
-            );
-        $total = DB::table(DB::raw("({$query->toSql()}) as sub"))
-            ->mergeBindings($query)
-            ->count();
-        $results = DB::table(DB::raw("({$query->toSql()}) as sub"))
-            ->mergeBindings($query)
-            ->offset($offset)
-            ->limit($perPage)
+        // Get filter parameters
+        $courseId = $request->query('course');
+        $universityId = $request->query('university');
+
+        // Fetch courses based on search & course_id
+        $courses = DB::table('courses')
+            ->select('id', 'title', DB::raw("'course' as type"))
+            ->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('short_title', 'like', "%$search%");
+            })
+            ->when($courseId, fn($query) => $query->where('id', $courseId))
             ->get();
+
+        // Fetch universities based on search & university_id
+        $universities = DB::table('universities')
+            ->select('id', 'title', DB::raw("'university' as type"))
+            ->where(function ($query) use ($search) {
+                $query->where('title', 'like', "%$search%")
+                    ->orWhere('short_title', 'like', "%$search%");
+            })
+            ->when($universityId, fn($query) => $query->where('id', $universityId))
+            ->get();
+        $organizations = DB::table('organizations')
+            ->select('organizations.id', 'organizations.name as title', DB::raw("'organization' as type"))
+            ->leftJoin('organization_courses', 'organizations.id', '=', 'organization_courses.organization_id')
+            ->when($search, function ($query) use ($search) {
+                $query->where('organizations.name', 'like', "%$search%")
+                    ->orWhere('organizations.short_name', 'like', "%$search%")
+                    ->orWhere('organizations.search_keywords', 'like', "%$search%");
+            })
+            ->when($courseId, fn($query) => $query->where('organization_courses.course_id', $courseId))
+            ->when($universityId, fn($query) => $query->where('organization_courses.university_id', $universityId))
+            ->distinct()
+            ->get();
+
+        // Merge results
+        $results = $courses->merge($universities)->merge($organizations);
+
+        // Pagination logic
+        $total = $results->count();
+        $paginatedResults = $results->slice($offset, $perPage)->values();
+
+        // Build response
         $response = [
-            "data" => $results,
+            "data" => $paginatedResults,
             "meta" => [
                 "total" => $total,
                 "per_page" => $perPage,
