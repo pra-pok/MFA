@@ -96,6 +96,9 @@
                 });
             }
             const formData = new FormData(form[0]);
+            $('.member-clone-file').each(function (i) {
+                console.log(`Row ${i} - Name:`, $(this).find('input[name^="name"]').val());
+            });
             $.ajax({
                 url: form.attr('action'),
                 type: 'POST',

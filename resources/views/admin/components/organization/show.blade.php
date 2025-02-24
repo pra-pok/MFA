@@ -50,6 +50,13 @@
                                 <i class='bx bxs-face-mask'></i>  Facilities
                             </button>
                         </li>
+                        <li class="nav-item">
+                            <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                                    data-bs-target="#navs-justified-member" aria-controls="navs-justified-facilities"
+                                    aria-selected="false">
+                                <i class='bx bxs-face-mask'></i>  Members
+                            </button>
+                        </li>
                     </ul>
 
                     <div class="tab-content mt-3">
@@ -74,6 +81,9 @@
                         </div>
                         <div class="tab-pane fade" id="navs-justified-facilities" role="tabpanel">
                             @include('admin.components.organization.includes.show-facilities')
+                        </div>
+                        <div class="tab-pane fade" id="navs-justified-member" role="tabpanel">
+                            @include('admin.components.organization.includes.show-member')
                         </div>
                     </div>
                 </div>

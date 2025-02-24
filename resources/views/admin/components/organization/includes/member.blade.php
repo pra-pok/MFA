@@ -5,7 +5,7 @@
         <div class="member-file-block">
             @if (isset($data['organization_members']) && $data['organization_members']->count() > 0)
                 @foreach ($data['organization_members'] as $key => $record)
-                    <div class="card mb-3 clone-file">
+                    <div class="card mb-3 member-clone-file">
                         <div class="card-body">
                             <div class="row form-row">
                                 <input type="hidden" name="id[{{$key}}]" value="{{ $record->id ?? ' '}}" >
@@ -61,7 +61,7 @@
                         <div class="row form-row">
                             <div class="col-md-6 mt-3">
                                 <label for="organization_group_id">Group</label>
-                                <select class="form-select select-course required" name="organization_group_id[]"
+                                <select class="form-select select-course required" name="organization_group_id[]" id="organization_group_id[0]"
                                         aria-label="Group">
                                     <option selected disabled>Group</option>
                                     @foreach ($data['groups'] as $courseKey => $courseValue)
@@ -71,27 +71,27 @@
                             </div>
                             <div class="col-md-6 mt-3">
                                 <label for="name" class="form-label">Name</label>
-                                <input type="text" class="form-control" name="name[]" />
+                                <input type="text"  class="form-control" name="name[]" id="name[0]" />
                             </div>
                             <div class="col-md-3 mt-3">
                                 <label for="rank" class="form-label">Rank</label>
-                                <input type="number" class="form-control" name="rank[]" max="100" min="0" />
+                                <input type="number" class="form-control" name="rank[]" max="100" min="0" id="rank[0]" />
                             </div>
                             <div class="col-md-5 mt-3">
                                 <label for="designation" class="form-label">Designation</label>
-                                <input type="text" class="form-control" name="designation[]" />
+                                <input type="text" class="form-control" name="designation[]" id="designation[0]" />
                             </div>
                             <div class="col-md-4 mt-3">
                                 <label for="photo_file" class="form-label">Photo</label>
-                                <input type="file" class="form-control" name="photo_file[]" />
+                                <input type="file" class="form-control" name="photo_file[]" id="photo_file[0]" />
                             </div>
                             <div class="mb-3">
                                 <label for="bio" class="form-label">Bio</label>
-                                <textarea class="form-control editor" name="bio[]" rows="3"></textarea>
+                                <textarea class="form-control editor" name="bio[]" id="bio[0]" rows="3"></textarea>
                             </div>
                             <div class="mt-3 text-end">
-                                <input type="hidden" name="status[]" value="0">
-                                <input value="1" type="checkbox" name="status[]" class="form-check-input checkbox" checked />
+                                <input type="hidden" name="status[]" id="in-active[0]" value="0">
+                                <input value="1" type="checkbox" name="status[]" id="active[0]" class="form-check-input checkbox" checked />
                             </div>
                             <div class="mt-3 text-end">
                                 <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bx bx-trash me-1 fs-5"></i></button>

@@ -65,6 +65,8 @@ class OrganizationMemberController extends DM_BaseController
 
     public function store(Request $request)
     {
+//        dd($request->all());
+    //    print_r($request->all());
         try {
             $request->validate([
                 'organization_id' => 'required|integer',
@@ -77,16 +79,27 @@ class OrganizationMemberController extends DM_BaseController
                 'status' => 'nullable|array',
             ]);
             $organization_id = $request->input('organization_id');
-            $organization_group_ids = $request->input('organization_group_id');
-            $names = $request->input('name', []);
-            $ranks = $request->input('rank', []);
-            $designations = $request->input('designation', []);
-            $photos = $request->input('photo', []);
-            $bios = $request->input('bio', []);
-            $statuses = $request->input('status', []);
+            $organization_group_ids = array_values($request->input('organization_group_id', []));
+            $names = array_values($request->input('name', []));
+            $ranks = array_values($request->input('rank', []));
+            $designations = array_values($request->input('designation', []));
+            $bios = array_values($request->input('bio', []));
+            $statuses = array_values($request->input('status', []));
             $created_by = auth()->id();
             $updated_by = auth()->id();
+            $photos = [];
             $organizationMembers = [];
+            if ($request->hasFile('photo_file')) {
+                foreach ($request->file('photo_file') as $index => $file) {
+                    $fileDirectory = '/data/mfa/' . $this->folder . '/';
+                    if (!file_exists($fileDirectory)) {
+                        mkdir($fileDirectory, 0777, true);
+                    }
+                    $filename = time() . '-' . $index . '.' . $file->getClientOriginalExtension();
+                    $file->move($fileDirectory, $filename);
+                    $photos[$index] = $filename;
+                }
+            }
             foreach ($organization_group_ids as $index => $organization_group_id) {
                 if (!isset($organization_group_id)) {
                     continue;
@@ -94,40 +107,42 @@ class OrganizationMemberController extends DM_BaseController
                 $name = isset($names[$index]) ? $names[$index] : null;
                 $rank = isset($ranks[$index]) ? $ranks[$index] : null;
                 $designation = isset($designations[$index]) ? $designations[$index] : null;
-                $photo = isset($photos[$index]) ? $photos[$index] : null;
                 $bio = isset($bios[$index]) ? $bios[$index] : null;
-                $status = isset($statuses[$index]) ? 1 : 0;
+                $status = isset($statuses[$index]) && $statuses[$index] == '1' ? 1 : 1;
+                $photo = $photos[$index] ?? null;
                 $organizationMember = OrganizationMember::where([
                     'organization_id' => $organization_id,
                     'organization_group_id' => $organization_group_id,
                 ])->first();
-                if ($organizationMember) {
-                    $organizationMember->update([
-                        'organization_id' => $organization_id,
-                        'organization_group_id' => $organization_group_id,
-                        'name' => $name,
-                        'rank' => $rank,
-                        'designation' => $designation,
-                        'photo' => $photo,
-                        'bio' => $bio,
-                        'updated_by' => $updated_by,
-                        'status' => $status,
-                    ]);
+                if (isset($request->id[$index]) && $request->id[$index] !== null) {
+                    $organizationMember = OrganizationMember::find($request->id[$index]);
+                    if ($organizationMember) {
+                        $organizationMember->update([
+                            'organization_id' => $organization_id,
+                            'organization_group_id' => $organization_group_id,
+                            'name' => $name,
+                            'rank' => $rank,
+                            'photo' => $photo ?? $organizationMember->photo, // Keep existing photo if not changed
+                            'designation' => $designation,
+                            'bio' => $bio,
+                            'updated_by' => $updated_by,
+                            'status' => $status,
+                        ]);
+                    }
                 } else {
-                    $organizationMember = OrganizationMember::create([
+                    OrganizationMember::create([
                         'organization_id' => $organization_id,
                         'organization_group_id' => $organization_group_id,
                         'name' => $name,
                         'rank' => $rank,
-                        'designation' => $designation,
                         'photo' => $photo,
+                        'designation' => $designation,
                         'bio' => $bio,
                         'created_by' => $created_by,
                         'updated_by' => $updated_by,
                         'status' => $status,
                     ]);
                 }
-                $organizationMembers[] = $organizationMember;
             }
             return response()->json([
                 'status' => 'success',
@@ -141,6 +156,88 @@ class OrganizationMemberController extends DM_BaseController
             ], 500);
         }
     }
+//    public function store(Request $request)
+//    {
+//       // dd($request->all());
+//        try {
+//            $request->validate([
+//                'organization_id' => 'required|integer',
+//                'organization_group_id' => 'required|array',
+//                'name' => 'nullable|array',
+//                'rank' => 'nullable|array',
+//                'designation' => 'nullable|array',
+//                'photo' => 'nullable|array',
+//                'bio' => 'nullable|array',
+//                'status' => 'nullable|array',
+//            ]);
+//
+//            $organization_id = $request->input('organization_id');
+//            $organization_group_ids = $request->input('organization_group_id');
+//            $names = $request->input('name', []);
+//            $ranks = $request->input('rank', []);
+//            $designations = $request->input('designation', []);
+//            $bios = $request->input('bio', []);
+//            $statuses = $request->input('status', []);
+//            $created_by = auth()->id();
+//            $updated_by = auth()->id();
+//            $photos = [];
+//            $organizationMembers = [];
+//
+//            if ($request->hasFile('photo_file')) {
+//                $fileDirectory = '/data/mfa/' . $this->folder . '/';
+//                if (!file_exists($fileDirectory)) {
+//                    mkdir($fileDirectory, 0777, true);
+//                }
+//                foreach ($request->file('photo_file') as $index => $file) {
+//                    $photo_file = time() . '_' . $index . '.' . $file->getClientOriginalExtension();
+//                    $file->move($fileDirectory, $photo_file);
+//                    $photos[$index] = $photo_file;
+//                }
+//            }
+//
+//            foreach ($organization_group_ids as $index => $organization_group_id) {
+//                if (!isset($organization_group_id)) {
+//                    continue;
+//                }
+//                $name = $names[$index] ?? null;
+//                $rank = $ranks[$index] ?? null;
+//                $designation = $designations[$index] ?? null;
+//                $bio = $bios[$index] ?? null;
+//                $status = isset($statuses[$index]) ? 1 : 0;
+//                $photo = $photos[$index] ?? null;
+//
+//                $organizationMember = OrganizationMember::updateOrCreate(
+//                    [
+//                        'organization_id' => $organization_id,
+//                        'organization_group_id' => $organization_group_id,
+//                    ],
+//                    [
+//                        'name' => $name,
+//                        'rank' => $rank,
+//                        'designation' => $designation,
+//                        'bio' => $bio,
+//                        'photo' => $photo,
+//                        'created_by' => $created_by,
+//                        'updated_by' => $updated_by,
+//                        'status' => $status,
+//                    ]
+//                );
+//
+//                $organizationMembers[] = $organizationMember;
+//            }
+//
+//            return response()->json([
+//                'status' => 'success',
+//                'message' => 'Members stored/updated successfully.',
+//                'data' => $organizationMembers
+//            ]);
+//        } catch (\Exception $exception) {
+//            return response()->json([
+//                'status' => 'error',
+//                'message' => 'An error occurred while saving/updating member data.'
+//            ], 500);
+//        }
+//    }
     /**
      * Display the specified resource.
      *

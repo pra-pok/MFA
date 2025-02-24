@@ -1,6 +1,8 @@
 <script>
     $('#add-row-member').on('click', function () {
         const newRow = $('.member-clone-file:first').clone();
+       // const index = $('.member-file-block .member-clone-file').length;
+        const index = $('.member-clone-file').length;
         newRow.find('textarea').val('');
         newRow.find('input').val('');
         newRow.find('input[type="checkbox"][value="1"]').prop('checked', false);
@@ -12,6 +14,15 @@
             $(this).replaceWith(newTextarea);
             initializeEditor(newTextarea[0]);
         });
+        newRow.find('select[name^="organization_group_id"]').attr('name', `organization_group_id[${index}]`);
+        newRow.find('input[name^="id"]').remove();
+        newRow.find('input[name^="name"]').attr('name', `name[${index}]`);
+        newRow.find('input[name^="rank"]').attr('name', `rank[${index}]`);
+        newRow.find('input[name^="designation"]').attr('name', `designation[${index}]`);
+        newRow.find('input[name^="photo_file"]').attr('name', `photo_file[${index}]`);
+        newRow.find('textarea[name^="bio"]').attr('name', `bio[${index}]`);
+        newRow.find('input[name^="status"]').attr('name', `status[${index}]`);
+        newRow.find('input[type="file"]').val('');
         $('.member-file-block').append(newRow);
     });
     $(document).on('click', '.remove-row', function () {
