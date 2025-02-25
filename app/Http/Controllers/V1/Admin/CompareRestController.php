@@ -35,7 +35,7 @@ class CompareRestController extends Controller
             'organizationPages.page'
         ])
             ->whereIn('id', $idsArray)
-            ->select('id', 'name', 'logo', 'address', 'type', 'established_year', 'phone', 'email', 'website', 'google_map', 'description')
+            ->select('id', 'name', 'logo', 'banner_image','address', 'type', 'established_year', 'phone', 'email', 'website', 'google_map', 'description')
             ->get();
         if ($colleges->isEmpty()) {
             return response()->json([
@@ -106,6 +106,7 @@ class CompareRestController extends Controller
                 "id" => $college->id,
                 "name" => $college->name,
                 'logo' => !empty($college->logo) ? url('/file/organization/' . $college->logo) : '',
+                'banner_image' => !empty($college->banner_image) ? url('/file/organization_banner/' . $college->banner_image) : '',
                 "address" => $college->address,
                 "type" => $college->type,
                 "established_year" => $college->established_year,

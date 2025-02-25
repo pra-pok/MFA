@@ -32,12 +32,13 @@ class SearchRestController extends Controller
             ->where('title', 'like', "%$search%");
 
         $organizationQuery = DB::table('organizations')
-            ->select('id', 'name as organization_name', 'short_name', 'slug')
+            ->select('id', 'name as organization_name', 'short_name', 'slug' ,'logo','address')
             ->where('status', 1)
             ->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%")
                     ->orWhere('short_name', 'like', "%$search%");
             });
+
         if ($limit) {
             $totalCourses = $courseQuery->count();
             $totalUniversities = $universityQuery->count();
@@ -59,7 +60,10 @@ class SearchRestController extends Controller
             $universities = collect($universities->items());
             $organizations = collect($organizations->items());
         }
-
+        $organizations->transform(function ($organization) {
+            $organization->logo = !empty($organization->logo) ? url('/file/organization/' . $organization->logo) : '';
+            return $organization;
+        });
         return response()->json([
             "data" => [
                 "courses" => [
