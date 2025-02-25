@@ -42,12 +42,17 @@
                                     <label for="bio_{{ $key }}" class="form-label">Bio</label>
                                     <textarea class="form-control editor" name="bio[]" rows="3">{{ $record->bio ?? '' }}</textarea>
                                 </div>
-                                <div class="mb-3 text-end">
+                                <div class="col-md-6 mt-3 d-flex align-items-center">
                                     <input type="hidden" name="status[{{ $key }}]" value="0">
-                                    <input value="1" type="checkbox"  name="status[{{ $key }}]" class="checkbox"  {{ $record->status ? 'checked' : '' }} />
+                                    <input value="1" type="checkbox" name="status[{{ $key }}]"
+                                           class="form-check-input checkbox status-checkbox me-2"
+                                        {{ $record->status ? 'checked' : '' }} />
+                                    <label
+                                        class="form-check-label status-label">{{ $record->status ? 'Active' : 'Inactive' }}</label>
                                 </div>
-                                <div class="mt-3 text-end">
-                                    <button type="button" class="btn btn-danger btn-sm remove-row" data-id="{{ $record->id ?? '' }}">
+                                <div class="col-md-6 mt-3 text-end">
+                                    <button type="button" class="btn btn-danger btn-sm remove-row"
+                                            data-id="{{ $record->id ?? '' }}">
                                         <i class="bx bx-trash me-1 fs-5"></i>
                                     </button>
                                 </div>
@@ -89,12 +94,17 @@
                                 <label for="bio" class="form-label">Bio</label>
                                 <textarea class="form-control editor" name="bio[]" id="bio[0]" rows="3"></textarea>
                             </div>
-                            <div class="mt-3 text-end">
-                                <input type="hidden" name="status[]" id="in-active[0]" value="0">
-                                <input value="1" type="checkbox" name="status[]" id="active[0]" class="form-check-input checkbox" checked />
+                            <div class="col-md-6 mt-3 d-flex align-items-center">
+                                <input type="hidden" name="status[]" value="0">
+                                <input value="1" type="checkbox" name="status[]"
+                                       class="form-check-input checkbox status-checkbox me-2" checked/>
+                                <label class="form-check-label status-label">Active</label>
                             </div>
-                            <div class="mt-3 text-end">
-                                <button type="button" class="btn btn-danger btn-sm remove-row"><i class="bx bx-trash me-1 fs-5"></i></button>
+
+                            <div class="col-md-6 mt-3 text-end">
+                                <button type="button" class="btn btn-danger btn-sm remove-row">
+                                    <i class="bx bx-trash me-1 fs-5"></i>
+                                </button>
                             </div>
                         </div>
                     </div>

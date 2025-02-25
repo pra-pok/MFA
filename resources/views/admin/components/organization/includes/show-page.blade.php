@@ -1,9 +1,16 @@
-<div class="row">
-    @foreach($data['record']->organizationPages as $item)
-        <div class="col-md-12">
-            <div class="card mb-5">
-                <div class="card-body">
-                    <h5 class="card-title">{{$item->page->title ?? ''}}</h5>
+<div class="accordion" id="accordionPanelsStayOpenExample">
+    @foreach($data['record']->organizationPages as $index => $item)
+        @php $uniqueId = 'collapse-' . $index; @endphp
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{$index}}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#{{$uniqueId}}"
+                        aria-expanded="{{ $index == 0 ? 'true' : 'false' }}" aria-controls="{{$uniqueId}}">
+                    {{$item->page->title ?? ' '}}
+                </button>
+            </h2>
+            <div id="{{$uniqueId}}" class="accordion-collapse collapse {{ $index == 0 ? 'show' : '' }}" aria-labelledby="heading-{{$index}}">
+                <div class="accordion-body">
+                    {{--                    <h5 class="card-title">{{$item->course->title ?? ''}}</h5>--}}
                     <p><strong>Description:</strong> {!! $item->description !!}</p>
                     <p>
                         <strong>Status:</strong>
