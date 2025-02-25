@@ -95,7 +95,7 @@
                             <div class="d-flex justify-content-between mt-3">
                                 <button type="button" class="btn btn-primary" id="edit-prevBtn" style="display: none;">Previous</button>
                                 <button type="button" class="btn btn-primary " id="edit-nextBtn">Next</button>
-                                <button type="button" class="btn btn-success btn-sm" id="saveBtn" style="display: none;"><i class="bx bx-save"></i>Save</button>
+                                <button type="button" class="btn btn-success btn-sm" id="edit-saveBtn" style="display: none;"><i class="bx bx-save"></i>Save</button>
                             </div>
                         </div>
                     </div>

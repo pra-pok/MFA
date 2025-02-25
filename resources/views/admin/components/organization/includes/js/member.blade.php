@@ -1,8 +1,33 @@
 <script>
+    function membergenerateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = (Math.random() * 16) | 0,
+                v = c === 'x' ? r : (r & 0x3) | 0x8;
+            return v.toString(16);
+        });
+    }
     $('#add-row-member').on('click', function () {
         const newRow = $('.member-clone-file:first').clone();
        // const index = $('.member-file-block .member-clone-file').length;
         const index = $('.member-clone-file').length;
+        let newIndex = membergenerateUUID();
+        let newHeading = newRow.find('.accordion-header');
+        let newButton = newRow.find('.accordion-button');
+        let newCollapse = newRow.find('.accordion-collapse');
+        newHeading.attr('id', `member-heading-${newIndex}`);
+        newButton.attr('data-bs-target', `#member-collapse-${newIndex}`)
+            .attr('aria-controls', `member-collapse-${newIndex}`)
+            .removeClass("collapsed")
+            .attr("aria-expanded", "true");
+        newCollapse.attr('id', `member-collapse-${newIndex}`)
+            .attr('aria-labelledby', `member-heading-${newIndex}`)
+            .addClass("show")
+            .removeAttr('data-bs-parent');
+        newButton.text("New Member");
+        newRow.find('select[name^="organization_group_id"]').on("change", function () {
+            let selectedText = $(this).find("option:selected").text();
+            newButton.text(selectedText || "New Member");
+        });
         newRow.find('textarea').val('');
         newRow.find('input').val('');
         newRow.find('input[type="checkbox"][value="1"]').prop('checked', false);
