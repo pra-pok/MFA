@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Catalog;
+use App\Models\Country;
 use App\Models\Course;
 use App\Models\Level;
 use App\Models\NewEvent;
@@ -165,6 +166,11 @@ class HomeRestApiController extends Controller
                 $item->file = $item->file ? url('/file/news_event_pdf/' . $item->file) : '';
                 return $item;
             });
+            $data['country'] = Country::where('status' , 1)->get()->makeHidden([
+                'id','rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'meta_title', 'meta_keywords', 'meta_description',
+            ]);
+
             return Utils\ResponseUtil::wrapResponse(
                 new ResponseDTO($data, '', 'success', 200)
             );

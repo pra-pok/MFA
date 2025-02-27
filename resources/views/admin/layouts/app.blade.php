@@ -53,7 +53,7 @@
                             <div
                                 class="footer-container d-flex align-items-center justify-content-between py-4 flex-md-row flex-column">
                                 <?php
-                                $version = getenv('App_Version') ?: 'Unknown Version';
+                                $version = getenv('APP_VERSION') ?: 'Unknown Version';
                                 ?>
                                 <div class="text-body">
                                     MFA <span><?php echo $version; ?></span> | Made with ❤️ in Nepal ©

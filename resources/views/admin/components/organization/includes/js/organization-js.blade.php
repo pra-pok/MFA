@@ -1,6 +1,6 @@
 <script>
     $(document).ready(function () {
-        // $('.nav-tabs button').removeAttr('role data-bs-toggle');
+        $('.nav-tabs button').removeAttr('role data-bs-toggle');
         const updateButtonsVisibility = () => {
             const currentTabIndex = $('.nav-tabs .nav-link.active').parent().index();
             const totalTabs = $('.nav-tabs .nav-link').length;
