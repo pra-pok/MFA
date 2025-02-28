@@ -222,7 +222,7 @@ class CollegeRestApiController extends Controller
             $college->review_count = Review::where('organization_id', $college->id)->count();
             $college->average_rating = Review::where('organization_id', $college->id)->avg('rating') ?? 0;
             $college->makeHidden([
-                'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description', 'total_view',
                 'locality_id', 'administrative_area_id', 'country_id', 'google_map', 'search_keywords'
             ]);

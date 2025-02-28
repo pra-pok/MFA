@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Dtos\ResponseDTO;
@@ -25,20 +26,17 @@ class SearchRestController extends Controller
                     ->orWhere('short_title', 'like', "%$search%")
                     ->orWhere('description', 'like', "%$search%");
             });
-
         $universityQuery = DB::table('universities')
             ->select('id', 'title as university_title', 'slug')
             ->where('status', 1)
             ->where('title', 'like', "%$search%");
-
         $organizationQuery = DB::table('organizations')
-            ->select('id', 'name as organization_name', 'short_name', 'slug' ,'logo','address')
+            ->select('id', 'name as organization_name', 'short_name', 'slug', 'logo', 'address', 'banner_image')
             ->where('status', 1)
             ->where(function ($query) use ($search) {
                 $query->where('name', 'like', "%$search%")
                     ->orWhere('short_name', 'like', "%$search%");
             });
-
         if ($limit) {
             $totalCourses = $courseQuery->count();
             $totalUniversities = $universityQuery->count();
@@ -56,12 +54,16 @@ class SearchRestController extends Controller
             $metaCourses = $this->extractPaginationMeta($courses);
             $metaUniversities = $this->extractPaginationMeta($universities);
             $metaOrganizations = $this->extractPaginationMeta($organizations);
-            $courses = collect($courses->items());
-            $universities = collect($universities->items());
-            $organizations = collect($organizations->items());
+            $courses = $courses->items();
+            $universities = $universities->items();
+            $organizations = $organizations->items();
         }
-        $organizations->transform(function ($organization) {
+        $organizations = collect($organizations)->map(function ($organization) {
             $organization->logo = !empty($organization->logo) ? url('/file/organization/' . $organization->logo) : '';
+            $organization->banner_image = !empty($organization->banner_image) ? url('/file/organization_banner/' . $organization->banner_image) : '';
+            $organization->review_count = Review::where('organization_id', $organization->id)->count();
+            $organization->average_rating = Review::where('organization_id', $organization->id)->avg('rating');
+
             return $organization;
         });
         return response()->json([
@@ -165,12 +167,8 @@ class SearchRestController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $page = (int) $request->query('page', 1);
         $offset = ($page - 1) * $perPage;
-
-        // Get filter parameters
         $courseId = $request->query('course');
         $universityId = $request->query('university');
-
-        // Fetch courses based on search & course_id
         $courses = DB::table('courses')
             ->select('id', 'title', DB::raw("'course' as type"))
             ->where(function ($query) use ($search) {
@@ -179,8 +177,6 @@ class SearchRestController extends Controller
             })
             ->when($courseId, fn($query) => $query->where('id', $courseId))
             ->get();
-
-        // Fetch universities based on search & university_id
         $universities = DB::table('universities')
             ->select('id', 'title', DB::raw("'university' as type"))
             ->where(function ($query) use ($search) {
@@ -201,15 +197,9 @@ class SearchRestController extends Controller
             ->when($universityId, fn($query) => $query->where('organization_courses.university_id', $universityId))
             ->distinct()
             ->get();
-
-        // Merge results
         $results = $courses->merge($universities)->merge($organizations);
-
-        // Pagination logic
         $total = $results->count();
         $paginatedResults = $results->slice($offset, $perPage)->values();
-
-        // Build response
         $response = [
             "data" => $paginatedResults,
             "meta" => [
