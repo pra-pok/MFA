@@ -73,8 +73,8 @@
             const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
             const rowContent = `
             <td>${index + 1}</td>
-            <td>${data.stream.title}<br>
-               <span> ${data.level.title} </span>
+            <td>${data.stream.title ?? ''}<br>
+               <span> ${data.level.title ?? ''} </span>
             </td>
             <td class="position-relative"> <a href="${showUrl}">  ${data.title}  <br> <span> (${data.short_title}) </span> </a>
                 <div class="dropdown d-inline-block">

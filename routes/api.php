@@ -10,6 +10,10 @@ use App\Http\Controllers\V1\Admin\CourseRestController;
 use App\Http\Controllers\V1\Admin\UniversityRestController;
 use App\Http\Controllers\V1\Admin\SearchRestController;
 use App\Http\Controllers\V1\Admin\CompareRestController;
+use App\Http\Controllers\V1\Admin\CourseDetailRestApiController;
+use App\Http\Controllers\V1\Admin\UniversityDetailRestApiController;
+use App\Http\Controllers\V1\Admin\NewsRestController;
+use App\Http\Controllers\V1\Admin\ConfigSearchRestController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -30,3 +34,7 @@ Route::get('/v1/university', [UniversityRestController::class, 'getUniversity'])
 Route::get('/v1/search', [SearchRestController::class, 'getSearch']);
 Route::get('/v1/search-college-course-university', [SearchRestController::class, 'getSimpleSearch']);
 Route::get('/v1/college/compare', [CompareRestController::class, 'Collegecompare']);
+Route::get('/v1/course/{id}', [CourseDetailRestApiController::class, 'courseDetail']);
+Route::get('/v1/university/{id}', [UniversityDetailRestApiController::class, 'universityDetail']);
+Route::get('/v1/news-event', [NewsRestController::class, 'getNews']);
+Route::get('/v1/config-search', [ConfigSearchRestController::class, 'getConfigSearch']);

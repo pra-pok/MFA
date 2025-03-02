@@ -45,6 +45,9 @@ class HomeRestApiController extends Controller
                     'title' => $catalog->title,
                     'type' => $catalog->type,
                     'data' => array_map(function ($org) {
+                        $reviewCount = DB::table('reviews')->where('organization_id', $org->id)->count();
+                        $averageRating = DB::table('reviews')->where('organization_id', $org->id)->avg('rating');
+
                         return [
                             'id' => $org->id,
                             'name' => $org->name,
@@ -63,6 +66,8 @@ class HomeRestApiController extends Controller
                             'type' => $org->type,
                             'description' => $org->description,
                             'google_map' => $org->google_map,
+                            'review_count' => $reviewCount,
+                            'average_rating' => $averageRating ? round($averageRating, 2) : 0,
                         ];
                     }, $organizations)
                 ];

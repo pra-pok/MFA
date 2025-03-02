@@ -9,81 +9,32 @@ use Illuminate\Support\Facades\DB;
 use App\Dtos\ResponseDTO;
 use App\Utils;
 
-class SearchRestController extends Controller
+class ConfigSearchRestController extends Controller
 {
-    public function getSearch(Request $request)
+    public function getConfigSearch(Request $request)
     {
-        $search = $request->query('keyword', '');
-        $type = $request->query('type', 'advanced');
-        $perPage = (int) $request->query('per_page', 10);
-        $limit = $request->query('limit');
-        $offset = (int) $request->query('offset', 0);
-        $courseQuery = DB::table('courses')
-            ->select('id', 'title as course_title', 'short_title', 'slug', 'duration')
-            ->where('status', 1)
-            ->where(function ($query) use ($search) {
-                $query->where('title', 'like', "%$search%")
-                    ->orWhere('short_title', 'like', "%$search%")
-                    ->orWhere('description', 'like', "%$search%");
-            });
-        $universityQuery = DB::table('universities')
-            ->select('id', 'title as university_title', 'slug')
-            ->where('status', 1)
-            ->where('title', 'like', "%$search%");
-        $organizationQuery = DB::table('organizations')
-            ->select('id', 'name as organization_name', 'short_name', 'slug', 'logo', 'address', 'banner_image')
-            ->where('status', 1)
-            ->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%$search%")
-                    ->orWhere('short_name', 'like', "%$search%");
-            });
-        if ($limit) {
-            $totalCourses = $courseQuery->count();
-            $totalUniversities = $universityQuery->count();
-            $totalOrganizations = $organizationQuery->count();
-            $courses = $courseQuery->limit($limit)->offset($offset)->get();
-            $universities = $universityQuery->limit($limit)->offset($offset)->get();
-            $organizations = $organizationQuery->limit($limit)->offset($offset)->get();
-            $metaCourses = $this->generateMeta($totalCourses, $limit, $offset, $search);
-            $metaUniversities = $this->generateMeta($totalUniversities, $limit, $offset, $search);
-            $metaOrganizations = $this->generateMeta($totalOrganizations, $limit, $offset, $search);
-        } else {
-            $courses = $courseQuery->paginate($perPage);
-            $universities = $universityQuery->paginate($perPage);
-            $organizations = $organizationQuery->paginate($perPage);
-            $metaCourses = $this->extractPaginationMeta($courses);
-            $metaUniversities = $this->extractPaginationMeta($universities);
-            $metaOrganizations = $this->extractPaginationMeta($organizations);
-            $courses = $courses->items();
-            $universities = $universities->items();
-            $organizations = $organizations->items();
-        }
-        $organizations = collect($organizations)->map(function ($organization) {
-            $organization->logo = !empty($organization->logo) ? url('/file/organization/' . $organization->logo) : '';
-            $organization->banner_image = !empty($organization->banner_image) ? url('/file/organization_banner/' . $organization->banner_image) : '';
-            $organization->review_count = Review::where('organization_id', $organization->id)->count();
-            $organization->average_rating = Review::where('organization_id', $organization->id)->avg('rating');
+        $data['course'] = DB::table('courses')
+            ->select('id', 'title', 'short_title', DB::raw("'course' as type"))
+            ->get();
+        $data['university'] = DB::table('universities')
+            ->select('id', 'title', DB::raw("'university' as type"))
+            ->get();
+        $data['type'] = ['1' => 'Public', '2' => 'Private', '3' => 'Community (Aided)'
+            , '4' => 'Community (Managed)', '5' => 'Community (Teacher Aid)', '6' => 'Community (Unaided)'
+            , '7' => 'Institutional (Private)', '8' => 'Institutional (Public)', '9' => 'Institutional (Company)'
+            , '10' => 'Public with religious', '11' => 'Madrasa', '12' => 'Gumba', '13' => 'Ashram',
+            '14' => 'SOP/FSP', '15' => 'Community ECD', '16' => 'Other'];
+        $data['duration'] = ['1' => '1 Year', '2' => '2 Year', '3' => '3 Year', '4' => '4 Year', '5' => '5 Year'];
+        $data['average_fee'] =
+//        $data['organization'] = DB::table('organizations')
+//            ->select('id', 'name as title', DB::raw("'organization' as type"))
+//            ->get();
 
-            return $organization;
-        });
         return response()->json([
-            "data" => [
-                "courses" => [
-                    "items" => $courses,
-                    "meta" => $metaCourses
-                ],
-                "universities" => [
-                    "items" => $universities,
-                    "meta" => $metaUniversities
-                ],
-                "organizations" => [
-                    "items" => $organizations,
-                    "meta" => $metaOrganizations
-                ]
-            ],
-            "message" => "",
-            "status" => true,
-            "timestamp" => now()->toISOString(),
+            'data' => $data,
+            'message' => '',
+            'status' => true,
+            'timestamp' => now()->toIso8601String()
         ]);
     }
     private function generateMeta($total, $limit, $offset, $search)
