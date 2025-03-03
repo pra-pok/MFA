@@ -13,7 +13,7 @@ class UniversityDetailRestApiController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/v1/university/{id}",
+     *     path="/university/{id}",
      *     summary="Get university by ID",
      *     tags={"University"},
      *    @OA\Parameter(
