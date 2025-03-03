@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdministrativeArea;
 use App\Models\Catalog;
 use App\Models\Country;
 use App\Models\Course;
@@ -173,6 +174,12 @@ class HomeRestApiController extends Controller
             });
             $data['country'] = Country::where('status' , 1)->get()->makeHidden([
                 'id','rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'meta_title', 'meta_keywords', 'meta_description',
+            ]);
+
+            $data['place'] = AdministrativeArea::where('status' , 1)->whereNotNull('parent_id')
+                ->get()->makeHidden([
+                'country_id','rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description',
             ]);
 
