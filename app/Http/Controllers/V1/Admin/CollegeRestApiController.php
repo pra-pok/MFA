@@ -17,18 +17,17 @@ use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Info(
- *      version="1.0.0",
- *      title="My API",
- *      description="API documentation",
- *      @OA\Contact(
- *          email="support@example.com"
- *      )
- * )
- */
 class CollegeRestApiController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/college",
+     *     summary="Get a list of College data",
+     *     tags={"College"},
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
     public function getCollege(Request $request)
     {
         $perPage = $request->input('per_page', 10);
@@ -62,7 +61,7 @@ class CollegeRestApiController extends Controller
             $college->review_count = Review::where('organization_id', $college->id)->count();
             $college->average_rating = Review::where('organization_id', $college->id)->avg('rating') ?? 0;
             $college->makeHidden([
-                'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description', 'total_view',
                 'locality_id', 'administrative_area_id', 'country_id', 'google_map', 'search_keywords'
             ]);
@@ -79,6 +78,24 @@ class CollegeRestApiController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/org/{id}",
+     *     summary="Get a College data",
+     *     tags={"College"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="College ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
     public function collegeDetail(Request $request, $id)
     {
         $college = Organization::with([
@@ -103,26 +120,26 @@ class CollegeRestApiController extends Controller
             $query->where('organization_id', $id);
         })->get();
         $newsEvents->each(function ($event) {
-            $event->makeHidden(['id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by']);
+            $event->makeHidden([ 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by']);
             $event->thumbnail = !empty($event->thumbnail) ? url('/file/news_event/' . $event->thumbnail) : '';
             $event->file = !empty($event->file) ? url('/file/news_event_pdf/' . $event->file) : '';
         });
         $review = Review::where('organization_id', $id)->get();
         $review->each(function ($item) {
             $item->makeHidden([
-                'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'organization_id'
             ]);
         });
         $college->makeHidden([
-            'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+           'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
              'meta_title', 'meta_keywords', 'meta_description', 'search_keywords', 'administrative_area_id'
         ]);
         foreach (['organizationGalleries', 'organizationCourses', 'organizationPages', 'organizationsocialMedia', 'organizationfacilities'] as $relation) {
             if ($college->$relation) {
                 $college->$relation->each(function ($item) {
                     $item->makeHidden([
-                        'id', 'title', 'organization_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'university',
+                        'title', 'organization_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'university',
                         'gallery_category_id', 'course_id', 'page_id', 'social_media_id', 'facility_id', 'university_id', 'page_category_id'
                     ]);
                 });
@@ -163,6 +180,7 @@ class CollegeRestApiController extends Controller
             }
         }
         $responseData = [
+            'id' => $college->id,
             'country' => $college->country->name ?? '',
             'administrative_area' => $college->locality->administrativeArea->parent->name ?? '',
             'District' => $college->locality->administrativeArea->name ?? '',
@@ -189,7 +207,6 @@ class CollegeRestApiController extends Controller
             'average_rating' => round($averageRating, 1) ?? 0,
             'organization_new_events' => $newsEvents,
             'review' => $review,
-
         ];
         $perPage = $request->input('per_page', 10);
         $limit = $request->input('limit');
@@ -241,6 +258,24 @@ class CollegeRestApiController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/news-event/{id}",
+     *     summary="Get a News Event data",
+     *     tags={"News Event"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="News Event ID",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="integer"
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
     public function news_events($id)
     {
         $data['news-event'] = NewEvent::find($id);
@@ -251,7 +286,7 @@ class CollegeRestApiController extends Controller
             ], 404);
         }
         $data['news-event']->makeHidden([
-            'id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+             'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
             'meta_title', 'meta_keywords', 'meta_description',
         ]);
         $data['news-event']->thumbnail = $data['news-event']->thumbnail ? url('/file/news_event/' . $data['news-event']->thumbnail) : '';

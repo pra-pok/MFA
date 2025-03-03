@@ -1,31 +1,372 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My API",
-        "description": "API documentation",
-        "contact": {
-            "email": "support@example.com"
-        },
-        "version": "1.0.0"
+        "title": "My Free Admission Api",
+        "description": "My Free Admission Api",
+        "version": "1.0"
     },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000/",
+            "description": "API server"
+        }
+    ],
     "paths": {
-        "/api/v1/home": {
+        "/api/v1/college": {
             "get": {
                 "tags": [
-                    "Home"
+                    "College"
                 ],
-                "summary": "Get home data",
-                "operationId": "715bab3dd5d3b81418d6dce2860b88b6",
+                "summary": "Get a list of College data",
+                "operationId": "fa76826676265e596a15d9e960516303",
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/org/{id}": {
+            "get": {
+                "tags": [
+                    "College"
+                ],
+                "summary": "Get a College data",
+                "operationId": "5b5ca3e8e2db423958ccec06ee159187",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "College ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/news-event/{id}": {
+            "get": {
+                "tags": [
+                    "News Event"
+                ],
+                "summary": "Get a News Event data",
+                "operationId": "25512f8a0a1d653d79c7d64a1f27fde6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "News Event ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/college/compare": {
+            "get": {
+                "tags": [
+                    "College"
+                ],
+                "summary": "Get colleges by ID",
+                "operationId": "b434521577bae5945f1b5c170d7d2965",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "description": "College IDs separated by comma",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "College Name"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "404": {
+                        "description": "No colleges found"
+                    }
+                }
+            }
+        },
+        "/api/v1/config/search": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Get search configuration",
+                "operationId": "c557e0d8bc5db208e6fa18c6e3729444",
+                "parameters": [
+                    {
+                        "name": "course",
+                        "in": "query",
+                        "description": "Course ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "university",
+                        "in": "query",
+                        "description": "University ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "duration",
+                        "in": "query",
+                        "description": "Duration",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "type-of-college",
+                        "in": "query",
+                        "description": "Type of college",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Keyword",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "course": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Course Name"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "university": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "University Name"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type-of-college": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "example": "Public"
+                                                            },
+                                                            "value": {
+                                                                "type": "string",
+                                                                "example": "Public"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "duration": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "key": {
+                                                                "type": "string",
+                                                                "example": "1"
+                                                            },
+                                                            "value": {
+                                                                "type": "string",
+                                                                "example": "1 Year"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "organizations": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Organization Name"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Private"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "123 Main St"
+                                                            },
+                                                            "logo": {
+                                                                "type": "string",
+                                                                "format": "url",
+                                                                "example": "https://example.com/logo.png"
+                                                            },
+                                                            "banner_image": {
+                                                                "type": "string",
+                                                                "format": "url",
+                                                                "example": "https://example.com/banner.png"
+                                                            },
+                                                            "review_count": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "average_rating": {
+                                                                "type": "number",
+                                                                "format": "float",
+                                                                "example": 4.5
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/config/search?page=2&per_page=10",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "message": {
                                             "type": "string",
-                                            "example": "Welcome to Home API"
+                                            "example": ""
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
                                         }
                                     },
                                     "type": "object"
@@ -35,12 +376,851 @@
                     }
                 }
             }
+        },
+        "/api/v1/course/{id}": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Get course by ID",
+                "operationId": "ef9506ace8521af4701f5ffd2cdd44f6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the course",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Course Name"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/course": {
+            "get": {
+                "tags": [
+                    "Course"
+                ],
+                "summary": "Get courses",
+                "operationId": "67a4d81617870e005209c9e7b712a9d7",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to get",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Course Name"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No courses found"
+                    }
+                }
+            }
+        },
+        "/api/v1/home": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Get a list of home page data",
+                "operationId": "e8832655c86d4d44517082c26b66254f",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/org/review": {
+            "post": {
+                "tags": [
+                    "Review"
+                ],
+                "summary": "Store Review",
+                "operationId": "1217709b9b57cc0de7c093f388606f0e",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "example name",
+                                    "email": "example email",
+                                    "phone": " example phone",
+                                    "message": "example message",
+                                    "rating": "example rating",
+                                    "organization_id": "example organization_id"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "name"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "abc@gmail.com"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "1234567890"
+                                        },
+                                        "message": {
+                                            "type": "text",
+                                            "example": "message"
+                                        },
+                                        "rating": {
+                                            "type": "number",
+                                            "example": "5"
+                                        },
+                                        "organization_id": {
+                                            "type": "number",
+                                            "example": "1"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news-event": {
+            "get": {
+                "tags": [
+                    "News Event"
+                ],
+                "summary": "Get news Event list",
+                "operationId": "fad794431fdb140cc157c467508fa5c6",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to get",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "News Title"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No news found"
+                    }
+                }
+            }
+        },
+        "/api/v1/search": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Search",
+                "operationId": "33a446c0b6586dd21f1c066436c77395",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search keyword",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Search type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to get",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "courses": {
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 1
+                                                                    },
+                                                                    "course_title": {
+                                                                        "type": "string",
+                                                                        "example": "Course Name"
+                                                                    },
+                                                                    "short_title": {
+                                                                        "type": "string",
+                                                                        "example": "Short Name"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "course-slug"
+                                                                    },
+                                                                    "duration": {
+                                                                        "type": "string",
+                                                                        "example": "3 years"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "meta": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "universities": {
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 1
+                                                                    },
+                                                                    "university_title": {
+                                                                        "type": "string",
+                                                                        "example": "University Name"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "university-slug"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "meta": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "organizations": {
+                                                    "properties": {
+                                                        "items": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 1
+                                                                    },
+                                                                    "organization_name": {
+                                                                        "type": "string",
+                                                                        "example": "Organization Name"
+                                                                    },
+                                                                    "short_name": {
+                                                                        "type": "string",
+                                                                        "example": "Org Short Name"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string",
+                                                                        "example": "organization-slug"
+                                                                    },
+                                                                    "logo": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/logo.png"
+                                                                    },
+                                                                    "banner_image": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/banner.png"
+                                                                    },
+                                                                    "address": {
+                                                                        "type": "string",
+                                                                        "example": "City, Country"
+                                                                    },
+                                                                    "review_count": {
+                                                                        "type": "integer",
+                                                                        "example": 10
+                                                                    },
+                                                                    "average_rating": {
+                                                                        "type": "number",
+                                                                        "format": "float",
+                                                                        "example": 4.5
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "meta": {
+                                                            "type": "object"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/api/v1/search-college-course-university": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Simple Search",
+                "operationId": "ccc9f74e55b7c768873e7a076f4ddc70",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search keyword",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Search type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "default": "simple"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Current page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "course",
+                        "in": "query",
+                        "description": "Filter by course ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "university",
+                        "in": "query",
+                        "description": "Filter by university ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Course Title"
+                                                    },
+                                                    "short_title": {
+                                                        "type": "string",
+                                                        "example": "Short Title"
+                                                    },
+                                                    "duration": {
+                                                        "type": "string",
+                                                        "example": "2 Years"
+                                                    },
+                                                    "min_range_fee": {
+                                                        "type": "number",
+                                                        "example": 1000
+                                                    },
+                                                    "max_range_fee": {
+                                                        "type": "number",
+                                                        "example": 5000
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "course"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 University St"
+                                                    },
+                                                    "logo": {
+                                                        "type": "string",
+                                                        "format": "url",
+                                                        "example": "https://example.com/logo.png"
+                                                    },
+                                                    "banner_image": {
+                                                        "type": "string",
+                                                        "format": "url",
+                                                        "example": "https://example.com/banner.png"
+                                                    },
+                                                    "review_count": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "average_rating": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 4.5
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/search-college-course-university?page=2&per_page=10",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/university/{id}": {
+            "get": {
+                "tags": [
+                    "University"
+                ],
+                "summary": "Get university by ID",
+                "operationId": "9d7d25e8386b965ec1c1c7621a20c841",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the course",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "University Name"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "University not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/university": {
+            "get": {
+                "tags": [
+                    "University"
+                ],
+                "summary": "Get universities",
+                "operationId": "1bf78e50b2e4d9ca7b7ca220f924de2d",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to get",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "University Name"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No universities found"
+                    }
+                }
+            }
         }
     },
     "tags": [
         {
+            "name": "College",
+            "description": "College"
+        },
+        {
+            "name": "News Event",
+            "description": "News Event"
+        },
+        {
+            "name": "Search",
+            "description": "Search"
+        },
+        {
+            "name": "Course",
+            "description": "Course"
+        },
+        {
             "name": "Home",
             "description": "Home"
+        },
+        {
+            "name": "Review",
+            "description": "Review"
+        },
+        {
+            "name": "University",
+            "description": "University"
         }
     ]
 }

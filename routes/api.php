@@ -37,4 +37,4 @@ Route::get('/v1/college/compare', [CompareRestController::class, 'Collegecompare
 Route::get('/v1/course/{id}', [CourseDetailRestApiController::class, 'courseDetail']);
 Route::get('/v1/university/{id}', [UniversityDetailRestApiController::class, 'universityDetail']);
 Route::get('/v1/news-event', [NewsRestController::class, 'getNews']);
-Route::get('/v1/config-search', [ConfigSearchRestController::class, 'getConfigSearch']);
+Route::get('/v1/config/search', [ConfigSearchRestController::class, 'getConfigSearch']);

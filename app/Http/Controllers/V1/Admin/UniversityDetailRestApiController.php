@@ -9,19 +9,33 @@ use Illuminate\Support\Facades\DB;
 use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
-
-/**
- * @OA\Info(
- *      version="1.0.0",
- *      title="My API",
- *      description="API documentation",
- *      @OA\Contact(
- *          email="support@example.com"
- *      )
- * )
- */
 class UniversityDetailRestApiController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/university/{id}",
+     *     summary="Get university by ID",
+     *     tags={"University"},
+     *    @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      description="ID of the course",
+     *      required=true,
+     *      @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="University Name")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="University not found")
+     * )
+     */
     public function universityDetail(Request $request, $id)
     {
         $university = University::find($id);

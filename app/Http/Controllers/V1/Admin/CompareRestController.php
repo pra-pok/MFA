@@ -18,6 +18,32 @@ use App\Utils;
 use OpenApi\Annotations as OA;
 class CompareRestController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/college/compare",
+     *     summary="Get colleges by ID",
+     *     tags={"College"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="College IDs separated by comma",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="College Name")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid input"),
+     *     @OA\Response(response=404, description="No colleges found")
+     * )
+     */
     public function Collegecompare(Request $request)
     {
         $collegeIds = $request->query('id', '');
@@ -52,7 +78,7 @@ class CompareRestController extends Controller
                 if ($college->$relation) {
                     $college->$relation->each(function ($item) {
                         $item->makeHidden([
-                            'id', 'organization_id', 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'university',
+                            'organization_id', 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by', 'university',
                             'gallery_category_id', 'course_id', 'page_id', 'social_media_id', 'facility_id', 'university_id', 'page_category_id'
                         ]);
                     });

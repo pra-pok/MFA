@@ -17,18 +17,34 @@ use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
 
-/**
- * @OA\Info(
- *      version="1.0.0",
- *      title="My API",
- *      description="API documentation",
- *      @OA\Contact(
- *          email="support@example.com"
- *      )
- * )
- */
+
 class CourseDetailRestApiController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/course/{id}",
+     *     summary="Get course by ID",
+     *     tags={"Course"},
+     *     @OA\Parameter(
+     *        name="id",
+     *         in="path",
+     *          description="ID of the course",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Course Name")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="Course not found")
+     * )
+     */
     public function courseDetail(Request $request, $id)
     {
         $course = Course::find($id);

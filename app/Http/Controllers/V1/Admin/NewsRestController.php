@@ -12,6 +12,45 @@ use OpenApi\Annotations as OA;
 
 class NewsRestController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/news-event",
+     *     summary="Get news Event list",
+     *     tags={"News Event"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of items to get",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="offset",
+     *         in="query",
+     *         description="Number of items to skip",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="News Title")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="No news found")
+     * )
+     */
     public function getNews(Request $request)
     {
         $perPage = $request->input('per_page', 10);

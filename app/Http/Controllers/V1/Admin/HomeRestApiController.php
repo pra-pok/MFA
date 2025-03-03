@@ -19,7 +19,15 @@ use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
 class HomeRestApiController extends Controller
-{
+{    /**
+     * @OA\Get(
+     *     path="/api/v1/home",
+     *     summary="Get a list of home page data",
+     *     tags={"Home"},
+     *     @OA\Response(response=200, description="Successful operation"),
+     *     @OA\Response(response=400, description="Invalid request")
+     * )
+     */
     public function index(Request $request)
     {
         try {
@@ -193,6 +201,57 @@ class HomeRestApiController extends Controller
             );
         }
     }
+    /**
+     * Store Review
+     * @OA\Post (
+     *     path="/api/v1/org/review",
+     *     tags={"Review"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="name",
+     *                          type="string"
+     *                      ),
+     *                 ),
+     *                 example={
+     *                     "name":"example name",
+     *                     "email":"example email",
+     *                     "phone":" example phone",
+     *                     "message":"example message",
+     *                     "rating":"example rating",
+     *                     "organization_id":"example organization_id"
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="id", type="number", example=1),
+     *              @OA\Property(property="name", type="string", example="name"),
+     *              @OA\Property(property="email", type="string", example="abc@gmail.com"),
+     *              @OA\Property(property="phone", type="string", example="1234567890"),
+     *              @OA\Property(property="message", type="text", example="message"),
+     *              @OA\Property(property="rating", type="number", example="5"),
+     *              @OA\Property(property="organization_id", type="number", example="1"),
+     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=400,
+     *          description="invalid",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="msg", type="string", example="fail"),
+     *          )
+     *      )
+     * )
+     */
     public function reviewStore(Request $request)
     {
         try {

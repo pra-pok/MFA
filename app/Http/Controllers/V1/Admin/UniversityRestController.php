@@ -19,6 +19,45 @@ use OpenApi\Annotations as OA;
 
 class UniversityRestController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/university",
+     *     summary="Get universities",
+     *     tags={"University"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of items to get",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="offset",
+     *         in="query",
+     *         description="Number of items to skip",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="University Name")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="No universities found")
+     * )
+     */
     public function getUniversity(Request $request)
     {
         $perPage = $request->input('per_page', 10);
@@ -50,7 +89,7 @@ class UniversityRestController extends Controller
         }
         $universities->each(function ($university) {
             $university->makeHidden([
-                'id', 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description', 'country_id'
             ]);
             $university->logo = !empty($university->logo) ? url('/file/university/' . $university->logo) : '';

@@ -19,6 +19,45 @@ use OpenApi\Annotations as OA;
 
 class CourseRestController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/course",
+     *     summary="Get courses",
+     *     tags={"Course"},
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of items to get",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="offset",
+     *         in="query",
+     *         description="Number of items to skip",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Course Name")
+     *             ))
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="No courses found")
+     * )
+     */
     public function getCourse(Request $request)
     {
         $perPage = $request->input('per_page', 10);
@@ -50,7 +89,7 @@ class CourseRestController extends Controller
         }
         $courses->each(function ($course) {
             $course->makeHidden([
-                'id', 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description', 'eligibility', 'job_prospects', 'syllabus'
             ]);
         });

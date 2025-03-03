@@ -11,6 +11,96 @@ use App\Utils;
 
 class SearchRestController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/v1/search",
+     *     summary="Search",
+     *     tags={"Search"},
+     *     @OA\Parameter(
+     *         name="keyword",
+     *         in="query",
+     *         description="Search keyword",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="query",
+     *         description="Search type",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of items to get",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="offset",
+     *         in="query",
+     *         description="Number of items to skip",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="courses", type="object",
+     *                     @OA\Property(property="items", type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="course_title", type="string", example="Course Name"),
+     *                             @OA\Property(property="short_title", type="string", example="Short Name"),
+     *                             @OA\Property(property="slug", type="string", example="course-slug"),
+     *                             @OA\Property(property="duration", type="string", example="3 years")
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="meta", type="object")
+     *                 ),
+     *                 @OA\Property(property="universities", type="object",
+     *                     @OA\Property(property="items", type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="university_title", type="string", example="University Name"),
+     *                             @OA\Property(property="slug", type="string", example="university-slug")
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="meta", type="object")
+     *                 ),
+     *                 @OA\Property(property="organizations", type="object",
+     *                     @OA\Property(property="items", type="array",
+     *                         @OA\Items(
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="organization_name", type="string", example="Organization Name"),
+     *                             @OA\Property(property="short_name", type="string", example="Org Short Name"),
+     *                             @OA\Property(property="slug", type="string", example="organization-slug"),
+     *                             @OA\Property(property="logo", type="string", example="https://example.com/logo.png"),
+     *                             @OA\Property(property="banner_image", type="string", example="https://example.com/banner.png"),
+     *                             @OA\Property(property="address", type="string", example="City, Country"),
+     *                             @OA\Property(property="review_count", type="integer", example=10),
+     *                             @OA\Property(property="average_rating", type="number", format="float", example=4.5)
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="meta", type="object")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Invalid input"),
+     *     @OA\Response(response=500, description="Server error")
+     * )
+     */
     public function getSearch(Request $request)
     {
         $search = $request->query('keyword', '');
@@ -27,7 +117,7 @@ class SearchRestController extends Controller
                     ->orWhere('description', 'like', "%$search%");
             });
         $universityQuery = DB::table('universities')
-            ->select('id', 'title as university_title', 'slug')
+            ->select('id', 'title as university_title', 'slug','logo')
             ->where('status', 1)
             ->where('title', 'like', "%$search%");
         $organizationQuery = DB::table('organizations')
@@ -65,6 +155,10 @@ class SearchRestController extends Controller
             $organization->average_rating = Review::where('organization_id', $organization->id)->avg('rating');
 
             return $organization;
+        });
+        $universities = collect($universities)->map(function ($university) {
+            $university->logo = !empty($university->logo) ? url('/file/university/' . $university->logo) : '';
+            return $university;
         });
         return response()->json([
             "data" => [
@@ -160,6 +254,86 @@ class SearchRestController extends Controller
 //        return response()->json($response);
 //    }
 
+    /**
+     * @OA\Get(
+     *     path="/api/v1/search-college-course-university",
+     *     summary="Simple Search",
+     *     tags={"Search"},
+     *     @OA\Parameter(
+     *         name="keyword",
+     *         in="query",
+     *         description="Search keyword",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="type",
+     *         in="query",
+     *         description="Search type",
+     *         required=false,
+     *         @OA\Schema(type="string", default="simple")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=10)
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Current page number",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="course",
+     *         in="query",
+     *         description="Filter by course ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="university",
+     *         in="query",
+     *         description="Filter by university ID",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="data", type="array", @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="title", type="string", example="Course Title"),
+     *                 @OA\Property(property="short_title", type="string", example="Short Title"),
+     *                 @OA\Property(property="duration", type="string", example="2 Years"),
+     *                 @OA\Property(property="min_range_fee", type="number", example=1000),
+     *                 @OA\Property(property="max_range_fee", type="number", example=5000),
+     *                 @OA\Property(property="type", type="string", example="course"),
+     *                 @OA\Property(property="address", type="string", example="123 University St"),
+     *                 @OA\Property(property="logo", type="string", format="url", example="https://example.com/logo.png"),
+     *                 @OA\Property(property="banner_image", type="string", format="url", example="https://example.com/banner.png"),
+     *                 @OA\Property(property="review_count", type="integer", example=10),
+     *                 @OA\Property(property="average_rating", type="number", format="float", example=4.5)
+     *             )),
+     *             @OA\Property(property="meta", type="object",
+     *                 @OA\Property(property="total", type="integer", example=100),
+     *                 @OA\Property(property="per_page", type="integer", example=10),
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="next_page_url", type="string", nullable=true, example="https://example.com/api/v1/search-college-course-university?page=2&per_page=10"),
+     *                 @OA\Property(property="prev_page_url", type="string", nullable=true, example=null)
+     *             ),
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z")
+     *         )
+     *     )
+     * )
+     */
     public function getSimpleSearch(Request $request)
     {
         $search = $request->query('keyword', '');
