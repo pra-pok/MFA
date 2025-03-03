@@ -115,10 +115,10 @@ class CompareRestController extends Controller
                 "website" => $college->website,
                 "google_map" => $college->google_map,
                 "description" => $college->description,
-                "organization_courses" => $courses,
-                "organization_facilities" => $facilities,
-                "organization_galleries" => $galleries,
-                "organization_pages" => $pages,
+                "organizationGalleries" => $galleries,
+                "organizationCourses" => $courses,
+                "organizationPages" => $pages,
+                "organizationfacilities" => $facilities,
                 "review_count" => $college->review_count,
                 "average_rating" => $college->average_rating
             ];
