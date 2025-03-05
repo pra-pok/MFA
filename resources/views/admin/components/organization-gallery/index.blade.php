@@ -12,7 +12,6 @@
             <h5 class="card-header">{{$_panel}}</h5>
             @include('admin.includes.buttons.button-create')
             @include('admin.includes.buttons.button_display_trash')
-            @include('admin.includes.flash_message')
             <div class="card-body" >
                 <div class="table-responsive text-nowrap">
                     <table id="datatable" class=" table table-bordered">

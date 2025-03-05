@@ -12,13 +12,94 @@
         }
     ],
     "paths": {
-        "/api/v1/college": {
+        "/api/v1/college/login": {
+            "post": {
+                "tags": [
+                    "College Login"
+                ],
+                "summary": "Login User",
+                "operationId": "889478a4720d75dcba54cc2992641d3c",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "username": "example username",
+                                    "password": "example password"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "JWT_TOKEN_HERE"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login Success"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid Credentials"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/college": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get a list of College data",
-                "operationId": "fa76826676265e596a15d9e960516303",
+                "operationId": "21dd5a85e33d7ba0fbfc80dc728d690e",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -29,13 +110,13 @@
                 }
             }
         },
-        "/api/v1/org/{id}": {
+        "/org/{id}": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get a College data",
-                "operationId": "5b5ca3e8e2db423958ccec06ee159187",
+                "operationId": "c02fa0e143022782b2f2269022b4319b",
                 "parameters": [
                     {
                         "name": "id",
@@ -57,13 +138,13 @@
                 }
             }
         },
-        "/api/v1/news-event/{id}": {
+        "/news/event/{id}": {
             "get": {
                 "tags": [
                     "News Event"
                 ],
                 "summary": "Get a News Event data",
-                "operationId": "25512f8a0a1d653d79c7d64a1f27fde6",
+                "operationId": "8b2ed173cfa0e67fe35f6d4c1cde3ef6",
                 "parameters": [
                     {
                         "name": "id",
@@ -85,13 +166,13 @@
                 }
             }
         },
-        "/api/v1/college/compare": {
+        "/college/compare": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get colleges by ID",
-                "operationId": "b434521577bae5945f1b5c170d7d2965",
+                "operationId": "f4bb0786ce0ee815190cf8ced0d86a9a",
                 "parameters": [
                     {
                         "name": "id",
@@ -141,13 +222,13 @@
                 }
             }
         },
-        "/api/v1/config/search": {
+        "/config/search": {
             "get": {
                 "tags": [
-                    "Search"
+                    "Config Search "
                 ],
                 "summary": "Get search configuration",
-                "operationId": "c557e0d8bc5db208e6fa18c6e3729444",
+                "operationId": "516afee0ce38c26b9ae549f9a766e0ff",
                 "parameters": [
                     {
                         "name": "course",
@@ -377,13 +458,13 @@
                 }
             }
         },
-        "/api/v1/course/{id}": {
+        "/course/{id}": {
             "get": {
                 "tags": [
                     "Course"
                 ],
                 "summary": "Get course by ID",
-                "operationId": "ef9506ace8521af4701f5ffd2cdd44f6",
+                "operationId": "c629c49d9f805214c14b276847bcc8ee",
                 "parameters": [
                     {
                         "name": "id",
@@ -427,13 +508,13 @@
                 }
             }
         },
-        "/api/v1/course": {
+        "/course": {
             "get": {
                 "tags": [
                     "Course"
                 ],
                 "summary": "Get courses",
-                "operationId": "67a4d81617870e005209c9e7b712a9d7",
+                "operationId": "568022a442d5f011805a8bc557efc17b",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -498,13 +579,13 @@
                 }
             }
         },
-        "/api/v1/home": {
+        "/home": {
             "get": {
                 "tags": [
                     "Home"
                 ],
                 "summary": "Get a list of home page data",
-                "operationId": "e8832655c86d4d44517082c26b66254f",
+                "operationId": "0173a385ad6506dbbff77f7611b3f72f",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -515,13 +596,13 @@
                 }
             }
         },
-        "/api/v1/org/review": {
+        "/org/review": {
             "post": {
                 "tags": [
                     "Review"
                 ],
                 "summary": "Store Review",
-                "operationId": "1217709b9b57cc0de7c093f388606f0e",
+                "operationId": "150d115b84c089eba4a0695db370f912",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -617,13 +698,13 @@
                 }
             }
         },
-        "/api/v1/news-event": {
+        "/news/event": {
             "get": {
                 "tags": [
                     "News Event"
                 ],
                 "summary": "Get news Event list",
-                "operationId": "fad794431fdb140cc157c467508fa5c6",
+                "operationId": "8ddfdca9e6a4d861e201ab52ea92971c",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -688,13 +769,13 @@
                 }
             }
         },
-        "/api/v1/search": {
+        "/search": {
             "get": {
                 "tags": [
                     "Search"
                 ],
                 "summary": "Search",
-                "operationId": "33a446c0b6586dd21f1c066436c77395",
+                "operationId": "f176a803ee260ce98e8aa6b9b0d58f5f",
                 "parameters": [
                     {
                         "name": "keyword",
@@ -886,13 +967,13 @@
                 }
             }
         },
-        "/api/v1/search-college-course-university": {
+        "/search/college/course/university": {
             "get": {
                 "tags": [
                     "Search"
                 ],
                 "summary": "Simple Search",
-                "operationId": "ccc9f74e55b7c768873e7a076f4ddc70",
+                "operationId": "177418be036346e20501e8a426350f52",
                 "parameters": [
                     {
                         "name": "keyword",
@@ -1071,13 +1152,13 @@
                 }
             }
         },
-        "/api/v1/university/{id}": {
+        "/university/{id}": {
             "get": {
                 "tags": [
                     "University"
                 ],
                 "summary": "Get university by ID",
-                "operationId": "9d7d25e8386b965ec1c1c7621a20c841",
+                "operationId": "453f317328a118870b3479cf014c36ce",
                 "parameters": [
                     {
                         "name": "id",
@@ -1121,13 +1202,13 @@
                 }
             }
         },
-        "/api/v1/university": {
+        "/university": {
             "get": {
                 "tags": [
                     "University"
                 ],
                 "summary": "Get universities",
-                "operationId": "1bf78e50b2e4d9ca7b7ca220f924de2d",
+                "operationId": "d9c0e60066d6e673232173ae478e08d8",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -1195,6 +1276,10 @@
     },
     "tags": [
         {
+            "name": "College Login",
+            "description": "College Login"
+        },
+        {
             "name": "College",
             "description": "College"
         },
@@ -1203,8 +1288,8 @@
             "description": "News Event"
         },
         {
-            "name": "Search",
-            "description": "Search"
+            "name": "Config Search ",
+            "description": "Config Search "
         },
         {
             "name": "Course",
@@ -1217,6 +1302,10 @@
         {
             "name": "Review",
             "description": "Review"
+        },
+        {
+            "name": "Search",
+            "description": "Search"
         },
         {
             "name": "University",

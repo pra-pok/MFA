@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('follow_ups', function (Blueprint $table) {
+        Schema::create('referral_sources', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
-            $table->text('via')->nullable();
-            $table->text('note')->nullable();
-            $table->date('next_follow_up')->nullable();
+            $table->string('title');
             $table->boolean('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('follow_ups');
+        Schema::dropIfExists('referral_sources');
     }
 };

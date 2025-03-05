@@ -27,10 +27,7 @@
                         <tr>
                             <th class="text-center" width="7%">SN</th>
                             <th>Title</th>
-                            <th class="text-center">Rank</th>
-                            <th class="text-center">Limit</th>
-                            <th class="text-center">Type</th>
-                            <th width="10%" class="text-center">Status</th>
+                            <th class="text-center">Status</th>
                             <th>Modified By/At</th>
                         </tr>
                         </thead>
@@ -46,7 +43,7 @@
 
         <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                @include('admin.components.catalog.create')
+                @include('admin.components.referral-source.create')
             </div>
         </div>
     </div>
@@ -54,7 +51,7 @@
         <div class="mt-4">
             <div class="modal fade" id="edit-basic" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog" role="document">
-                    @include('admin.components.catalog.edit')
+                    @include('admin.components.referral-source.edit')
                 </div>
             </div>
         </div>
@@ -84,15 +81,6 @@
                         data: 'title'
                     },
                     {
-                        data: 'rank',
-                    },
-                    {
-                        data: 'data'
-                    },
-                    {
-                        data: 'type'
-                    },
-                    {
                         data: 'status'
                     },
                     {
@@ -118,7 +106,7 @@
                         ? data.updatedBy.username
                         : (data.createds && data.createds.username ? data.createds.username : 'Unknown');
                     const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data.created_at ? new Date(data.created_at).toLocaleString() : '');
-                    const deleteUrl = `{{ url('catalog/${data.id}') }}`;
+                    const deleteUrl = `{{ url('referral-source/${data.id}') }}`;
                     const rowContent = `
                      <td class="text-center" >${serialNumber}</td>
                      <td class="position-relative">${data.title}
@@ -140,11 +128,6 @@
                             </div>
                        </div>
                      </td>
-            <td class="text-center">
-               ${data.rank}
-            </td>
-            <td class="text-center">${data.data}</td>
-            <td class="text-center">${data.type}</td>
                     <td>${statusBadge}</td>
                 <td>
                     ${modifiedByName}<br>
@@ -161,22 +144,18 @@
 
         function editCategory(id) {
             $.ajax({
-                url: `/catalog/${id}/edit`,
+                url: `/referral-source/${id}/edit`,
                 type: 'GET',
                 success: function (response) {
                     console.log(response);
                     const formInstance = $("#editForm");
                     formInstance.find("input[name='title']").val(response.data.title);
-                    formInstance.find("input[name='rank']").val(response.data.rank);
-                    formInstance.find("input[name='data']").val(response.data.data);
-                    formInstance.find("select[name='type']").val(response.data.type);
-
                     if (response.data.status == 1) {
                         formInstance.find("input[name='status'][value='1']").prop('checked', true);
                     } else {
                         formInstance.find("input[name='status'][value='0']").prop('checked', true);
                     }
-                    $('#editForm').attr('action', `/catalog/${id}`);
+                    $('#editForm').attr('action', `/referral-source/${id}`);
 
                     $('#edit-basic').modal('show');
                 },

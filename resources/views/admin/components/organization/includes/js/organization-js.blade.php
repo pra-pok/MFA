@@ -21,6 +21,10 @@
             e.preventDefault();
             const currentPane = $(".tab-pane.fade.show.active");
             const form = currentPane.find('form');
+            if (!form.valid()) {
+                return; // Exit if the form is not valid
+            }
+
             if (typeof CKEDITOR !== 'undefined') {
                 document.querySelectorAll('.editor').forEach((element) => {
                     const editorInstance = editors[element.id || element.getAttribute('id')];
@@ -60,11 +64,7 @@
                 error: function (xhr) {
                     if (xhr.status === 422) {
                         const errors = xhr.responseJSON.errors;
-                        let errorMessages = '';
-                        for (const field in errors) {
-                            errorMessages += `${errors[field][0]}\n`;
-                        }
-                        alert(errorMessages);
+                        showValidationErrors(form, errors);
                     } else {
                         alert('An unexpected error occurred. Please try again.');
                     }
@@ -351,4 +351,33 @@
         $('.district').select2();
         $('.locality').select2();
     });
+    function showValidationErrors(form, errors) {
+        form.find('.error').remove(); // Remove previous errors
+
+        for (const field in errors) {
+            const input = form.find(`[name="${field}"]`);
+            if (input.length) {
+                input.after(`<span class="error text-danger">${errors[field][0]}</span>`); // Show error below input
+            }
+        }
+    }
+
+    /**
+     * Initialize form validation
+     */
+    function bindFormValidator() {
+        $("form").each(function () {
+            const formInstance = $(this);
+            formInstance.validate({
+                errorPlacement: function (error, element) {
+                    error.addClass('text-danger');
+                    error.insertAfter(element); // Show error below field
+                }
+            });
+
+            if (!formInstance.hasClass("ajax")) {
+                handleValidation(formInstance);
+            }
+        });
+    }
 </script>

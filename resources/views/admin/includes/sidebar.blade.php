@@ -233,4 +233,10 @@
             <div class="text-truncate" data-i18n="Form Elements">Organization Group</div>
         </a>
     </li>
+    <li class="menu-item ">
+        <a href="{{route('referral-source.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bxs-report"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Referral Source</div>
+        </a>
+    </li>
 </ul>

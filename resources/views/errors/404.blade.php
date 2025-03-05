@@ -191,7 +191,7 @@ body {
 			</div>
 			<h2>we are sorry, but the page you requested was not found</h2>
             <h4>The page you are looking for might have been removed had it's name changed or is Temporarily unavailable </h4>
-			<a href="/" class="home-btn">Go Home</a>
+			<a href="https://myfreeadmission.com/" class="home-btn">Go Home</a>
 
 
 		</div>

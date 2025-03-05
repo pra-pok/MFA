@@ -21,13 +21,12 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}" />
     <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.1.0/ckeditor5.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.0/css/dataTables.bootstrap5.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
     @yield('css')
     <script src="{{ asset('assets/vendor/js/helpers.js') }}"></script>
     <script src="{{ asset('assets/js/config.js') }}"></script>
 </head>
-
 <body>
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
@@ -82,18 +81,16 @@
     <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/super-build/ckeditor.js"></script>
     <script src="https://cdn.datatables.net/2.2.0/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.2.0/js/dataTables.bootstrap5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="{{ asset('assets/js/helper.js') }}"></script>
+    <script src="{{ asset('assets/js/alert-config.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <script>
         let editorCounter = 0;
         const editorClass = 'editor';
         const editors = {};
-
         function initializeEditor(element) {
             const uniqueId = `editor_${editorCounter++}`;
             element.setAttribute('id', uniqueId);
-
             CKEDITOR.ClassicEditor.create(element, {
                     toolbar: {
                         items: [
@@ -133,7 +130,6 @@
                     console.error(`Error initializing editor for ${uniqueId}:`, error);
                 });
         }
-
         document.querySelectorAll(`.${editorClass}`).forEach((element) => {
             initializeEditor(element);
         });
@@ -145,8 +141,12 @@
             }
         });
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
+    <!-- Jquery Validator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+    @include('admin.includes.flash_message')
     <script async defer src="https://buttons.github.io/buttons.js"></script>
     @yield('js')
 </body>
-
 </html>

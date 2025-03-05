@@ -1,5 +1,9 @@
+const defaultLoaderConfig = {includeDots: true, includeLoader: true};
+const PLEASE_WAIT = "Please wait";
+
 $(() => {
     setMandatoryStar();
+    bindFormValidator();
 });
 // function setMandatoryStar() {
 //    // console.log("hello world!")
@@ -92,3 +96,43 @@ function initializeCKEditor(uniqueId){
         console.error(`Textarea with id ${uniqueId} not found.`);
     }
 }
+
+function bindFormValidator() {
+    $("form").each(function () {
+        const formInstance = $(this);
+        formInstance.validate();
+        if (!formInstance.hasClass("ajax")) handleValidation(formInstance);
+    });
+}
+
+function handleValidation(formInstance) {
+    $("button:not(.btn-close)", formInstance).click((e) => {
+        e.preventDefault();
+        if (isFormValid(formInstance)) {
+            showConfirmDialog("Confirm Submit", "Are you sure you want to submit this form ?", generateCallback(submitFormNow, [e.target, true]));
+        }
+    });
+}
+
+function isFormValid(instance) {
+    return $(instance).valid();
+}
+
+function showButtonLoader(instance = "#btnFilter", text, config = defaultLoaderConfig) {
+    $(instance).attr("data-loader", $(instance).html());
+    let data = `${config.includeLoader ? '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>' : ''}
+                ${text ? ` <span class="loader-text">` + text + (config.includeDots ? "..." : "") + "</span>" : ""}`;
+    $(instance).html(data).prop("disabled", true);
+}
+
+function hideButtonLoader(instance = "#btnFilter") {
+    $(instance).html($(instance).attr("data-loader"));
+    $(instance).find(".waves-ripple").remove();
+    $(instance).prop("disabled", false);
+}
+    function validateAndSubmit(instance) {
+    /* const form = $(instance).closest("form");
+     if (!form.valid()) return;
+
+     form.submit();*/
+  }

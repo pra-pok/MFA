@@ -13,16 +13,10 @@ return new class extends Migration
     {
         Schema::create('counselling_status', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('color');
-            $table->text('remark')->nullable();
-            $table->boolean('status')->default(1);
+            $table->string('title');
+            $table->string('color')->nullable();
+            $table->text('note')->nullable();
             $table->timestamps();
-            $table->softDeletes();
-            $table->unsignedBigInteger('created_by')->nullable();
-            $table->unsignedBigInteger('updated_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users');
-            $table->foreign('updated_by')->references('id')->on('users');
         });
     }
 

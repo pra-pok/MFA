@@ -32,6 +32,7 @@ use App\Http\Controllers\Admin\MenuController;
 use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\OrganizationGroupController;
 use App\Http\Controllers\Admin\OrganizationMemberController;
+use App\Http\Controllers\Admin\ReferralSourceController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -165,6 +166,12 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [OrganizationGroupController::class, 'restore'])->name('organization-group.restore');
     Route::delete('force-delete/{id}', [OrganizationGroupController::class, 'forceDeleteData'])->name('organization-group.force_delete');
     Route::delete('{id}', [OrganizationGroupController::class, 'destroy'])->name('organization-group.destroy');
+
+    Route::resource('referral-source', ReferralSourceController::class);
+    Route::get('trash', [ReferralSourceController::class, 'trash'])->name('referral-source.trash');
+    Route::get('restore/{id}', [ReferralSourceController::class, 'restore'])->name('referral-source.restore');
+    Route::delete('force-delete/{id}', [ReferralSourceController::class, 'forceDeleteData'])->name('referral-source.force_delete');
+    Route::delete('{id}', [ReferralSourceController::class, 'destroy'])->name('referral-source.destroy');
 
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');

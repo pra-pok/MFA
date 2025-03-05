@@ -1,4 +1,4 @@
-<form action="{{ route($_base_route . '.store') }}" method="POST" enctype="multipart/form-data">
+<form id="myForm" action="{{ route($_base_route . '.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="modal-content">
         <div class="modal-header">
@@ -49,13 +49,13 @@
                         <input class="form-check-input" type="checkbox" id="status" name="status"
                                value="1" checked onclick="toggleText('status', 'activeText')">
                         <label class="form-check-label" id="activeText" for="status"
-                               >Active</label>
+                        >Active</label>
                     </div>
                 </div>
             </div>
             <br>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <button type="button" class="btn btn-primary">Create
+            </button>
         </div>
     </div>
 </form>
-

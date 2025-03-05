@@ -60,7 +60,7 @@
                                     <input
                                         type="text"
                                         name="short_title"
-                                        class="form-control required"
+                                        class="form-control"
                                         id="short_title" value="{{$data['record']->short_title}}" />
                                 </div>
                             </div>

@@ -260,7 +260,7 @@ class CollegeRestApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/news-event/{id}",
+     *     path="/news/event/{id}",
      *     summary="Get a News Event data",
      *     tags={"News Event"},
      *     @OA\Parameter(

@@ -35,6 +35,7 @@ class kernel extends HttpKernel
             'bindings',
             \App\Http\Middleware\ActivityLogger::class,
             \App\Http\Middleware\HandleCors::class,
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
         ],
     ];
 

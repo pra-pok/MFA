@@ -17,7 +17,6 @@
                         @include('admin.includes.buttons.button_display_trash')
                     </div>
                 </div>
-                @include('admin.includes.flash_message')
                 <div class=" text-nowrap table-responsive">
                     <table id="datatable" class=" table table-bordered">
                         <thead>

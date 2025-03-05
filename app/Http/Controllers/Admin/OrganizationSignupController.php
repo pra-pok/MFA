@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
 
 class OrganizationSignupController extends DM_BaseController
 {
-    protected $panel = 'College / School Account';
+    protected $panel = 'College/School Account';
     protected $base_route = 'organization-signup';
     protected $view_path = 'admin.components.organization-signup';
     protected $model;
@@ -308,9 +308,12 @@ class OrganizationSignupController extends DM_BaseController
     public function reset(Request $request)
     {
         $request->validate([
-            'password' => 'nullable',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 6 characters.',
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
-
         try {
             $organization = OrganizationSignup::findOrFail($request->id);
             $organization->password = Hash::make($request->password);

@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers\V1\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\OrganizationSignup;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Dtos\ResponseDTO;
+use App\Utils;
+use OpenApi\Annotations as OA;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Tymon\JWTAuth\Exceptions\JWTException;
+
+class CollegeLoginApiController extends Controller
+{
+    /**
+     * Login User
+     * @OA\Post (
+     *     path="/api/v1/college/login",
+     *     tags={"College Login"},
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                      type="object",
+     *                      @OA\Property(
+     *                          property="username",
+     *                          type="string"
+     *                      ),
+     *                     @OA\Property(
+     *                         property="password",
+     *                        type="string"
+     *                    ),
+     *                 ),
+     *                 example={
+     *                     "username":"example username",
+     *                     "password":"example password",
+     *                }
+     *             )
+     *         )
+     *      ),
+     *      @OA\Response(
+     *          response=200,
+     *          description="success",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="token", type="string", example="JWT_TOKEN_HERE"),
+     *              @OA\Property(property="message", type="string", example="Login Success"),
+     *              @OA\Property(property="status", type="string", example="success"),
+     *          )
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Invalid Credentials"),
+     *              @OA\Property(property="status", type="string", example="failed"),
+     *          )
+     *      )
+     * )
+     */
+    public function collegeLogin(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $college = OrganizationSignup::where('username', $request->username)->first();
+
+        if (!$college || !Hash::check($request->password, $college->password)) {
+            return response()->json([
+                'message' => 'Invalid Credentials',
+                'status' => 'failed'
+            ], 401);
+        }
+
+        try {
+            $token = JWTAuth::fromUser($college);
+        } catch (JWTException $e) {
+            return response()->json([
+                'message' => 'Could not create token',
+                'status' => 'failed'
+            ], 500);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'message' => 'Login Success',
+            'status' => 'success'
+        ], 200);
+    }
+}

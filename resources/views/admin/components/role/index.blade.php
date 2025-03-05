@@ -14,7 +14,6 @@
                 <a href="{{ route('role.create') }}" class="btn btn-primary">Create Role</a>
             </h5>
             <div class="card-body">
-                @include('includes.message')
 
                 <div class="table-responsive text-nowrap">
                     <table class="table table-bordered" id="dataTable">

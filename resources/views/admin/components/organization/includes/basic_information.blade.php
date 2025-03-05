@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-md-2">
             <label for="country_id" class="form-label"> Country </label>
-            <select class="form-select select-country required" id="country_id" name="country_id"
+            <select class="form-select select-country" id="country_id" name="country_id"
                     aria-label="Country">
                 <option selected disabled>Country</option>
                 @foreach ($data['country'] as $key => $value)
@@ -16,25 +16,25 @@
         </div>
         <div class="col-md-2">
             <label for="administrative_area_id" class="form-label"> Province/State </label>
-            <select class="form-select required" id="parent_id" aria-label="Province/State">
+            <select class="form-select" id="parent_id" aria-label="Province/State">
                 <option value="">None</option>
             </select>
         </div>
         <div class="col-md-3">
             <label for="district_id" class="form-label">District</label>
-            <select class="form-select district required" id="district_id" aria-label="District">
+            <select class="form-select district" id="district_id" aria-label="District">
                 <option value="">None</option>
             </select>
         </div>
         <div class="col-md-3">
             <label for="locality_id" class="form-label">Municipality</label>
-            <select class="form-select locality required" id="locality_id" name="locality_id" aria-label="Municipality">
+            <select class="form-select locality" id="locality_id" name="locality_id" aria-label="Municipality">
                 <option value="">None</option>
             </select>
         </div>
         <div class="col-md-2 mb-3">
             <label for="type" class="form-label">Type</label>
-            <select class="form-select select-type  required" id="type" name="type" aria-label="Type">
+            <select class="form-select select-type" id="type" name="type" aria-label="Type">
                 <option selected disabled>Type</option>
                 @foreach ($data['type'] as $key => $value)
                     <option value="{{ $key }}">{{ $value }}</option>

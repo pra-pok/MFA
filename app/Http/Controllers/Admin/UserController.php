@@ -159,7 +159,11 @@ class UserController extends Controller
     public function reset(Request $request)
     {
         $request->validate([
-            'password' => 'nullable',
+            'password' => 'required|min:6|confirmed',
+        ], [
+            'password.required' => 'The password field is required.',
+            'password.min' => 'The password must be at least 6 characters.',
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
         try {
             $user = User::findOrFail($request->id);
