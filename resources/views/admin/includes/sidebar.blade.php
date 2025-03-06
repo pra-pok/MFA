@@ -233,6 +233,25 @@
             <div class="text-truncate" data-i18n="Form Elements">Organization Group</div>
         </a>
     </li>
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bxl-whatsapp"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Whatsapp</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.create')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Send Messages</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.index')}}" class="menu-link">
+
+                    <div class="text-truncate" data-i18n="Form Elements">History</div>
+                </a>
+            </li>
+        </ul>
+    </li>
     <li class="menu-item ">
         <a href="{{route('referral-source.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bxs-report"></i>

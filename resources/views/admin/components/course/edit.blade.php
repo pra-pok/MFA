@@ -140,10 +140,11 @@
 @section('js')
     @include('admin.includes.slug')
     <script>
-        $(document).ready(function()
-        {
-            $('.select-course').select2();
-        });
+        // $(document).ready(function()
+        // {
+        //     $('.select-course').select2();
+            
+        // });
     </script>
 @endsection
 

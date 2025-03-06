@@ -13,7 +13,6 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between mb-3">
                     @include('admin.includes.buttons.button-create')
-
                     <div class="ml-auto">
                         @include('admin.includes.buttons.button_display_trash')
                     </div>

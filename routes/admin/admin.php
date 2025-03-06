@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\GalleryCategoryController;
 use App\Http\Controllers\Admin\OrganizationGalleryController;
 use App\Http\Controllers\Admin\PageCategoryController;
 use App\Http\Controllers\Admin\NewEventController;
+use App\Http\Controllers\Admin\WhatsAppMessagesController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {
@@ -127,3 +128,8 @@ Route::group(['prefix' =>'news_event', 'as' => 'news_event.'], function() {
     Route::get('/search', [NewEventController::class, 'search'])->name('search');
 });
 
+Route::group(['prefix' =>'whatsapp', 'as' => 'whatsapp-messages.'], function() {
+    Route::get('messages', [WhatsAppMessagesController::class, 'index'])->name('index');
+    Route::get('create',[WhatsAppMessagesController::class,'create'])->name('create');
+    Route::post('send', [WhatsAppMessagesController::class, 'sendTextMessage'])->name('store');
+});
