@@ -168,7 +168,7 @@ class StatusRestApiController extends Controller
     /**
      * Update Status
      * @OA\Put (
-     *     path="/api/vi/status/update/{id}",
+     *     path="/api/v1/status/update/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
      *     @OA\Parameter(

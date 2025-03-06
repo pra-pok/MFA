@@ -21,7 +21,7 @@ class CourseRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/vi/course",
+     *     path="/api/v1/course",
      *     summary="Get courses",
      *     tags={"Course"},
      *     @OA\Parameter(

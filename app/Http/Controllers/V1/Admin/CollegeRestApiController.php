@@ -21,7 +21,7 @@ class CollegeRestApiController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/vi/college",
+     *     path="/api/v1/college",
      *     summary="Get a list of College data",
      *     tags={"College"},
      *     @OA\Response(response=200, description="Successful operation"),
@@ -80,7 +80,7 @@ class CollegeRestApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/vi/org/{id}",
+     *     path="/api/v1/org/{id}",
      *     summary="Get a College data",
      *     tags={"College"},
      *     @OA\Parameter(
@@ -260,7 +260,7 @@ class CollegeRestApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/vi/news/event/{id}",
+     *     path="/api/v1/news/event/{id}",
      *     summary="Get a News Event data",
      *     tags={"News Event"},
      *     @OA\Parameter(
