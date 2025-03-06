@@ -14,7 +14,7 @@ class NewsRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/news/event",
+     *     path="/api/vi/news/event",
      *     summary="Get news Event list",
      *     tags={"News Event"},
      *     @OA\Parameter(

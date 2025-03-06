@@ -57,11 +57,13 @@ class OrganizationSignup extends Authenticatable implements JWTSubject
     // Implement JWTSubject methods
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // Returns primary key
+        return $this->getKey();
     }
 
     public function getJWTCustomClaims()
     {
-        return []; // Additional claims can be added here
+        return [
+            'tenant_id' => $this->tenant_id,
+        ];
     }
 }

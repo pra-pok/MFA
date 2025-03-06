@@ -14,7 +14,7 @@ class ConfigSearchRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/config/search",
+     *     path="/api/vi/config/search",
      *     summary="Get search configuration",
      *     tags={"Config Search "},
      *     @OA\Parameter(

@@ -35,7 +35,9 @@ class kernel extends HttpKernel
             'bindings',
             \App\Http\Middleware\ActivityLogger::class,
             \App\Http\Middleware\HandleCors::class,
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+//            'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+//            'jwt.refresh' => \Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
+            'jwt.auth' => \App\Http\Middleware\JwtTokenValidation::class,
         ],
     ];
 
@@ -49,6 +51,10 @@ class kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+      //  'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+      //  'jwt.refresh' => \Tymon\JWTAuth\Http\Middleware\RefreshToken::class,
+        'jwt.auth' => \App\Http\Middleware\JwtTokenValidation::class,
+
     ];
 
     /**

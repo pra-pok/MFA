@@ -15,6 +15,7 @@ use App\Http\Controllers\V1\Admin\UniversityDetailRestApiController;
 use App\Http\Controllers\V1\Admin\NewsRestController;
 use App\Http\Controllers\V1\Admin\ConfigSearchRestController;
 use App\Http\Controllers\V1\Admin\CollegeLoginApiController;
+use App\Http\Controllers\V1\Admin\StatusRestApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,8 +42,12 @@ Route::get('/v1/news/event', [NewsRestController::class, 'getNews']);
 Route::get('/v1/config/search', [ConfigSearchRestController::class, 'getConfigSearch']);
 Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogin']);
 
-Route::middleware('auth:api')->group(function () {
-    Route::get('/v1/college/profile', function () {
-        return response()->json(['message' => 'You are authenticated']);
-    });
+Route::middleware(['jwt.auth'])->group(function () {
+    //validate token (signature + expiry)
+    Route::get('/v1/status', [StatusRestApiController::class, 'index']);
+    Route::get('/v1/status/{id}', [StatusRestApiController::class, 'show']);
+    Route::post('/v1/status/store', [StatusRestApiController::class, 'store']);
+    Route::put('/vi/status/update/{id}', [StatusRestApiController::class, 'update']);
+    Route::delete('/v1/status/delete/{id}', [StatusRestApiController::class, 'destroy']);
+    Route::get('/v1/status/show/{id}', [StatusRestApiController::class, 'show']);
 });

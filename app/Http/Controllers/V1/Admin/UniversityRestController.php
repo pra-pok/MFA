@@ -21,7 +21,7 @@ class UniversityRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/university",
+     *     path="/api/vi/university",
      *     summary="Get universities",
      *     tags={"University"},
      *     @OA\Parameter(

@@ -22,7 +22,7 @@ class CourseDetailRestApiController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/course/{id}",
+     *     path="/api/vi/course/{id}",
      *     summary="Get course by ID",
      *     tags={"Course"},
      *     @OA\Parameter(

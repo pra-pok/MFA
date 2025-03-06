@@ -21,7 +21,7 @@ use OpenApi\Annotations as OA;
 class HomeRestApiController extends Controller
 {    /**
      * @OA\Get(
-     *     path="/home",
+     *     path="/api/vi/home",
      *     summary="Get a list of home page data",
      *     tags={"Home"},
      *     @OA\Response(response=200, description="Successful operation"),
@@ -204,7 +204,7 @@ class HomeRestApiController extends Controller
     /**
      * Store Review
      * @OA\Post (
-     *     path="/org/review",
+     *     path="/api/vi/org/review",
      *     tags={"Review"},
      *     @OA\RequestBody(
      *         @OA\MediaType(

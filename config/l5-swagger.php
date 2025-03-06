@@ -221,6 +221,12 @@ return [
                     'in' => 'header', // The location of the API key. Valid values are "query" or "header".
                 ],
                 */
+                'Bearer' => [
+                    'type' => 'http',
+                    'scheme' => 'bearer',
+                    'bearerFormat' => 'JWT',
+                    'description' => 'JWT Bearer Authentication - Enter token in format (Bearer <your-token>)',
+                ],
             ],
             'security' => [
                 /*
@@ -236,9 +242,9 @@ return [
                     'passport' => []
                     */
                 ],
+                ['Bearer' => []],
             ],
         ],
-
         /*
          * Set this to `true` in development mode so that docs would be regenerated on each request
          * Set this to `false` to disable swagger generation on production
@@ -321,4 +327,5 @@ return [
             'L5_SWAGGER_CONST_HOST' => env('L5_SWAGGER_CONST_HOST', 'http://my-default-host.com'),
         ],
     ],
+
 ];
