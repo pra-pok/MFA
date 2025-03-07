@@ -24,13 +24,12 @@ class MenuRequest extends FormRequest
         return [
             'name' => 'required',
             'rank' => 'required',
-
         ];
     }
     function  messages(): array
     {
         return [
-            'name.required' => 'Please enter name',
+            'name' => 'Please enter name',
             'rank' => 'Please enter rank',
         ];
     }
