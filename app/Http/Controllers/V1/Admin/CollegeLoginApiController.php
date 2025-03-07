@@ -72,33 +72,89 @@ class CollegeLoginApiController extends Controller
      *      )
      * )
      */
+//    public function collegeLogin(Request $request)
+//    {
+//        $request->validate([
+//            'username' => 'required|string',
+//            'password' => 'required|string',
+//        ]);
+//        $college = OrganizationSignup::where('username', $request->username)->first()
+//            ->makeHidden(['status','created_at', 'updated_at', 'deleted_at','created_by','updated_by','comment',]);
+//        if (!$college || !Hash::check($request->password, $college->password)) {
+//            return response()->json([
+//                'message' => 'Invalid Credentials',
+//                'status' => 'failed'
+//            ], 401);
+//        }
+//        try {
+//            $token = JWTAuth::fromUser($college);
+//        } catch (JWTException $e) {
+//            return response()->json([
+//                'message' => 'Could not create token',
+//                'status' => 'failed'
+//            ], 500);
+//        }
+//        return response()->json([
+//            'token' => $token,
+//            'data' => $college,
+//            'message' => 'Login Success',
+//            'status' => 'success'
+//        ], 200);
+//    }
     public function collegeLogin(Request $request)
     {
-        $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
-        $college = OrganizationSignup::where('username', $request->username)->first()
-            ->makeHidden(['status','created_at', 'updated_at', 'deleted_at','created_by','updated_by','comment',]);
-        if (!$college || !Hash::check($request->password, $college->password)) {
-            return response()->json([
-                'message' => 'Invalid Credentials',
-                'status' => 'failed'
-            ], 401);
-        }
         try {
+            // Validate input
+            $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            // Fetch college record
+            $college = OrganizationSignup::where('username', $request->username)->first();
+            // Check credentials
+            if (!$college || !Hash::check($request->password, $college->password)) {
+                return response()->json([
+                    'status' => 'failed',
+                    'message' => 'Invalid credentials',
+                    'data' => null
+                ], 401);
+            }
+            // Generate token
             $token = JWTAuth::fromUser($college);
+
+            // Hide sensitive fields
+            $college->makeHidden([
+                'status',
+                'created_at',
+                'updated_at',
+                'deleted_at',
+                'created_by',
+                'updated_by',
+                'comment'
+            ]);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Login successful',
+                'data' => [
+                    'token' => $token,
+                    'college' => $college
+                ]
+            ], 200);
+
         } catch (JWTException $e) {
             return response()->json([
+                'status' => 'failed',
                 'message' => 'Could not create token',
-                'status' => 'failed'
+                'data' => null
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'An error occurred during login',
+                'data' => null
             ], 500);
         }
-        return response()->json([
-            'token' => $token,
-            'data' => $college,
-            'message' => 'Login Success',
-            'status' => 'success'
-        ], 200);
     }
 }
