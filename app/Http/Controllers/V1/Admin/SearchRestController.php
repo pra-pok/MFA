@@ -13,7 +13,7 @@ class SearchRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/vi/search",
+     *     path="/api/v1/search",
      *     summary="Search",
      *     tags={"Search"},
      *     @OA\Parameter(
@@ -256,7 +256,7 @@ class SearchRestController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/vi/search/college/course/university",
+     *     path="/api/v1/search/college/course/university",
      *     summary="Simple Search",
      *     tags={"Search"},
      *     @OA\Parameter(

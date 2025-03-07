@@ -16,6 +16,8 @@ use App\Http\Controllers\V1\Admin\NewsRestController;
 use App\Http\Controllers\V1\Admin\ConfigSearchRestController;
 use App\Http\Controllers\V1\Admin\CollegeLoginApiController;
 use App\Http\Controllers\V1\Admin\StatusRestApiController;
+use App\Http\Controllers\V1\Admin\ReferralSourceRestApiController;
+use App\Http\Controllers\V1\Admin\CounselorReferralRestApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -41,13 +43,28 @@ Route::get('/v1/university/{id}', [UniversityDetailRestApiController::class, 'un
 Route::get('/v1/news/event', [NewsRestController::class, 'getNews']);
 Route::get('/v1/config/search', [ConfigSearchRestController::class, 'getConfigSearch']);
 Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogin']);
+Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
 
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
+    // API routes Status
     Route::get('/v1/status', [StatusRestApiController::class, 'index']);
-    Route::get('/v1/status/{id}', [StatusRestApiController::class, 'show']);
     Route::post('/v1/status/store', [StatusRestApiController::class, 'store']);
-    Route::put('/vi/status/update/{id}', [StatusRestApiController::class, 'update']);
+    Route::put('/v1/status/update/{id}', [StatusRestApiController::class, 'update']);
     Route::delete('/v1/status/delete/{id}', [StatusRestApiController::class, 'destroy']);
     Route::get('/v1/status/show/{id}', [StatusRestApiController::class, 'show']);
+
+    // Referral Sources API routes
+    Route::get('/v1/referral/source', [ReferralSourceRestApiController::class, 'index']);
+    Route::post('/v1/referral/source/store', [ReferralSourceRestApiController::class, 'store']);
+    Route::put('/v1/referral/source/update/{id}', [ReferralSourceRestApiController::class, 'update']);
+    Route::delete('/v1/referral/source/delete/{id}', [ReferralSourceRestApiController::class, 'destroy']);
+    Route::get('/v1/referral/source/show/{id}', [ReferralSourceRestApiController::class, 'show']);
+
+    // API routes for Counselor Referrers
+    Route::get('/v1/counselor/referral', [CounselorReferralRestApiController::class, 'index']);
+    Route::post('/v1/counselor/referral/store', [CounselorReferralRestApiController::class, 'store']);
+    Route::put('/v1/counselor/referral/update/{id}', [CounselorReferralRestApiController::class, 'update']);
+    Route::delete('/v1/counselor/referral/delete/{id}', [CounselorReferralRestApiController::class, 'destroy']);
+    Route::get('/v1/counselor/referral/show/{id}', [CounselorReferralRestApiController::class, 'show']);
 });

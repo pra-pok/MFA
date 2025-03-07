@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\CounsellingStatus;
+use App\Models\ReferralSource;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -16,15 +16,15 @@ use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class StatusRestApiController extends Controller
+class ReferralSourceRestApiController extends Controller
 {
 
     /**
-     * Get List Status
+     * Get List Referral Source
      * @OA\Get (
-     *     path="/api/v1/status/",
+     *     path="/api/v1/referral/source/",
      *     security={{"Bearer": {}}},
-     *     tags={"Status"},
+     *     tags={"Referral Source"},
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -45,14 +45,9 @@ class StatusRestApiController extends Controller
      *                         example="example title"
      *                     ),
      *                     @OA\Property(
-     *                         property="color",
-     *                         type="string",
-     *                         example="#000000"
-     *                     ),
-     *                      @OA\Property(
-     *                         property="note",
-     *                         type="text",
-     *                         example="example note"
+     *                         property="status",
+     *                         type="boolean",
+     *                         example="1"
      *                     ),
      *                     @OA\Property(
      *                         property="updated_at",
@@ -72,27 +67,27 @@ class StatusRestApiController extends Controller
      */
     public function index()
     {
-        $statuses = CounsellingStatus::all();
+        $statuses = ReferralSource::all();
         if ($statuses->isEmpty()) {
             return response()->json([
-                'message' => 'No statuses found',
+                'message' => 'No Referral Source found',
                 'status' => 0,
                 'data' => []
             ], 404);
         }
 
         return response()->json([
-            'message' => 'Statuses retrieved successfully',
+            'message' => 'Referral Source retrieved successfully',
             'status' => 1,
             'data' => $statuses
         ], 200);
     }
     /**
-     * Store Status
+     * Store Referral Source
      * @OA\Post (
-     *     path="/api/v1/status/store",
+     *     path="/api/v1/referral/source/store",
      *     security={{"Bearer": {}}},
-     *     tags={"Status"},
+     *     tags={"Referral Source"},
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -110,8 +105,7 @@ class StatusRestApiController extends Controller
      *                 ),
      *                 example={
      *                     "title":"example title",
-     *                     "color":"example color",
-     *                     "note":"example note",
+     *                     "status":"example status",
      *                }
      *             )
      *         )
@@ -122,8 +116,7 @@ class StatusRestApiController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="id", type="number", example=1),
      *              @OA\Property(property="title", type="string", example="title"),
-     *              @OA\Property(property="color", type="string", example="color"),
-     *              @OA\Property(property="note", type="text", example="note"),
+     *              @OA\Property(property="status", type="boolean", example="1"),
      *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
      *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z"),
      *          )
@@ -142,12 +135,10 @@ class StatusRestApiController extends Controller
         try {
             $validatedData = $request->validate([
                 'title' => 'required|string|max:255',
-                'color' => 'required|string|max:50',
-                'note'  => 'nullable|string'
             ]);
-            $data = CounsellingStatus::create($validatedData);
+            $data = ReferralSource::create($validatedData);
             return response()->json([
-                'message' => 'Status added successfully',
+                'message' => 'Referral Source added successfully',
                 'data'    => $data
             ], 201);
         } catch (ValidationException $e) {
@@ -166,11 +157,11 @@ class StatusRestApiController extends Controller
     {
     }
     /**
-     * Update Status
+     * Update Referral Source
      * @OA\Put (
-     *     path="/api/v1/status/update/{id}",
+     *     path="/api/v1/referral/source/update/{id}",
      *     security={{"Bearer": {}}},
-     *     tags={"Status"},
+     *     tags={"Referral Source"},
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -194,8 +185,7 @@ class StatusRestApiController extends Controller
      *                 ),
      *                 example={
      *                     "title":"example title",
-     *                     "color":"example color",
-     *                    "note":"example note",
+     *                     "status":"example status",
      *                }
      *             )
      *         )
@@ -206,8 +196,7 @@ class StatusRestApiController extends Controller
      *          @OA\JsonContent(
      *              @OA\Property(property="id", type="number", example=1),
      *              @OA\Property(property="title", type="string", example="title"),
-     *              @OA\Property(property="color", type="string", example="color"),
-     *             @OA\Property(property="note", type="text", example="note"),
+     *              @OA\Property(property="status", type="boolean", example="1"),
      *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
      *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z")
      *          )
@@ -216,34 +205,26 @@ class StatusRestApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate request before querying the database
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
-            'color' => 'required|string|max:50',
-            'note'  => 'nullable|string'
         ]);
-        //Find the record
-        $data = CounsellingStatus::find($id);
+        $data = ReferralSource::find($id);
         if (!$data) {
             return response()->json([
-                'message' => 'Status not found',
+                'message' => 'Referral Source not found',
                 'status'  => 0
             ], 404);
         }
-        // Begin transaction
         DB::beginTransaction();
         try {
-            // Update the record
             $data->update($validatedData);
-            // Commit transaction
             DB::commit();
             return response()->json([
-                'message' => 'Status updated successfully',
+                'message' => 'Referral Source updated successfully',
                 'status'  => 1,
                 'data'    => $data
             ], 200);
         } catch (\Exception $err) {
-            // Rollback transaction on failure
             DB::rollBack();
             return response()->json([
                 'message' => 'Internal Server Error: ' . $err->getMessage(),
@@ -253,11 +234,11 @@ class StatusRestApiController extends Controller
     }
 
     /**
-     * Delete Status
+     * Delete Referral Source
      * @OA\Delete (
-     *     path="/api/v1/status/delete/{id}",
+     *     path="/api/v1/referral/source/delete/{id}",
      *     security={{"Bearer": {}}},
-     *     tags={"Status"},
+     *     tags={"Referral Source"},
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -275,10 +256,10 @@ class StatusRestApiController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $data = CounsellingStatus::findOrFail($id);
+        $data = ReferralSource::findOrFail($id);
         if (is_null($data)) {
             $response = [
-                'message'    => 'Status does not exits',
+                'message'    => 'Referral Source does not exits',
                 'status'     => 0,
             ];
             $respCode    = 404;
@@ -288,7 +269,7 @@ class StatusRestApiController extends Controller
                 $data->delete();
                 DB::commit();
                 $response = [
-                    'message'  => 'Status deleted successfully',
+                    'message'  => 'Referral Source deleted successfully',
                     'status'     => 1,
                 ];
                 $respCode    = 200;
@@ -305,11 +286,11 @@ class StatusRestApiController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/v1/status/show/{id}",
+     *     path="/api/v1/referral/source/show/{id}",
      *      security={{"Bearer": {}}},
-     *      tags={"Status"},
-     *      summary="Get single  status",
-     *      description="Returns list of status",
+     *      tags={"Referral Source"},
+     *      summary="Get single  Referral Source",
+     *      description="Returns list of Referral Source",
      *          @OA\Parameter(
      *          in="path",
      *          name="id",
@@ -327,15 +308,15 @@ class StatusRestApiController extends Controller
      */
     public function show($id)
     {
-        $data = CounsellingStatus::findOrFail($id);
+        $data = ReferralSource::findOrFail($id);
         if (is_null($data)) {
             $response = [
-                'message'          => 'Status not found',
+                'message'          => 'Referral Source not found',
                 'status'           => 0,
             ];
         } else {
             $response = [
-                'message'       => 'Status found',
+                'message'       => 'Referral Source found',
                 'status'        => 1,
                 'data'          =>  $data
             ];

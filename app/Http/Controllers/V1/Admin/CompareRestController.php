@@ -20,7 +20,7 @@ class CompareRestController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/vi/college/compare",
+     *     path="/api/v1/college/compare",
      *     summary="Get colleges by ID",
      *     tags={"College"},
      *     @OA\Parameter(

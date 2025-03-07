@@ -29,7 +29,8 @@ class CollegeLoginApiController extends Controller
      * College Login
      * @OA\Post (
      *     path="/api/v1/college/login",
-     *     tags={"College Login"},
+     *     tags={"College"},
+     *     summary="College Login",
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",

@@ -15,9 +15,10 @@
         "/api/v1/college/login": {
             "post": {
                 "tags": [
-                    "College Login"
+                    "College"
                 ],
                 "summary": "College Login",
+                "description": "College Login",
                 "operationId": "889478a4720d75dcba54cc2992641d3c",
                 "requestBody": {
                     "content": {
@@ -93,13 +94,13 @@
                 }
             }
         },
-        "/college": {
+        "/api/v1/college": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get a list of College data",
-                "operationId": "21dd5a85e33d7ba0fbfc80dc728d690e",
+                "operationId": "fa76826676265e596a15d9e960516303",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -110,13 +111,13 @@
                 }
             }
         },
-        "/org/{id}": {
+        "/api/v1/org/{id}": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get a College data",
-                "operationId": "c02fa0e143022782b2f2269022b4319b",
+                "operationId": "5b5ca3e8e2db423958ccec06ee159187",
                 "parameters": [
                     {
                         "name": "id",
@@ -138,13 +139,13 @@
                 }
             }
         },
-        "/news/event/{id}": {
+        "/api/v1/news/event/{id}": {
             "get": {
                 "tags": [
                     "News Event"
                 ],
                 "summary": "Get a News Event data",
-                "operationId": "8b2ed173cfa0e67fe35f6d4c1cde3ef6",
+                "operationId": "ce40d3954b7fdc39e35871296dc296d7",
                 "parameters": [
                     {
                         "name": "id",
@@ -166,13 +167,13 @@
                 }
             }
         },
-        "/college/compare": {
+        "/api/v1/college/compare": {
             "get": {
                 "tags": [
                     "College"
                 ],
                 "summary": "Get colleges by ID",
-                "operationId": "f4bb0786ce0ee815190cf8ced0d86a9a",
+                "operationId": "b434521577bae5945f1b5c170d7d2965",
                 "parameters": [
                     {
                         "name": "id",
@@ -222,13 +223,13 @@
                 }
             }
         },
-        "/config/search": {
+        "/api/v1/config/search": {
             "get": {
                 "tags": [
-                    "Config Search "
+                    "Config Search"
                 ],
                 "summary": "Get search configuration",
-                "operationId": "516afee0ce38c26b9ae549f9a766e0ff",
+                "operationId": "c557e0d8bc5db208e6fa18c6e3729444",
                 "parameters": [
                     {
                         "name": "course",
@@ -458,13 +459,426 @@
                 }
             }
         },
-        "/course/{id}": {
+        "/api/v1/counselor/referral/": {
+            "get": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Retrieve a list of counselor referrals",
+                "description": "Get List Counselor Referral",
+                "operationId": "fba0483041cb17c9724d4f7ccb6dbe1d",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rows": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "number",
+                                                        "example": "1"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "example name"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "example email"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "example phone"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "example address"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "example role"
+                                                    },
+                                                    "created_by": {
+                                                        "type": "string",
+                                                        "example": "example created_by"
+                                                    },
+                                                    "updated_by": {
+                                                        "type": "string",
+                                                        "example": "example updated_by"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/counselor/referral/store": {
+            "post": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Create a new counselor referral",
+                "description": "Store a new Counselor Referral",
+                "operationId": "9fea22c6daeb7ab9ae20f99137dd84d6",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Counselor",
+                                            "Agent",
+                                            "Referrer"
+                                        ]
+                                    },
+                                    "created_by": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "example name",
+                                    "email": "example email",
+                                    "phone": "example phone",
+                                    "address": "example address",
+                                    "role": "Counselor",
+                                    "created_by": 1
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "name"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "email"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "phone"
+                                        },
+                                        "address": {
+                                            "type": "string",
+                                            "example": "address"
+                                        },
+                                        "role": {
+                                            "type": "string",
+                                            "example": "Counselor"
+                                        },
+                                        "created_by": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "updated_by": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/counselor/referral/update/{id}": {
+            "put": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Update an existing Counselor Referral",
+                "description": "Update Counselor Referral",
+                "operationId": "737ce4c7861c1a1db23c40404b3dc80c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "example name",
+                                    "email": "example email",
+                                    "phone": "example phone",
+                                    "address": "example address",
+                                    "role": "example role",
+                                    "created_by": "example created_by",
+                                    "updated_by": "example updated_by"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "name"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "email"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "phone"
+                                        },
+                                        "address": {
+                                            "type": "string",
+                                            "example": "address"
+                                        },
+                                        "role": {
+                                            "type": "string",
+                                            "example": "role"
+                                        },
+                                        "created_by": {
+                                            "type": "number",
+                                            "example": "created_by"
+                                        },
+                                        "updated_by": {
+                                            "type": "number",
+                                            "example": "updated_by"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/counselor/referral/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Delete a Counselor Referral",
+                "description": "Delete Counselor Referral",
+                "operationId": "19ca3b8d92d1fc1af50347d99f0eda03",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Counselor Referral  deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "delete todo success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Counselor Referral not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/counselor/referral/show/{id}": {
+            "get": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Get single  Counselor Referral",
+                "description": "Returns list of Counselor Referral",
+                "operationId": "aa79606bb87f2bce626a0ab92557849c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/counselor/": {
+            "get": {
+                "tags": [
+                    "Config Search"
+                ],
+                "summary": "list of counselor referrals role",
+                "operationId": "1946a78aba9e101dc296806a21434081",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
+        "/api/v1/course/{id}": {
             "get": {
                 "tags": [
                     "Course"
                 ],
                 "summary": "Get course by ID",
-                "operationId": "c629c49d9f805214c14b276847bcc8ee",
+                "operationId": "ef9506ace8521af4701f5ffd2cdd44f6",
                 "parameters": [
                     {
                         "name": "id",
@@ -508,13 +922,13 @@
                 }
             }
         },
-        "/course": {
+        "/api/v1/course": {
             "get": {
                 "tags": [
                     "Course"
                 ],
                 "summary": "Get courses",
-                "operationId": "568022a442d5f011805a8bc557efc17b",
+                "operationId": "67a4d81617870e005209c9e7b712a9d7",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -579,13 +993,13 @@
                 }
             }
         },
-        "/home": {
+        "/api/v1/home": {
             "get": {
                 "tags": [
                     "Home"
                 ],
                 "summary": "Get a list of home page data",
-                "operationId": "0173a385ad6506dbbff77f7611b3f72f",
+                "operationId": "e8832655c86d4d44517082c26b66254f",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -596,13 +1010,13 @@
                 }
             }
         },
-        "/org/review": {
+        "/api/v1/org/review": {
             "post": {
                 "tags": [
                     "Review"
                 ],
                 "summary": "Store Review",
-                "operationId": "150d115b84c089eba4a0695db370f912",
+                "operationId": "1217709b9b57cc0de7c093f388606f0e",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -698,13 +1112,13 @@
                 }
             }
         },
-        "/news/event": {
+        "/api/v1/news/event": {
             "get": {
                 "tags": [
                     "News Event"
                 ],
                 "summary": "Get news Event list",
-                "operationId": "8ddfdca9e6a4d861e201ab52ea92971c",
+                "operationId": "9ca4b3a998292c63fc086161d0f961b5",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -769,13 +1183,318 @@
                 }
             }
         },
-        "/search": {
+        "/api/v1/referral/source/": {
+            "get": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Get List Referral Source",
+                "operationId": "03bf0298885b16734c83f3858e0c7b7c",
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "rows": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "number",
+                                                        "example": "1"
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "example title"
+                                                    },
+                                                    "status": {
+                                                        "type": "boolean",
+                                                        "example": "1"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2021-12-11T09:25:53.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referral/source/store": {
+            "post": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Store Referral Source",
+                "operationId": "fb76e7f7ad5bf6c0ef99d53df340cf36",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "title": {
+                                                "type": "string"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "title": "example title",
+                                    "status": "example status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "title"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": "1"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "invalid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "fail"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referral/source/update/{id}": {
+            "put": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Update Referral Source",
+                "operationId": "b7b81634a41a63a82f060b113b6b80ce",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "": {
+                                        "properties": {
+                                            "title": {
+                                                "type": "string"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "title": "example title",
+                                    "status": "example status"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "number",
+                                            "example": 1
+                                        },
+                                        "title": {
+                                            "type": "string",
+                                            "example": "title"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": "1"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referral/source/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Delete Referral Source",
+                "operationId": "29d67bf475a670dc22c054918d3d43fa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "delete todo success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/referral/source/show/{id}": {
+            "get": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Get single  Referral Source",
+                "description": "Returns list of Referral Source",
+                "operationId": "b78ca06836916315d7407d164aa82aa1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/search": {
             "get": {
                 "tags": [
                     "Search"
                 ],
                 "summary": "Search",
-                "operationId": "f176a803ee260ce98e8aa6b9b0d58f5f",
+                "operationId": "33a446c0b6586dd21f1c066436c77395",
                 "parameters": [
                     {
                         "name": "keyword",
@@ -967,13 +1686,13 @@
                 }
             }
         },
-        "/search/college/course/university": {
+        "/api/v1/search/college/course/university": {
             "get": {
                 "tags": [
                     "Search"
                 ],
                 "summary": "Simple Search",
-                "operationId": "177418be036346e20501e8a426350f52",
+                "operationId": "93f506295af9f012b6e33922ddd7c656",
                 "parameters": [
                     {
                         "name": "keyword",
@@ -1307,13 +2026,13 @@
                 ]
             }
         },
-        "/api/vi/status/update/{id}": {
+        "/api/v1/status/update/{id}": {
             "put": {
                 "tags": [
                     "Status"
                 ],
                 "summary": "Update Status",
-                "operationId": "b3ecdc18edd6ee0eab187193c5fbc00a",
+                "operationId": "01ce23288b2d28c8a1e9be3536f73a65",
                 "parameters": [
                     {
                         "name": "id",
@@ -1471,13 +2190,13 @@
                 ]
             }
         },
-        "/university/{id}": {
+        "/api/v1/university/{id}": {
             "get": {
                 "tags": [
                     "University"
                 ],
                 "summary": "Get university by ID",
-                "operationId": "453f317328a118870b3479cf014c36ce",
+                "operationId": "9d7d25e8386b965ec1c1c7621a20c841",
                 "parameters": [
                     {
                         "name": "id",
@@ -1521,13 +2240,13 @@
                 }
             }
         },
-        "/university": {
+        "/api/v1/university": {
             "get": {
                 "tags": [
                     "University"
                 ],
                 "summary": "Get universities",
-                "operationId": "d9c0e60066d6e673232173ae478e08d8",
+                "operationId": "1bf78e50b2e4d9ca7b7ca220f924de2d",
                 "parameters": [
                     {
                         "name": "per_page",
@@ -1595,10 +2314,6 @@
     },
     "tags": [
         {
-            "name": "College Login",
-            "description": "College Login"
-        },
-        {
             "name": "College",
             "description": "College"
         },
@@ -1607,8 +2322,12 @@
             "description": "News Event"
         },
         {
-            "name": "Config Search ",
-            "description": "Config Search "
+            "name": "Config Search",
+            "description": "Config Search"
+        },
+        {
+            "name": "Counselor Referral",
+            "description": "Counselor Referral"
         },
         {
             "name": "Course",
@@ -1621,6 +2340,10 @@
         {
             "name": "Review",
             "description": "Review"
+        },
+        {
+            "name": "Referral Source",
+            "description": "Referral Source"
         },
         {
             "name": "Search",

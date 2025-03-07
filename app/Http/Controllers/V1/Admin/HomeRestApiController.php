@@ -19,9 +19,10 @@ use App\Dtos\ResponseDTO;
 use App\Utils;
 use OpenApi\Annotations as OA;
 class HomeRestApiController extends Controller
-{    /**
+{
+    /**
      * @OA\Get(
-     *     path="/api/vi/home",
+     *     path="/api/v1/home",
      *     summary="Get a list of home page data",
      *     tags={"Home"},
      *     @OA\Response(response=200, description="Successful operation"),
@@ -204,7 +205,7 @@ class HomeRestApiController extends Controller
     /**
      * Store Review
      * @OA\Post (
-     *     path="/api/vi/org/review",
+     *     path="/api/v1/org/review",
      *     tags={"Review"},
      *     @OA\RequestBody(
      *         @OA\MediaType(
