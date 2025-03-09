@@ -12,6 +12,50 @@
         }
     ],
     "paths": {
+        "/api/v1/address": {
+            "get": {
+                "tags": [
+                    "Address"
+                ],
+                "summary": "Get Address",
+                "description": "Fetch country, province, district, or locality based on selection",
+                "operationId": "getAddress",
+                "parameters": [
+                    {
+                        "name": "parent_id",
+                        "in": "query",
+                        "description": "ID of the selected level (except for 'country')",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "level",
+                        "in": "query",
+                        "description": "Specify the level: 'country', 'province', 'district', 'locality'",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "country",
+                                "province",
+                                "district",
+                                "locality"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
+                    }
+                }
+            }
+        },
         "/api/v1/college/login": {
             "post": {
                 "tags": [
@@ -3503,6 +3547,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Address",
+            "description": "Address"
+        },
         {
             "name": "College",
             "description": "College"
