@@ -371,8 +371,6 @@ class CounselorReferralRestApiController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *     )
-     *
-     * Returns list of books
      */
     public function show($id)
     {

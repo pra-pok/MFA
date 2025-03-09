@@ -24,38 +24,62 @@ class UniversityRestController extends Controller
      *     path="/api/v1/university",
      *     summary="Get universities",
      *     tags={"University"},
+     *     description="Retrieve a list of universities, with options for pagination.",
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
      *         description="Number of items per page",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
      *         description="Number of items to get",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\Parameter(
      *         name="offset",
      *         in="query",
      *         description="Number of items to skip",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=0)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="University Name")
-     *             ))
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="University Name"),
+     *                     @OA\Property(property="logo", type="string", example="http://example.com/file/university/logo.png")
+     *                 )
+     *             ),
+     *             @OA\Property(property="meta", type="object",
+     *                 @OA\Property(property="total", type="integer", example=100),
+     *                 @OA\Property(property="per_page", type="integer", example=10),
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="next_page_url", type="string", example="http://example.com/api/v1/university?limit=10&offset=10"),
+     *                 @OA\Property(property="prev_page_url", type="string", example="http://example.com/api/v1/university?limit=10&offset=0")
+     *             )
      *         )
      *     ),
-     *     @OA\Response(response=404, description="No universities found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="No universities found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="No universities found")
+     *         )
+     *     )
      * )
      */
     public function getUniversity(Request $request)
@@ -90,7 +114,7 @@ class UniversityRestController extends Controller
         $universities->each(function ($university) {
             $university->makeHidden([
                 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-                'meta_title', 'meta_keywords', 'meta_description', 'country_id'
+                 'country_id'
             ]);
             $university->logo = !empty($university->logo) ? url('/file/university/' . $university->logo) : '';
         });

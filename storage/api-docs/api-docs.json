@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://api.myfreeadmission.com/",
+            "url": "http://127.0.0.1:8000/",
             "description": "API server"
         }
     ],
@@ -17,7 +17,7 @@
                 "tags": [
                     "College"
                 ],
-                "summary": "College Login",
+                "summary": "College Login API",
                 "description": "College Login",
                 "operationId": "889478a4720d75dcba54cc2992641d3c",
                 "requestBody": {
@@ -99,8 +99,39 @@
                 "tags": [
                     "College"
                 ],
-                "summary": "Get a list of College data",
+                "summary": "Retrieve Colleges with Pagination",
                 "operationId": "fa76826676265e596a15d9e960516303",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Limit number of records (alternative to pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Offset for limited data",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -116,7 +147,8 @@
                 "tags": [
                     "College"
                 ],
-                "summary": "Get a College data",
+                "summary": "Retrieve College Details",
+                "description": "Fetch detailed information of a college by its ID, including galleries, courses, facilities, reviews, and related news events.",
                 "operationId": "5b5ca3e8e2db423958ccec06ee159187",
                 "parameters": [
                     {
@@ -131,10 +163,298 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "college": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "ABC College"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string",
+                                                            "example": "abc-college"
+                                                        },
+                                                        "country": {
+                                                            "type": "string",
+                                                            "example": "USA"
+                                                        },
+                                                        "administrative_area": {
+                                                            "type": "string",
+                                                            "example": "California"
+                                                        },
+                                                        "district": {
+                                                            "type": "string",
+                                                            "example": "Los Angeles"
+                                                        },
+                                                        "locality": {
+                                                            "type": "string",
+                                                            "example": "Downtown"
+                                                        },
+                                                        "address": {
+                                                            "type": "string",
+                                                            "example": "123 College Street"
+                                                        },
+                                                        "phone": {
+                                                            "type": "string",
+                                                            "example": "+1 234 567 890"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "info@college.com"
+                                                        },
+                                                        "website": {
+                                                            "type": "string",
+                                                            "example": "https://www.college.com"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "A prestigious college offering various courses."
+                                                        },
+                                                        "type": {
+                                                            "type": "string",
+                                                            "example": "Private"
+                                                        },
+                                                        "established_year": {
+                                                            "type": "integer",
+                                                            "example": 1990
+                                                        },
+                                                        "google_map": {
+                                                            "type": "string",
+                                                            "example": "https://maps.google.com/..."
+                                                        },
+                                                        "view_count": {
+                                                            "type": "integer",
+                                                            "example": 1500
+                                                        },
+                                                        "meta_title": {
+                                                            "type": "string",
+                                                            "example": "Top College in California"
+                                                        },
+                                                        "meta_keywords": {
+                                                            "type": "string",
+                                                            "example": "college, university, education"
+                                                        },
+                                                        "meta_description": {
+                                                            "type": "string",
+                                                            "example": "ABC College is a top-ranked institution."
+                                                        },
+                                                        "review_count": {
+                                                            "type": "integer",
+                                                            "example": 100
+                                                        },
+                                                        "average_rating": {
+                                                            "type": "number",
+                                                            "format": "float",
+                                                            "example": 4.5
+                                                        },
+                                                        "organizationGalleries": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "media": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/gallery/image.jpg"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "organizationCourses": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "course_title": {
+                                                                        "type": "string",
+                                                                        "example": "Computer Science"
+                                                                    },
+                                                                    "University_name": {
+                                                                        "type": "string",
+                                                                        "example": "Harvard University"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "organizationfacilities": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "facility_title": {
+                                                                        "type": "string",
+                                                                        "example": "Library"
+                                                                    },
+                                                                    "facility_icon": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/icon.png"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "organization_new_events": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "thumbnail": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/news_event.jpg"
+                                                                    },
+                                                                    "file": {
+                                                                        "type": "string",
+                                                                        "example": "https://example.com/event.pdf"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "review": {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "properties": {
+                                                                    "rating": {
+                                                                        "type": "number",
+                                                                        "format": "float",
+                                                                        "example": 4.5
+                                                                    },
+                                                                    "comment": {
+                                                                        "type": "string",
+                                                                        "example": "Great college with excellent faculty!"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "college-list": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "XYZ University"
+                                                    },
+                                                    "review_count": {
+                                                        "type": "integer",
+                                                        "example": 50
+                                                    },
+                                                    "average_rating": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 4
+                                                    },
+                                                    "logo": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/college_logo.jpg"
+                                                    },
+                                                    "banner_image": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/banner.jpg"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://api.example.com/api/v1/org?page=2"
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "College not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "College not found!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Invalid request"
+                        "description": "Invalid request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid request parameters."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -144,13 +464,14 @@
                 "tags": [
                     "News Event"
                 ],
-                "summary": "Get a News Event data",
+                "summary": "Get details of a specific News Event",
+                "description": "Fetch details of a specific News Event by its ID.",
                 "operationId": "ce40d3954b7fdc39e35871296dc296d7",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "News Event ID",
+                        "description": "ID of the News Event",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -159,7 +480,57 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "news-event": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "title": {
+                                                            "type": "string",
+                                                            "example": "News Event Title"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "Detailed description of the event"
+                                                        },
+                                                        "thumbnail": {
+                                                            "type": "string",
+                                                            "example": "https://example.com/file/news_event/image.jpg"
+                                                        },
+                                                        "file": {
+                                                            "type": "string",
+                                                            "example": "https://example.com/file/news_event_pdf/document.pdf"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "News Event not found"
                     },
                     "400": {
                         "description": "Invalid request"
@@ -172,16 +543,18 @@
                 "tags": [
                     "College"
                 ],
-                "summary": "Get colleges by ID",
+                "summary": "Compare multiple colleges by ID",
+                "description": "Fetch and compare details of multiple colleges based on their IDs.",
                 "operationId": "b434521577bae5945f1b5c170d7d2965",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "query",
-                        "description": "College IDs separated by comma",
+                        "description": "Comma-separated list of College IDs",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "1,2,3"
                         }
                     }
                 ],
@@ -229,51 +602,57 @@
                     "Config Search"
                 ],
                 "summary": "Get search configuration",
+                "description": "Retrieve available courses, universities, types of colleges, durations, and organizations based on filters.",
                 "operationId": "c557e0d8bc5db208e6fa18c6e3729444",
                 "parameters": [
                     {
                         "name": "course",
                         "in": "query",
-                        "description": "Course ID",
+                        "description": "Filter by Course ID",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     },
                     {
                         "name": "university",
                         "in": "query",
-                        "description": "University ID",
+                        "description": "Filter by University ID",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 2
                         }
                     },
                     {
                         "name": "duration",
                         "in": "query",
-                        "description": "Duration",
+                        "description": "Filter by course duration (in years)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 4
                         }
                     },
                     {
                         "name": "type-of-college",
                         "in": "query",
-                        "description": "Type of college",
+                        "description": "Filter by type of college",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "Public"
                         }
                     },
                     {
                         "name": "keyword",
                         "in": "query",
-                        "description": "Keyword",
+                        "description": "Search by organization name",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "example": "Engineering"
                         }
                     },
                     {
@@ -283,7 +662,8 @@
                         "required": false,
                         "schema": {
                             "type": "integer",
-                            "default": 10
+                            "default": 10,
+                            "example": 10
                         }
                     }
                 ],
@@ -294,6 +674,50 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/config/search?page=2",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "data": {
                                             "properties": {
                                                 "course": {
@@ -306,7 +730,7 @@
                                                             },
                                                             "title": {
                                                                 "type": "string",
-                                                                "example": "Course Name"
+                                                                "example": "Computer Science"
                                                             }
                                                         },
                                                         "type": "object"
@@ -318,11 +742,11 @@
                                                         "properties": {
                                                             "id": {
                                                                 "type": "integer",
-                                                                "example": 1
+                                                                "example": 2
                                                             },
                                                             "title": {
                                                                 "type": "string",
-                                                                "example": "University Name"
+                                                                "example": "Harvard University"
                                                             }
                                                         },
                                                         "type": "object"
@@ -350,11 +774,11 @@
                                                         "properties": {
                                                             "key": {
                                                                 "type": "string",
-                                                                "example": "1"
+                                                                "example": "4"
                                                             },
                                                             "value": {
                                                                 "type": "string",
-                                                                "example": "1 Year"
+                                                                "example": "4 Years"
                                                             }
                                                         },
                                                         "type": "object"
@@ -370,7 +794,7 @@
                                                             },
                                                             "name": {
                                                                 "type": "string",
-                                                                "example": "Organization Name"
+                                                                "example": "Tech Academy"
                                                             },
                                                             "type": {
                                                                 "type": "string",
@@ -392,12 +816,12 @@
                                                             },
                                                             "review_count": {
                                                                 "type": "integer",
-                                                                "example": 10
+                                                                "example": 15
                                                             },
                                                             "average_rating": {
                                                                 "type": "number",
                                                                 "format": "float",
-                                                                "example": 4.5
+                                                                "example": 4.3
                                                             }
                                                         },
                                                         "type": "object"
@@ -405,56 +829,15 @@
                                                 }
                                             },
                                             "type": "object"
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 100
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "next_page_url": {
-                                                    "type": "string",
-                                                    "example": "https://example.com/api/v1/config/search?page=2&per_page=10",
-                                                    "nullable": true
-                                                },
-                                                "prev_page_url": {
-                                                    "type": "string",
-                                                    "example": null,
-                                                    "nullable": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": ""
-                                        },
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "timestamp": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2025-03-03T12:00:00Z"
                                         }
                                     },
                                     "type": "object"
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "No results found"
                     }
                 }
             }
@@ -878,15 +1261,17 @@
                     "Course"
                 ],
                 "summary": "Get course by ID",
+                "description": "Retrieve detailed information about a specific course by its ID.",
                 "operationId": "ef9506ace8521af4701f5ffd2cdd44f6",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the course",
+                        "description": "ID of the course to retrieve",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -897,6 +1282,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
                                         "data": {
                                             "properties": {
                                                 "id": {
@@ -917,7 +1310,24 @@
                         }
                     },
                     "404": {
-                        "description": "Course not found"
+                        "description": "Course not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Course not found!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -928,33 +1338,38 @@
                     "Course"
                 ],
                 "summary": "Get courses",
+                "description": "Retrieve a list of courses with optional pagination parameters.",
                 "operationId": "67a4d81617870e005209c9e7b712a9d7",
                 "parameters": [
                     {
                         "name": "per_page",
                         "in": "query",
-                        "description": "Number of items per page",
+                        "description": "Number of items per page (for pagination)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
                         }
                     },
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of items to get",
+                        "description": "Number of items to retrieve",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 5
                         }
                     },
                     {
                         "name": "offset",
                         "in": "query",
-                        "description": "Number of items to skip",
+                        "description": "Number of items to skip (used with limit)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 0
                         }
                     }
                 ],
@@ -965,6 +1380,50 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/course?limit=5&offset=5",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/course?limit=5&offset=0",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "data": {
                                             "type": "array",
                                             "items": {
@@ -975,7 +1434,7 @@
                                                     },
                                                     "title": {
                                                         "type": "string",
-                                                        "example": "Course Name"
+                                                        "example": "Computer Science"
                                                     }
                                                 },
                                                 "type": "object"
@@ -1015,30 +1474,53 @@
                 "tags": [
                     "Review"
                 ],
-                "summary": "Store Review",
+                "summary": "Store a review for an organization",
+                "description": "Create a review for an organization. It checks for existing reviews from the same user for the same organization.",
                 "operationId": "1217709b9b57cc0de7c093f388606f0e",
                 "requestBody": {
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "organization_id"
+                                ],
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "name": {
+                                        "description": "Name of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Phone number of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "description": "Review message",
+                                        "type": "string"
+                                    },
+                                    "rating": {
+                                        "description": "Rating given by the reviewer (1-5)",
+                                        "type": "integer"
+                                    },
+                                    "organization_id": {
+                                        "description": "ID of the organization being reviewed",
+                                        "type": "integer"
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "name": "example name",
-                                    "email": "example email",
-                                    "phone": " example phone",
-                                    "message": "example message",
-                                    "rating": "example rating",
-                                    "organization_id": "example organization_id"
+                                    "name": "John Doe",
+                                    "email": "johndoe@example.com",
+                                    "phone": "1234567890",
+                                    "message": "Great organization!",
+                                    "rating": 5,
+                                    "organization_id": 1
                                 }
                             }
                         }
@@ -1046,46 +1528,18 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "success",
+                        "description": "Review successfully stored",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "name"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "abc@gmail.com"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "1234567890"
-                                        },
                                         "message": {
-                                            "type": "text",
-                                            "example": "message"
-                                        },
-                                        "rating": {
-                                            "type": "number",
-                                            "example": "5"
-                                        },
-                                        "organization_id": {
-                                            "type": "number",
-                                            "example": "1"
-                                        },
-                                        "updated_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "Review added successfully!"
                                         },
-                                        "created_at": {
+                                        "status": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "success"
                                         }
                                     },
                                     "type": "object"
@@ -1094,7 +1548,7 @@
                         }
                     },
                     "400": {
-                        "description": "invalid",
+                        "description": "Invalid input",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1108,6 +1562,64 @@
                                 }
                             }
                         }
+                    },
+                    "409": {
+                        "description": "Review already exists from this user for the same organization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "A review from this user for this organization already exists!"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred: {error message}"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/menu": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Get a list of header and footer menu items",
+                "description": "Get a list of menu items for the header and footer of the website.",
+                "operationId": "25afe4637a8e373fee79f19e9e505d21",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Invalid request"
                     }
                 }
             }
@@ -1117,34 +1629,38 @@
                 "tags": [
                     "News Event"
                 ],
-                "summary": "Get news Event list",
+                "summary": "Get list of news events",
+                "description": "Fetch a paginated list of news events. Supports pagination and offset-based fetching.",
                 "operationId": "9ca4b3a998292c63fc086161d0f961b5",
                 "parameters": [
                     {
                         "name": "per_page",
                         "in": "query",
-                        "description": "Number of items per page",
+                        "description": "Number of items per page (used for pagination)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     },
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "Number of items to get",
+                        "description": "Number of items to retrieve (used for offset-based fetching)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 5
                         }
                     },
                     {
                         "name": "offset",
                         "in": "query",
-                        "description": "Number of items to skip",
+                        "description": "Number of items to skip (used with limit)",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 0
                         }
                     }
                 ],
@@ -1155,6 +1671,50 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-09T12:00:00Z"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/api/v1/news/event?page=2",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
                                         "data": {
                                             "type": "array",
                                             "items": {
@@ -1165,7 +1725,19 @@
                                                     },
                                                     "title": {
                                                         "type": "string",
-                                                        "example": "News Title"
+                                                        "example": "Exciting News Event"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "This is a detailed description of the news event."
+                                                    },
+                                                    "thumbnail": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/file/news_event/image.jpg"
+                                                    },
+                                                    "file": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/file/news_event_pdf/document.pdf"
                                                     }
                                                 },
                                                 "type": "object"
@@ -1178,7 +1750,7 @@
                         }
                     },
                     "404": {
-                        "description": "No news found"
+                        "description": "No news events found"
                     }
                 }
             }
@@ -1188,7 +1760,8 @@
                 "tags": [
                     "Referral Source"
                 ],
-                "summary": "Get List Referral Source",
+                "summary": "Retrieve a list of counselor Source",
+                "description": "Get List Referral Source",
                 "operationId": "03bf0298885b16734c83f3858e0c7b7c",
                 "responses": {
                     "200": {
@@ -1244,7 +1817,8 @@
                 "tags": [
                     "Referral Source"
                 ],
-                "summary": "Store Referral Source",
+                "summary": "Create a new counselor Source",
+                "description": "Store Referral Source",
                 "operationId": "fb76e7f7ad5bf6c0ef99d53df340cf36",
                 "requestBody": {
                     "content": {
@@ -1334,7 +1908,8 @@
                 "tags": [
                     "Referral Source"
                 ],
-                "summary": "Update Referral Source",
+                "summary": "Update an existing Counselor Source",
+                "description": "Update Referral Source",
                 "operationId": "b7b81634a41a63a82f060b113b6b80ce",
                 "parameters": [
                     {
@@ -1418,7 +1993,8 @@
                 "tags": [
                     "Referral Source"
                 ],
-                "summary": "Delete Referral Source",
+                "summary": "Delete a Counselor Source",
+                "description": "Delete Referral Source",
                 "operationId": "29d67bf475a670dc22c054918d3d43fa",
                 "parameters": [
                     {
@@ -1493,7 +2069,7 @@
                 "tags": [
                     "Search"
                 ],
-                "summary": "Search",
+                "summary": "Search for courses, universities, and organizations",
                 "operationId": "33a446c0b6586dd21f1c066436c77395",
                 "parameters": [
                     {
@@ -1691,13 +2267,14 @@
                 "tags": [
                     "Search"
                 ],
-                "summary": "Simple Search",
+                "summary": "Search for Colleges, Courses, and Universities",
+                "description": "This endpoint allows you to perform a simple search across colleges, courses, and universities. You can filter results by keyword, course ID, and university ID. The results are paginated for better performance.",
                 "operationId": "93f506295af9f012b6e33922ddd7c656",
                 "parameters": [
                     {
                         "name": "keyword",
                         "in": "query",
-                        "description": "Search keyword",
+                        "description": "Keyword to search for across college, course, and university names. It searches both title and short title.",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -1706,7 +2283,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "description": "Search type",
+                        "description": "Specify the search type. This field defaults to 'simple' if not provided.",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -1716,7 +2293,7 @@
                     {
                         "name": "per_page",
                         "in": "query",
-                        "description": "Number of items per page",
+                        "description": "Number of items per page for paginated results. Defaults to 10.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1726,7 +2303,7 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Current page number",
+                        "description": "Current page number for pagination. Defaults to 1.",
                         "required": false,
                         "schema": {
                             "type": "integer",
@@ -1736,7 +2313,7 @@
                     {
                         "name": "course",
                         "in": "query",
-                        "description": "Filter by course ID",
+                        "description": "Filter by specific course ID to narrow down search results to a particular course.",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -1745,7 +2322,7 @@
                     {
                         "name": "university",
                         "in": "query",
-                        "description": "Filter by university ID",
+                        "description": "Filter by specific university ID to narrow down search results to a particular university.",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -1876,7 +2453,8 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "Get List Status",
+                "summary": "Retrieve a list of Status",
+                "description": "Get List Status",
                 "operationId": "ced9df959b187ac83cd8e3ce5b460cc6",
                 "responses": {
                     "200": {
@@ -1936,7 +2514,8 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "Store Status",
+                "summary": "Add new status",
+                "description": "Store Status",
                 "operationId": "c5ada5d43a31b7b82fef9cb1115f1e0e",
                 "requestBody": {
                     "content": {
@@ -2031,7 +2610,8 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "Update Status",
+                "summary": "Update status",
+                "description": "Update Status",
                 "operationId": "01ce23288b2d28c8a1e9be3536f73a65",
                 "parameters": [
                     {
@@ -2120,7 +2700,8 @@
                 "tags": [
                     "Status"
                 ],
-                "summary": "Delete Status",
+                "summary": "Delete status",
+                "description": "Delete Status",
                 "operationId": "c31ace1f3da3647bf34f53384dbbe1a4",
                 "parameters": [
                     {
@@ -2196,15 +2777,17 @@
                     "University"
                 ],
                 "summary": "Get university by ID",
+                "description": "Retrieve the details of a university by its ID.",
                 "operationId": "9d7d25e8386b965ec1c1c7621a20c841",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the course",
+                        "description": "ID of the university",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -2215,6 +2798,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
                                         "data": {
                                             "properties": {
                                                 "id": {
@@ -2224,6 +2815,10 @@
                                                 "title": {
                                                     "type": "string",
                                                     "example": "University Name"
+                                                },
+                                                "logo": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/file/university/logo.png"
                                                 }
                                             },
                                             "type": "object"
@@ -2235,7 +2830,24 @@
                         }
                     },
                     "404": {
-                        "description": "University not found"
+                        "description": "University not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "University not found!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -2246,6 +2858,7 @@
                     "University"
                 ],
                 "summary": "Get universities",
+                "description": "Retrieve a list of universities, with options for pagination.",
                 "operationId": "1bf78e50b2e4d9ca7b7ca220f924de2d",
                 "parameters": [
                     {
@@ -2254,7 +2867,8 @@
                         "description": "Number of items per page",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     },
                     {
@@ -2263,7 +2877,8 @@
                         "description": "Number of items to get",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 10
                         }
                     },
                     {
@@ -2272,7 +2887,8 @@
                         "description": "Number of items to skip",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 0
                         }
                     }
                 ],
@@ -2283,6 +2899,14 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
                                         "data": {
                                             "type": "array",
                                             "items": {
@@ -2294,10 +2918,43 @@
                                                     "title": {
                                                         "type": "string",
                                                         "example": "University Name"
+                                                    },
+                                                    "logo": {
+                                                        "type": "string",
+                                                        "example": "http://example.com/file/university/logo.png"
                                                     }
                                                 },
                                                 "type": "object"
                                             }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/university?limit=10&offset=10"
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/university?limit=10&offset=0"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -2306,7 +2963,24 @@
                         }
                     },
                     "404": {
-                        "description": "No universities found"
+                        "description": "No universities found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No universities found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }

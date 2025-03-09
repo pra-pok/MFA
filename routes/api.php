@@ -31,6 +31,7 @@ use App\Http\Controllers\V1\Admin\CounselorReferralRestApiController;
 Route::get('/v1/home', [HomeRestApiController::class, 'index']);
 Route::get('/v1/org/{id}', [CollegeRestApiController::class, 'collegeDetail']);
 Route::post('/v1/org/review', [HomeRestApiController::class, 'reviewStore']);
+Route::get('/v1/menu', [HomeRestApiController::class, 'menu']);
 Route::get('/v1/news/event/{id}', [CollegeRestApiController::class, 'news_events']);
 Route::get('/v1/course', [CourseRestController::class, 'getCourse']);
 Route::get('/v1/college', [CollegeRestApiController::class, 'getCollege']);

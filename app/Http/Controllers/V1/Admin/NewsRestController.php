@@ -15,40 +15,62 @@ class NewsRestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/news/event",
-     *     summary="Get news Event list",
+     *     summary="Get list of news events",
      *     tags={"News Event"},
+     *     description="Fetch a paginated list of news events. Supports pagination and offset-based fetching.",
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
-     *         description="Number of items per page",
+     *         description="Number of items per page (used for pagination)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
-     *         description="Number of items to get",
+     *         description="Number of items to retrieve (used for offset-based fetching)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=5)
      *     ),
      *     @OA\Parameter(
      *         name="offset",
      *         in="query",
-     *         description="Number of items to skip",
+     *         description="Number of items to skip (used with limit)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=0)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="News Title")
-     *             ))
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-09T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 type="object",
+     *                 @OA\Property(property="total", type="integer", example=100),
+     *                 @OA\Property(property="per_page", type="integer", example=10),
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="next_page_url", type="string", nullable=true, example="https://example.com/api/v1/news/event?page=2"),
+     *                 @OA\Property(property="prev_page_url", type="string", nullable=true, example=null)
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="Exciting News Event"),
+     *                     @OA\Property(property="description", type="string", example="This is a detailed description of the news event."),
+     *                     @OA\Property(property="thumbnail", type="string", example="https://example.com/file/news_event/image.jpg"),
+     *                     @OA\Property(property="file", type="string", example="https://example.com/file/news_event_pdf/document.pdf")
+     *                 )
+     *             )
      *         )
      *     ),
-     *     @OA\Response(response=404, description="No news found")
+     *     @OA\Response(response=404, description="No news events found")
      * )
      */
     public function getNews(Request $request)

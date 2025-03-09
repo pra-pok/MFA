@@ -16,24 +16,37 @@ class UniversityDetailRestApiController extends Controller
      *     path="/api/v1/university/{id}",
      *     summary="Get university by ID",
      *     tags={"University"},
-     *    @OA\Parameter(
-     *      name="id",
-     *      in="path",
-     *      description="ID of the course",
-     *      required=true,
-     *      @OA\Schema(type="integer")
+     *     description="Retrieve the details of a university by its ID.",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the university",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example=""),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="University Name")
+     *                 @OA\Property(property="title", type="string", example="University Name"),
+     *                 @OA\Property(property="logo", type="string", example="http://example.com/file/university/logo.png")
      *             )
      *         )
      *     ),
-     *     @OA\Response(response=404, description="University not found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="University not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="University not found!")
+     *         )
+     *     )
      * )
      */
     public function universityDetail(Request $request, $id)
@@ -49,7 +62,7 @@ class UniversityDetailRestApiController extends Controller
         $university->logo = !empty($university->logo) ? url('/file/university/' . $university->logo) : '';
         $university->makeHidden([
             'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-            'meta_title', 'meta_keywords', 'meta_description', 'catalog_id', 'country_id'
+            'catalog_id', 'country_id'
         ]);
 
         return response()->json([

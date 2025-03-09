@@ -17,93 +17,100 @@ class ConfigSearchRestController extends Controller
      *     path="/api/v1/config/search",
      *     summary="Get search configuration",
      *     tags={"Config Search"},
+     *     description="Retrieve available courses, universities, types of colleges, durations, and organizations based on filters.",
      *     @OA\Parameter(
      *         name="course",
      *         in="query",
-     *         description="Course ID",
+     *         description="Filter by Course ID",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Parameter(
      *         name="university",
      *         in="query",
-     *         description="University ID",
+     *         description="Filter by University ID",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=2)
      *     ),
      *     @OA\Parameter(
      *         name="duration",
      *         in="query",
-     *         description="Duration",
+     *         description="Filter by course duration (in years)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=4)
      *     ),
      *     @OA\Parameter(
      *         name="type-of-college",
      *         in="query",
-     *         description="Type of college",
+     *         description="Filter by type of college",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", example="Public")
      *     ),
      *     @OA\Parameter(
      *         name="keyword",
      *         in="query",
-     *         description="Keyword",
+     *         description="Search by organization name",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", example="Engineering")
      *     ),
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
      *         description="Number of items per page",
      *         required=false,
-     *         @OA\Schema(type="integer", default=10)
+     *         @OA\Schema(type="integer", default=10, example=10)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="object",
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 type="object",
+     *                 @OA\Property(property="total", type="integer", example=100),
+     *                 @OA\Property(property="per_page", type="integer", example=10),
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="next_page_url", type="string", nullable=true, example="https://example.com/api/v1/config/search?page=2"),
+     *                 @OA\Property(property="prev_page_url", type="string", nullable=true, example=null)
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
      *                 @OA\Property(property="course", type="array", @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", example="Course Name")
+     *                     @OA\Property(property="title", type="string", example="Computer Science")
      *                 )),
      *                 @OA\Property(property="university", type="array", @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="title", type="string", example="University Name")
+     *                     @OA\Property(property="id", type="integer", example=2),
+     *                     @OA\Property(property="title", type="string", example="Harvard University")
      *                 )),
      *                 @OA\Property(property="type-of-college", type="array", @OA\Items(
      *                     @OA\Property(property="key", type="string", example="Public"),
      *                     @OA\Property(property="value", type="string", example="Public")
      *                 )),
      *                 @OA\Property(property="duration", type="array", @OA\Items(
-     *                     @OA\Property(property="key", type="string", example="1"),
-     *                     @OA\Property(property="value", type="string", example="1 Year")
+     *                     @OA\Property(property="key", type="string", example="4"),
+     *                     @OA\Property(property="value", type="string", example="4 Years")
      *                 )),
      *                 @OA\Property(property="organizations", type="array", @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="name", type="string", example="Organization Name"),
+     *                     @OA\Property(property="name", type="string", example="Tech Academy"),
      *                     @OA\Property(property="type", type="string", example="Private"),
      *                     @OA\Property(property="address", type="string", example="123 Main St"),
      *                     @OA\Property(property="logo", type="string", format="url", example="https://example.com/logo.png"),
      *                     @OA\Property(property="banner_image", type="string", format="url", example="https://example.com/banner.png"),
-     *                     @OA\Property(property="review_count", type="integer", example=10),
-     *                     @OA\Property(property="average_rating", type="number", format="float", example=4.5)
+     *                     @OA\Property(property="review_count", type="integer", example=15),
+     *                     @OA\Property(property="average_rating", type="number", format="float", example=4.3)
      *                 ))
-     *             ),
-     *             @OA\Property(property="meta", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10),
-     *                 @OA\Property(property="next_page_url", type="string", nullable=true, example="https://example.com/api/v1/config/search?page=2&per_page=10"),
-     *                 @OA\Property(property="prev_page_url", type="string", nullable=true, example=null)
-     *             ),
-     *             @OA\Property(property="message", type="string", example=""),
-     *             @OA\Property(property="status", type="boolean", example=true),
-     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z")
+     *             )
      *         )
-     *     )
+     *     ),
+     *     @OA\Response(response=404, description="No results found")
      * )
      */
     public function getConfigSearch(Request $request)

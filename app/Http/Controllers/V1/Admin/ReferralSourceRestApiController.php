@@ -25,6 +25,7 @@ class ReferralSourceRestApiController extends Controller
      *     path="/api/v1/referral/source/",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
+     *     summary="Retrieve a list of counselor Source",
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -88,6 +89,7 @@ class ReferralSourceRestApiController extends Controller
      *     path="/api/v1/referral/source/store",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
+     *     summary="Create a new counselor Source",
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -162,6 +164,7 @@ class ReferralSourceRestApiController extends Controller
      *     path="/api/v1/referral/source/update/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
+     *     summary="Update an existing Counselor Source",
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -239,6 +242,7 @@ class ReferralSourceRestApiController extends Controller
      *     path="/api/v1/referral/source/delete/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
+     *     summary="Delete a Counselor Source",
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -303,8 +307,6 @@ class ReferralSourceRestApiController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *     )
-     *
-     * Returns list of books
      */
     public function show($id)
     {

@@ -14,7 +14,7 @@ class SearchRestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/search",
-     *     summary="Search",
+     *     summary="Search for courses, universities, and organizations",
      *     tags={"Search"},
      *     @OA\Parameter(
      *         name="keyword",
@@ -257,47 +257,48 @@ class SearchRestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/search/college/course/university",
-     *     summary="Simple Search",
+     *     summary="Search for Colleges, Courses, and Universities",
+     *     description="This endpoint allows you to perform a simple search across colleges, courses, and universities. You can filter results by keyword, course ID, and university ID. The results are paginated for better performance.",
      *     tags={"Search"},
      *     @OA\Parameter(
      *         name="keyword",
      *         in="query",
-     *         description="Search keyword",
+     *         description="Keyword to search for across college, course, and university names. It searches both title and short title.",
      *         required=false,
      *         @OA\Schema(type="string")
      *     ),
      *     @OA\Parameter(
      *         name="type",
      *         in="query",
-     *         description="Search type",
+     *         description="Specify the search type. This field defaults to 'simple' if not provided.",
      *         required=false,
      *         @OA\Schema(type="string", default="simple")
      *     ),
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
-     *         description="Number of items per page",
+     *         description="Number of items per page for paginated results. Defaults to 10.",
      *         required=false,
      *         @OA\Schema(type="integer", default=10)
      *     ),
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
-     *         description="Current page number",
+     *         description="Current page number for pagination. Defaults to 1.",
      *         required=false,
      *         @OA\Schema(type="integer", default=1)
      *     ),
      *     @OA\Parameter(
      *         name="course",
      *         in="query",
-     *         description="Filter by course ID",
+     *         description="Filter by specific course ID to narrow down search results to a particular course.",
      *         required=false,
      *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Parameter(
      *         name="university",
      *         in="query",
-     *         description="Filter by university ID",
+     *         description="Filter by specific university ID to narrow down search results to a particular university.",
      *         required=false,
      *         @OA\Schema(type="integer")
      *     ),

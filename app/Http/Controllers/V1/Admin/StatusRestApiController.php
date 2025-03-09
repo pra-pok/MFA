@@ -25,6 +25,7 @@ class StatusRestApiController extends Controller
      *     path="/api/v1/status/",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
+     *     summary="Retrieve a list of Status",
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -93,6 +94,7 @@ class StatusRestApiController extends Controller
      *     path="/api/v1/status/store",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
+     *     summary="Add new status",
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -171,6 +173,7 @@ class StatusRestApiController extends Controller
      *     path="/api/v1/status/update/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
+     *     summary="Update status",
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -258,6 +261,7 @@ class StatusRestApiController extends Controller
      *     path="/api/v1/status/delete/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
+     *     summary="Delete status",
      *     @OA\Parameter(
      *         in="path",
      *         name="id",
@@ -322,8 +326,6 @@ class StatusRestApiController extends Controller
      *       ),
      *       @OA\Response(response=400, description="Bad request"),
      *     )
-     *
-     * Returns list of books
      */
     public function show($id)
     {

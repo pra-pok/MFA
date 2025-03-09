@@ -16,7 +16,7 @@ use Illuminate\Routing\Controller as BaseController;
  *
  * )
  * @OA\Server(
- *     url="https://api.myfreeadmission.com/",
+ *     url="http://127.0.0.1:8000/",
  *     description="API server"
  * )
  */

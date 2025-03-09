@@ -21,14 +21,15 @@ class CompareRestController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/college/compare",
-     *     summary="Get colleges by ID",
+     *     summary="Compare multiple colleges by ID",
      *     tags={"College"},
+     *     description="Fetch and compare details of multiple colleges based on their IDs.",
      *     @OA\Parameter(
      *         name="id",
      *         in="query",
-     *         description="College IDs separated by comma",
+     *         description="Comma-separated list of College IDs",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", example="1,2,3")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -61,7 +62,8 @@ class CompareRestController extends Controller
             'organizationPages.page'
         ])
             ->whereIn('id', $idsArray)
-            ->select('id', 'name', 'logo', 'banner_image','address', 'type', 'established_year', 'phone', 'email', 'website', 'google_map', 'description')
+            ->select('id', 'name', 'logo', 'banner_image','address', 'type', 'established_year', 'phone', 'email', 'website', 'google_map', 'description',
+            'search_keywords', 'meta_title', 'meta_description', 'meta_keywords')
             ->get();
         if ($colleges->isEmpty()) {
             return response()->json([
@@ -141,12 +143,16 @@ class CompareRestController extends Controller
                 "website" => $college->website,
                 "google_map" => $college->google_map,
                 "description" => $college->description,
+                "search_keywords" => $college->search_keywords,
+                "meta_title" => $college->meta_title,
+                "meta_description" => $college->meta_description,
+                "meta_keywords" => $college->meta_keywords,
                 "organizationGalleries" => $galleries,
                 "organizationCourses" => $courses,
                 "organizationPages" => $pages,
                 "organizationfacilities" => $facilities,
                 "review_count" => $college->review_count,
-                "average_rating" => $college->average_rating
+                "average_rating" => $college->average_rating,
             ];
         }
         return response()->json([

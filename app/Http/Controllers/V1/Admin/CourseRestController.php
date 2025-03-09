@@ -24,38 +24,60 @@ class CourseRestController extends Controller
      *     path="/api/v1/course",
      *     summary="Get courses",
      *     tags={"Course"},
+     *     description="Retrieve a list of courses with optional pagination parameters.",
      *     @OA\Parameter(
      *         name="per_page",
      *         in="query",
-     *         description="Number of items per page",
+     *         description="Number of items per page (for pagination)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", default=10, example=10)
      *     ),
      *     @OA\Parameter(
      *         name="limit",
      *         in="query",
-     *         description="Number of items to get",
+     *         description="Number of items to retrieve",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=5)
      *     ),
      *     @OA\Parameter(
      *         name="offset",
      *         in="query",
-     *         description="Number of items to skip",
+     *         description="Number of items to skip (used with limit)",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="integer", example=0)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
-     *             @OA\Property(property="data", type="array", @OA\Items(
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="title", type="string", example="Course Name")
-     *             ))
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="meta",
+     *                 type="object",
+     *                 @OA\Property(property="total", type="integer", example=100),
+     *                 @OA\Property(property="per_page", type="integer", example=10),
+     *                 @OA\Property(property="current_page", type="integer", example=1),
+     *                 @OA\Property(property="last_page", type="integer", example=10),
+     *                 @OA\Property(property="next_page_url", type="string", nullable=true, example="https://example.com/api/v1/course?limit=5&offset=5"),
+     *                 @OA\Property(property="prev_page_url", type="string", nullable=true, example="https://example.com/api/v1/course?limit=5&offset=0")
+     *             ),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="Computer Science")
+     *                 )
+     *             )
      *         )
      *     ),
-     *     @OA\Response(response=404, description="No courses found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="No courses found"
+     *     )
      * )
      */
     public function getCourse(Request $request)
@@ -90,7 +112,7 @@ class CourseRestController extends Controller
         $courses->each(function ($course) {
             $course->makeHidden([
                 'rank', 'stream_id', 'level_id', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-                'meta_title', 'meta_keywords', 'meta_description', 'eligibility', 'job_prospects', 'syllabus'
+                'eligibility', 'job_prospects', 'syllabus'
             ]);
         });
 

@@ -25,24 +25,36 @@ class CourseDetailRestApiController extends Controller
      *     path="/api/v1/course/{id}",
      *     summary="Get course by ID",
      *     tags={"Course"},
+     *     description="Retrieve detailed information about a specific course by its ID.",
      *     @OA\Parameter(
      *        name="id",
-     *         in="path",
-     *          description="ID of the course",
-     *          required=true,
-     *          @OA\Schema(type="integer")
+     *        in="path",
+     *        description="ID of the course to retrieve",
+     *        required=true,
+     *        @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
      *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="success"),
+     *             @OA\Property(property="message", type="string", example=""),
      *             @OA\Property(property="data", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="title", type="string", example="Course Name")
      *             )
      *         )
      *     ),
-     *     @OA\Response(response=404, description="Course not found")
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="string", example="error"),
+     *             @OA\Property(property="message", type="string", example="Course not found!")
+     *         )
+     *     )
      * )
      */
     public function courseDetail(Request $request, $id)
@@ -56,7 +68,7 @@ class CourseDetailRestApiController extends Controller
         }
         $course->makeHidden([
              'rank','status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
-             'meta_title', 'meta_keywords', 'meta_description','catalog_id','level_id','stream_id','university_id'
+             'catalog_id','level_id','stream_id','university_id'
         ]);
         return response()->json([
             'message' => '',
