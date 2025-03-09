@@ -2771,6 +2771,522 @@
                 ]
             }
         },
+        "/api/v1/students": {
+            "get": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Get list of students",
+                "operationId": "fef61e1ee731d4df9e4e853bb4a1a284",
+                "responses": {
+                    "200": {
+                        "description": "A list of Students",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "name": {
+                                                "description": "Student's full name",
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "description": "Student's email address",
+                                                "type": "string"
+                                            },
+                                            "address": {
+                                                "description": "Student's address",
+                                                "type": "string"
+                                            },
+                                            "phone": {
+                                                "description": "Student's phone number",
+                                                "type": "string"
+                                            },
+                                            "permanent_address": {
+                                                "description": "Permanent address of student",
+                                                "type": "string"
+                                            },
+                                            "temporary_address": {
+                                                "description": "Temporary address of student",
+                                                "type": "string"
+                                            },
+                                            "permanent_locality_id": {
+                                                "description": "ID of the locality for the permanent address",
+                                                "type": "integer"
+                                            },
+                                            "temporary_locality_id": {
+                                                "description": "ID of the locality for the temporary address",
+                                                "type": "integer"
+                                            },
+                                            "referral_source_id": {
+                                                "description": "ID of the referral source",
+                                                "type": "integer"
+                                            },
+                                            "counselor_referred_id": {
+                                                "description": "ID of the counselor who referred the student",
+                                                "type": "integer"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/students/store": {
+            "post": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Create a new student",
+                "operationId": "6009c93e5044f7285b5fbf8dda8e63d1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "address",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Student's full name",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Student's email address",
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "description": "Student's address",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Student's phone number",
+                                        "type": "string"
+                                    },
+                                    "permanent_address": {
+                                        "description": "Permanent address of student",
+                                        "type": "string"
+                                    },
+                                    "temporary_address": {
+                                        "description": "Temporary address of student",
+                                        "type": "string"
+                                    },
+                                    "permanent_locality_id": {
+                                        "description": "ID of the locality for the permanent address",
+                                        "type": "integer"
+                                    },
+                                    "temporary_locality_id": {
+                                        "description": "ID of the locality for the temporary address",
+                                        "type": "integer"
+                                    },
+                                    "referral_source_id": {
+                                        "description": "ID of the referral source",
+                                        "type": "integer"
+                                    },
+                                    "counselor_referred_id": {
+                                        "description": "ID of the counselor who referred the student",
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john.doe@example.com"
+                                        },
+                                        "address": {
+                                            "type": "string",
+                                            "example": "123 Main St"
+                                        },
+                                        "phone": {
+                                            "type": "string",
+                                            "example": "+1234567890"
+                                        },
+                                        "permanent_address": {
+                                            "type": "string",
+                                            "example": "Permanent Address Example"
+                                        },
+                                        "temporary_address": {
+                                            "type": "string",
+                                            "example": "Temporary Address Example"
+                                        },
+                                        "permanent_locality_id": {
+                                            "type": "integer",
+                                            "example": 101
+                                        },
+                                        "temporary_locality_id": {
+                                            "type": "integer",
+                                            "example": 102
+                                        },
+                                        "referral_source_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "counselor_referred_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/students/update/{id}": {
+            "put": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Update an existing student",
+                "operationId": "3f4f7979e1ff244c6019435bc403b2fd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the student to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "address",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Student's full name",
+                                        "type": "string",
+                                        "example": "Prakash Pokhrel"
+                                    },
+                                    "email": {
+                                        "description": "Student's email address",
+                                        "type": "string",
+                                        "example": "prakash.pokhrel@example.com"
+                                    },
+                                    "address": {
+                                        "description": "Student's address",
+                                        "type": "string",
+                                        "example": "Pokhara"
+                                    },
+                                    "phone": {
+                                        "description": "Student's phone number",
+                                        "type": "string",
+                                        "example": "9866064728"
+                                    },
+                                    "permanent_address": {
+                                        "description": "Permanent address of student",
+                                        "type": "string",
+                                        "example": "Nepaljung"
+                                    },
+                                    "temporary_address": {
+                                        "description": "Temporary address of student",
+                                        "type": "string",
+                                        "example": "Pokhara"
+                                    },
+                                    "permanent_locality_id": {
+                                        "description": "ID of the locality for the permanent address",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "temporary_locality_id": {
+                                        "description": "ID of the locality for the temporary address",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "referral_source_id": {
+                                        "description": "ID of the referral source",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "counselor_referred_id": {
+                                        "description": "ID of the counselor who referred the student",
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Prakash Pokhrel"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "prakash.pokhrel@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "Pokhara"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "9866064728"
+                                                },
+                                                "permanent_address": {
+                                                    "type": "string",
+                                                    "example": "Nepaljung"
+                                                },
+                                                "temporary_address": {
+                                                    "type": "string",
+                                                    "example": "Pokhara"
+                                                },
+                                                "permanent_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "temporary_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "referral_source_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "counselor_referred_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025-03-09T10:19:39.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025-03-09T10:19:39.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The name field is required."
+                                                    }
+                                                },
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The email field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'email@example.com' for key 'students_email_unique'"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/students/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Delete a student",
+                "operationId": "93fd6652c1304f56395d3a3ab6398ce2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the student to be deleted",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/university/{id}": {
             "get": {
                 "tags": [
@@ -3026,6 +3542,10 @@
         {
             "name": "Status",
             "description": "Status"
+        },
+        {
+            "name": "Students",
+            "description": "Students"
         },
         {
             "name": "University",

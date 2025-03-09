@@ -18,6 +18,7 @@ use App\Http\Controllers\V1\Admin\CollegeLoginApiController;
 use App\Http\Controllers\V1\Admin\StatusRestApiController;
 use App\Http\Controllers\V1\Admin\ReferralSourceRestApiController;
 use App\Http\Controllers\V1\Admin\CounselorReferralRestApiController;
+use App\Http\Controllers\V1\Admin\StudentApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -68,4 +69,11 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/counselor/referral/update/{id}', [CounselorReferralRestApiController::class, 'update']);
     Route::delete('/v1/counselor/referral/delete/{id}', [CounselorReferralRestApiController::class, 'destroy']);
     Route::get('/v1/counselor/referral/show/{id}', [CounselorReferralRestApiController::class, 'show']);
+
+    // API routes for Student
+    Route::get('/v1/students', [StudentApiController::class, 'index']);
+    Route::post('/v1/students/store', [StudentApiController::class, 'store']);
+    Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
+    Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
+    Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
 });
