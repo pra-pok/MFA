@@ -18,6 +18,7 @@ use App\Http\Controllers\V1\Admin\CollegeLoginApiController;
 use App\Http\Controllers\V1\Admin\StatusRestApiController;
 use App\Http\Controllers\V1\Admin\ReferralSourceRestApiController;
 use App\Http\Controllers\V1\Admin\CounselorReferralRestApiController;
+use App\Http\Controllers\V1\Admin\AddressRestApiController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -45,6 +46,7 @@ Route::get('/v1/news/event', [NewsRestController::class, 'getNews']);
 Route::get('/v1/config/search', [ConfigSearchRestController::class, 'getConfigSearch']);
 Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogin']);
 Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
+Route::get('/v1/address', [AddressRestApiController::class, 'getAddress']);
 
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
