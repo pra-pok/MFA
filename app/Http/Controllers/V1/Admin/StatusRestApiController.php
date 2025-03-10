@@ -219,13 +219,11 @@ class StatusRestApiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Validate request before querying the database
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'color' => 'required|string|max:50',
             'note'  => 'nullable|string'
         ]);
-        //Find the record
         $data = CounsellingStatus::find($id);
         if (!$data) {
             return response()->json([
@@ -233,12 +231,9 @@ class StatusRestApiController extends Controller
                 'status'  => 0
             ], 404);
         }
-        // Begin transaction
         DB::beginTransaction();
         try {
-            // Update the record
             $data->update($validatedData);
-            // Commit transaction
             DB::commit();
             return response()->json([
                 'message' => 'Status updated successfully',
@@ -246,7 +241,6 @@ class StatusRestApiController extends Controller
                 'data'    => $data
             ], 200);
         } catch (\Exception $err) {
-            // Rollback transaction on failure
             DB::rollBack();
             return response()->json([
                 'message' => 'Internal Server Error: ' . $err->getMessage(),

@@ -20,7 +20,9 @@ use App\Http\Controllers\V1\Admin\ReferralSourceRestApiController;
 use App\Http\Controllers\V1\Admin\CounselorReferralRestApiController;
 use App\Http\Controllers\V1\Admin\AddressRestApiController;
 use App\Http\Controllers\V1\Admin\StudentApiController;
+use App\Http\Controllers\V1\Admin\StudentGuardianInfoApiController;
 use App\Http\Controllers\V1\Admin\FollowUpRestApiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -80,6 +82,9 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
+
+    // API Routes for Student Guardian Info
+    Route::apiResource('/v1/students/guardians/info', StudentGuardianInfoApiController::class);
 
     // API routes for FollowUp
     Route::get('/v1/followup', [FollowUpRestApiController::class, 'index']);
