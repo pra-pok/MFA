@@ -24,7 +24,7 @@
                     {
                         "name": "parent_id",
                         "in": "query",
-                        "description": "ID of the selected level (except for 'country')",
+                        "description": "For 'province', provide the country ID. For 'district' and 'locality', provide the parent administrative area's ID.",
                         "required": false,
                         "schema": {
                             "type": "integer"
@@ -963,14 +963,14 @@
                 ]
             }
         },
-        "/api/v1/counselor/referral/store": {
+        "/api/v1/counselor/referral": {
             "post": {
                 "tags": [
                     "Counselor Referral"
                 ],
                 "summary": "Create a new counselor referral",
                 "description": "Store a new Counselor Referral",
-                "operationId": "9fea22c6daeb7ab9ae20f99137dd84d6",
+                "operationId": "af0f1ceeec9c7da9ac20741613e11f18",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1093,14 +1093,45 @@
                 ]
             }
         },
-        "/api/v1/counselor/referral/update/{id}": {
+        "/api/v1/counselor/referral/{id}": {
+            "get": {
+                "tags": [
+                    "Counselor Referral"
+                ],
+                "summary": "Get single  Counselor Referral",
+                "description": "Returns list of Counselor Referral",
+                "operationId": "065cfe44acb46e56371b01fca1b7d2bc",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "Counselor Referral"
                 ],
                 "summary": "Update an existing Counselor Referral",
                 "description": "Update Counselor Referral",
-                "operationId": "737ce4c7861c1a1db23c40404b3dc80c",
+                "operationId": "1b7011c26236cc4bf55c0c4d111b6e3f",
                 "parameters": [
                     {
                         "name": "id",
@@ -1201,16 +1232,14 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/counselor/referral/delete/{id}": {
+            },
             "delete": {
                 "tags": [
                     "Counselor Referral"
                 ],
                 "summary": "Delete a Counselor Referral",
                 "description": "Delete Counselor Referral",
-                "operationId": "19ca3b8d92d1fc1af50347d99f0eda03",
+                "operationId": "f3e0f4eada5a5c166486ebf254dbd447",
                 "parameters": [
                     {
                         "name": "id",
@@ -1240,39 +1269,6 @@
                     },
                     "404": {
                         "description": "Counselor Referral not found"
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/counselor/referral/show/{id}": {
-            "get": {
-                "tags": [
-                    "Counselor Referral"
-                ],
-                "summary": "Get single  Counselor Referral",
-                "description": "Returns list of Counselor Referral",
-                "operationId": "aa79606bb87f2bce626a0ab92557849c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -1494,6 +1490,487 @@
                         "description": "No courses found"
                     }
                 }
+            }
+        },
+        "/api/v1/followup": {
+            "get": {
+                "tags": [
+                    "Follow Up"
+                ],
+                "summary": "Retrieve a list of follow-ups",
+                "description": "Get List of Follow Up",
+                "operationId": "94ff9b93d86199313b14956b1621f507",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "date": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-10T14:30:00Z"
+                                                    },
+                                                    "via": {
+                                                        "type": "string",
+                                                        "example": "Email"
+                                                    },
+                                                    "note": {
+                                                        "type": "string",
+                                                        "example": "Follow-up call scheduled"
+                                                    },
+                                                    "next_date_time": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-15T10:00:00Z"
+                                                    },
+                                                    "is_current_status": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "student_id": {
+                                                        "type": "integer",
+                                                        "example": 5
+                                                    },
+                                                    "status_id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-10T14:30:00Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-10T14:30:00Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Follow Up"
+                ],
+                "summary": "Create a new Follow Up",
+                "description": "Store a new Follow-Up",
+                "operationId": "155479acee428f904909d6ccfb128958",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "date",
+                                    "via"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-03-09 11:14:43"
+                                    },
+                                    "via": {
+                                        "type": "string",
+                                        "example": "Email"
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Follow-up call scheduled",
+                                        "nullable": true
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "nullable": true
+                                    },
+                                    "is_current_status": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    },
+                                    "next_date_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-03-09 11:14:43",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "student_id": 1,
+                                    "date": "2025-03-09 11:14:43",
+                                    "via": "Email",
+                                    "note": "Follow-up call scheduled",
+                                    "status_id": 2,
+                                    "is_current_status": true,
+                                    "next_date_time": "2025-03-09 11:14:43"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "student_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-09 11:14:43"
+                                        },
+                                        "via": {
+                                            "type": "string",
+                                            "example": "Email"
+                                        },
+                                        "note": {
+                                            "type": "string",
+                                            "example": "Follow-up call scheduled"
+                                        },
+                                        "status_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "is_current_status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "next_date_time": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-09 11:14:43"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-09 11:14:43"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-09 11:14:43"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/followup/{id}": {
+            "get": {
+                "tags": [
+                    "Follow Up"
+                ],
+                "summary": "Get single Follow Up",
+                "description": "Returns list of Follow Up",
+                "operationId": "d65dce8258af7b44f7ba2d948a99b377",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Follow Up"
+                ],
+                "summary": "Update an existing Follow Up",
+                "description": "Update Follow Up",
+                "operationId": "2d80918d171227e3e4b342fca1f48d12",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "date",
+                                    "via"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-03-10T14:30:00Z"
+                                    },
+                                    "via": {
+                                        "type": "string",
+                                        "example": "Email"
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Follow-up call scheduled",
+                                        "nullable": true
+                                    },
+                                    "status_id": {
+                                        "type": "integer",
+                                        "example": 2,
+                                        "nullable": true
+                                    },
+                                    "is_current_status": {
+                                        "type": "boolean",
+                                        "example": true,
+                                        "nullable": true
+                                    },
+                                    "next_date_time": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-03-15T10:00:00Z",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "student_id": 1,
+                                    "date": "2024-03-10T14:30:00Z",
+                                    "via": "Email",
+                                    "note": "Follow-up call scheduled",
+                                    "status_id": 2,
+                                    "is_current_status": true,
+                                    "next_date_time": "2024-03-15T10:00:00Z"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "student_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "date": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-03-10T14:30:00Z"
+                                        },
+                                        "via": {
+                                            "type": "string",
+                                            "example": "Email"
+                                        },
+                                        "note": {
+                                            "type": "string",
+                                            "example": "Follow-up call scheduled"
+                                        },
+                                        "status_id": {
+                                            "type": "integer",
+                                            "example": 2
+                                        },
+                                        "is_current_status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "next_date_time": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-03-15T10:00:00Z"
+                                        },
+                                        "updated_by": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2024-03-10T14:30:00Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Follow Up not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Follow Up not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Follow Up"
+                ],
+                "summary": "Delete a Follow Up",
+                "description": "Delete Follow Up",
+                "operationId": "a2e98aab75024cfb4da76ed304d5261a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Follow Up  deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "delete todo success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Follow Up not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
             }
         },
         "/api/v1/home": {
@@ -1856,14 +2333,14 @@
                 ]
             }
         },
-        "/api/v1/referral/source/store": {
+        "/api/v1/referral/source": {
             "post": {
                 "tags": [
                     "Referral Source"
                 ],
                 "summary": "Create a new counselor Source",
                 "description": "Store Referral Source",
-                "operationId": "fb76e7f7ad5bf6c0ef99d53df340cf36",
+                "operationId": "d0e13dc244efe530ccfdbfc2a358324d",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1947,14 +2424,45 @@
                 ]
             }
         },
-        "/api/v1/referral/source/update/{id}": {
+        "/api/v1/referral/source/{id}": {
+            "get": {
+                "tags": [
+                    "Referral Source"
+                ],
+                "summary": "Get single  Referral Source",
+                "description": "Returns list of Referral Source",
+                "operationId": "9f2d758ed5cf96ffdafd95b9a456f0e2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "Referral Source"
                 ],
                 "summary": "Update an existing Counselor Source",
                 "description": "Update Referral Source",
-                "operationId": "b7b81634a41a63a82f060b113b6b80ce",
+                "operationId": "5e6302e4fdd49dcb2e9cfdb8da81919b",
                 "parameters": [
                     {
                         "name": "id",
@@ -2030,16 +2538,14 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/referral/source/delete/{id}": {
+            },
             "delete": {
                 "tags": [
                     "Referral Source"
                 ],
                 "summary": "Delete a Counselor Source",
                 "description": "Delete Referral Source",
-                "operationId": "29d67bf475a670dc22c054918d3d43fa",
+                "operationId": "661726085672bfac4c9a24304873b9b8",
                 "parameters": [
                     {
                         "name": "id",
@@ -2066,39 +2572,6 @@
                                 }
                             }
                         }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/referral/source/show/{id}": {
-            "get": {
-                "tags": [
-                    "Referral Source"
-                ],
-                "summary": "Get single  Referral Source",
-                "description": "Returns list of Referral Source",
-                "operationId": "b78ca06836916315d7407d164aa82aa1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -2553,14 +3026,14 @@
                 ]
             }
         },
-        "/api/v1/status/store": {
+        "/api/v1/status": {
             "post": {
                 "tags": [
                     "Status"
                 ],
                 "summary": "Add new status",
                 "description": "Store Status",
-                "operationId": "c5ada5d43a31b7b82fef9cb1115f1e0e",
+                "operationId": "0ae6178c865b0f5a4211ec98e3906517",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -2649,14 +3122,45 @@
                 ]
             }
         },
-        "/api/v1/status/update/{id}": {
+        "/api/v1/status/{id}": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Get single  status",
+                "description": "Returns list of status",
+                "operationId": "614b70c6f6432c295d280d29f2e19d06",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
             "put": {
                 "tags": [
                     "Status"
                 ],
                 "summary": "Update status",
                 "description": "Update Status",
-                "operationId": "01ce23288b2d28c8a1e9be3536f73a65",
+                "operationId": "53c08c2123f606adec5d865c9555f39f",
                 "parameters": [
                     {
                         "name": "id",
@@ -2737,16 +3241,14 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/status/delete/{id}": {
+            },
             "delete": {
                 "tags": [
                     "Status"
                 ],
                 "summary": "Delete status",
                 "description": "Delete Status",
-                "operationId": "c31ace1f3da3647bf34f53384dbbe1a4",
+                "operationId": "d5aa78d1a4b9763eb692d16d692e47a3",
                 "parameters": [
                     {
                         "name": "id",
@@ -2773,39 +3275,6 @@
                                 }
                             }
                         }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/status/show/{id}": {
-            "get": {
-                "tags": [
-                    "Status"
-                ],
-                "summary": "Get single  status",
-                "description": "Returns list of status",
-                "operationId": "9991bebbc3dcefc69230ed3af9ffcd0a",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
                     }
                 },
                 "security": [
@@ -3570,6 +4039,10 @@
         {
             "name": "Course",
             "description": "Course"
+        },
+        {
+            "name": "Follow Up",
+            "description": "Follow Up"
         },
         {
             "name": "Home",

@@ -86,7 +86,7 @@ class ReferralSourceRestApiController extends Controller
     /**
      * Store Referral Source
      * @OA\Post (
-     *     path="/api/v1/referral/source/store",
+     *     path="/api/v1/referral/source",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
      *     summary="Create a new counselor Source",
@@ -161,7 +161,7 @@ class ReferralSourceRestApiController extends Controller
     /**
      * Update Referral Source
      * @OA\Put (
-     *     path="/api/v1/referral/source/update/{id}",
+     *     path="/api/v1/referral/source/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
      *     summary="Update an existing Counselor Source",
@@ -239,7 +239,7 @@ class ReferralSourceRestApiController extends Controller
     /**
      * Delete Referral Source
      * @OA\Delete (
-     *     path="/api/v1/referral/source/delete/{id}",
+     *     path="/api/v1/referral/source/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
      *     summary="Delete a Counselor Source",
@@ -290,7 +290,7 @@ class ReferralSourceRestApiController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/v1/referral/source/show/{id}",
+     *     path="/api/v1/referral/source/{id}",
      *      security={{"Bearer": {}}},
      *      tags={"Referral Source"},
      *      summary="Get single  Referral Source",

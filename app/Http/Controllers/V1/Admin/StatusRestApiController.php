@@ -91,7 +91,7 @@ class StatusRestApiController extends Controller
     /**
      * Store Status
      * @OA\Post (
-     *     path="/api/v1/status/store",
+     *     path="/api/v1/status",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
      *     summary="Add new status",
@@ -170,7 +170,7 @@ class StatusRestApiController extends Controller
     /**
      * Update Status
      * @OA\Put (
-     *     path="/api/v1/status/update/{id}",
+     *     path="/api/v1/status/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
      *     summary="Update status",
@@ -258,7 +258,7 @@ class StatusRestApiController extends Controller
     /**
      * Delete Status
      * @OA\Delete (
-     *     path="/api/v1/status/delete/{id}",
+     *     path="/api/v1/status/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Status"},
      *     summary="Delete status",
@@ -309,7 +309,7 @@ class StatusRestApiController extends Controller
     }
     /**
      * @OA\Get(
-     *     path="/api/v1/status/show/{id}",
+     *     path="/api/v1/status/{id}",
      *      security={{"Bearer": {}}},
      *      tags={"Status"},
      *      summary="Get single  status",

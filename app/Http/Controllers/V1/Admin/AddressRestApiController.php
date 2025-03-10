@@ -42,7 +42,7 @@ class AddressRestApiController extends Controller
     public function getAddress(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'id' => 'nullable|integer',
+            'parent_id' => 'nullable|integer',
             'level' => 'required|string|in:country,province,district,locality'
         ]);
 
@@ -51,42 +51,44 @@ class AddressRestApiController extends Controller
         }
 
         $level = $request->level;
-        $id = $request->id;
+        $parent_id = $request->parent_id;
 
         switch ($level) {
             case 'country':
                 $data = Country::select('id', 'name')->get();
                 break;
+
             case 'province':
-                if (!$id) {
-                    return response()->json(['error' => 'id is required for province'], 400);
+                if (!$parent_id) {
+                    return response()->json(['error' => 'parent_id is required for province'], 400);
                 }
-                $data = AdministrativeArea::where('country_id', $id)
-                    ->whereNull('parent_id')
+                $data = AdministrativeArea::where('country_id', $parent_id)
                     ->select('id', 'name')
                     ->get();
                 break;
+
             case 'district':
-                if (!$id) {
-                    return response()->json(['error' => 'id is required for district'], 400);
+                if (!$parent_id) {
+                    return response()->json(['error' => 'parent_id is required for district'], 400);
                 }
-                $data = AdministrativeArea::where('parent_id', $id)
+                $data = AdministrativeArea::where('parent_id', $parent_id)
                     ->select('id', 'name')
                     ->get();
                 break;
+
             case 'locality':
-                if (!$id) {
-                    return response()->json(['error' => 'id is required for locality'], 400);
+                if (!$parent_id) {
+                    return response()->json(['error' => 'parent_id is required for locality'], 400);
                 }
-                $data = Locality::where('administrative_area_id', $id)
+                $data = Locality::where('administrative_area_id', $parent_id)
                     ->select('id', 'name')
                     ->get();
                 break;
+
             default:
                 return response()->json(['error' => 'Invalid level'], 400);
         }
 
         return response()->json(['data' => $data], 200);
     }
-
 }

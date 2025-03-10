@@ -110,7 +110,7 @@ class CounselorReferralRestApiController extends Controller
     /**
      * Store a new Counselor Referral
      * @OA\Post (
-     *     path="/api/v1/counselor/referral/store",
+     *     path="/api/v1/counselor/referral",
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
      *     summary="Create a new counselor referral",
@@ -201,7 +201,7 @@ class CounselorReferralRestApiController extends Controller
     /**
      * Update Counselor Referral
      * @OA\Put (
-     *     path="/api/v1/counselor/referral/update/{id}",
+     *     path="/api/v1/counselor/referral/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
      *     summary="Update an existing Counselor Referral",
@@ -298,7 +298,7 @@ class CounselorReferralRestApiController extends Controller
     /**
      * Delete Counselor Referral
      * @OA\Delete (
-     *     path="/api/v1/counselor/referral/delete/{id}",
+     *     path="/api/v1/counselor/referral/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
      *     summary="Delete a Counselor Referral",
@@ -354,7 +354,7 @@ class CounselorReferralRestApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/counselor/referral/show/{id}",
+     *     path="/api/v1/counselor/referral/{id}",
      *      security={{"Bearer": {}}},
      *      tags={"Counselor Referral"},
      *      summary="Get single  Counselor Referral",
