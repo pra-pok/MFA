@@ -87,5 +87,4 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/followup/{id}', [FollowUpRestApiController::class, 'update']);
     Route::delete('/v1/followup/{id}', [FollowUpRestApiController::class, 'destroy']);
     Route::get('/v1/followup/{id}', [FollowUpRestApiController::class, 'show']);
-
-});
+});    
