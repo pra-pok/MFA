@@ -22,6 +22,8 @@ use App\Http\Controllers\V1\Admin\AddressRestApiController;
 use App\Http\Controllers\V1\Admin\StudentApiController;
 use App\Http\Controllers\V1\Admin\StudentGuardianInfoApiController;
 use App\Http\Controllers\V1\Admin\FollowUpRestApiController;
+use App\Http\Controllers\V1\Admin\AcademicYearRestApiController;
+use App\Http\Controllers\V1\Admin\TargetRestApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,4 +94,14 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/followup/{id}', [FollowUpRestApiController::class, 'update']);
     Route::delete('/v1/followup/{id}', [FollowUpRestApiController::class, 'destroy']);
     Route::get('/v1/followup/{id}', [FollowUpRestApiController::class, 'show']);
-});    
+
+    // API routes for Academic Year
+    Route::get('/v1/academic/year', [AcademicYearRestApiController::class, 'index']);
+    Route::post('/v1/academic/year', [AcademicYearRestApiController::class, 'store']);
+    Route::put('/v1/academic/year/{id}', [AcademicYearRestApiController::class, 'update']);
+    Route::delete('/v1/academic/year/{id}', [AcademicYearRestApiController::class, 'destroy']);
+    Route::get('/v1/academic/year/{id}', [AcademicYearRestApiController::class, 'show']);
+
+    // API routes for Target
+    Route::apiResource('/v1/target', TargetRestApiController::class);
+});
