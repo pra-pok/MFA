@@ -3793,61 +3793,120 @@
                 ],
                 "summary": "Get list of students",
                 "operationId": "fef61e1ee731d4df9e4e853bb4a1a284",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of students per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "A list of Students",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "description": "Student's full name",
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "description": "Student's email address",
-                                                "type": "string"
-                                            },
-                                            "address": {
-                                                "description": "Student's address",
-                                                "type": "string"
-                                            },
-                                            "phone": {
-                                                "description": "Student's phone number",
-                                                "type": "string"
-                                            },
-                                            "permanent_address": {
-                                                "description": "Permanent address of student",
-                                                "type": "string"
-                                            },
-                                            "temporary_address": {
-                                                "description": "Temporary address of student",
-                                                "type": "string"
-                                            },
-                                            "permanent_locality_id": {
-                                                "description": "ID of the locality for the permanent address",
-                                                "type": "integer"
-                                            },
-                                            "temporary_locality_id": {
-                                                "description": "ID of the locality for the temporary address",
-                                                "type": "integer"
-                                            },
-                                            "referral_source_id": {
-                                                "description": "ID of the referral source",
-                                                "type": "integer"
-                                            },
-                                            "counselor_referred_id": {
-                                                "description": "ID of the counselor who referred the student",
-                                                "type": "integer"
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Students retrieved successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "john.doe@example.com"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 Main St"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "+1234567890"
+                                                    },
+                                                    "counselors": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "counselor_name": {
+                                                                    "type": "string",
+                                                                    "example": "Jane Smith"
+                                                                },
+                                                                "counselor_email": {
+                                                                    "type": "string",
+                                                                    "example": "jane.smith@example.com"
+                                                                },
+                                                                "counselor_role_name": {
+                                                                    "type": "string",
+                                                                    "example": "Senior Counselor"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
                                             }
                                         },
-                                        "type": "object"
-                                    }
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "No Student found"
                     }
                 },
                 "security": [
@@ -3911,8 +3970,11 @@
                                         "type": "integer"
                                     },
                                     "counselor_referred_id": {
-                                        "description": "ID of the counselor who referred the student",
-                                        "type": "integer"
+                                        "description": "Array of counselor/referrer/agent IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -3921,65 +3983,67 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Student successfully created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
+                                        "message": {
                                             "type": "string",
-                                            "example": "John Doe"
+                                            "example": "Student created successfully"
                                         },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "john.doe@example.com"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "123 Main St"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "+1234567890"
-                                        },
-                                        "permanent_address": {
-                                            "type": "string",
-                                            "example": "Permanent Address Example"
-                                        },
-                                        "temporary_address": {
-                                            "type": "string",
-                                            "example": "Temporary Address Example"
-                                        },
-                                        "permanent_locality_id": {
-                                            "type": "integer",
-                                            "example": 101
-                                        },
-                                        "temporary_locality_id": {
-                                            "type": "integer",
-                                            "example": 102
-                                        },
-                                        "referral_source_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "counselor_referred_id": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john.doe@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "permanent_address": {
+                                                    "type": "string",
+                                                    "example": "Permanent Address Example"
+                                                },
+                                                "temporary_address": {
+                                                    "type": "string",
+                                                    "example": "Temporary Address Example"
+                                                },
+                                                "permanent_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                },
+                                                "temporary_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 102
+                                                },
+                                                "referral_source_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "counselor_referred_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -3987,8 +4051,11 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input"
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 },
                 "security": [
@@ -4003,16 +4070,17 @@
                 "tags": [
                     "Students"
                 ],
-                "summary": "Update an existing student",
+                "summary": "Update a student",
                 "operationId": "455fd791fa8f5faaf59ac6f142b44a3e",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the student to be updated",
+                        "description": "ID of the student to update",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -4029,54 +4097,47 @@
                                 ],
                                 "properties": {
                                     "name": {
-                                        "description": "Student's full name",
                                         "type": "string",
-                                        "example": "Prakash Pokhrel"
+                                        "example": "John Doe"
                                     },
                                     "email": {
-                                        "description": "Student's email address",
                                         "type": "string",
-                                        "example": "prakash.pokhrel@example.com"
+                                        "example": "john.doe@example.com"
                                     },
                                     "address": {
-                                        "description": "Student's address",
                                         "type": "string",
-                                        "example": "Pokhara"
+                                        "example": "123 Main St"
                                     },
                                     "phone": {
-                                        "description": "Student's phone number",
                                         "type": "string",
-                                        "example": "9866064728"
+                                        "example": "+1234567890"
                                     },
                                     "permanent_address": {
-                                        "description": "Permanent address of student",
                                         "type": "string",
-                                        "example": "Nepaljung"
+                                        "example": "Permanent Address Example"
                                     },
                                     "temporary_address": {
-                                        "description": "Temporary address of student",
                                         "type": "string",
-                                        "example": "Pokhara"
+                                        "example": "Temporary Address Example"
                                     },
                                     "permanent_locality_id": {
-                                        "description": "ID of the locality for the permanent address",
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 101
                                     },
                                     "temporary_locality_id": {
-                                        "description": "ID of the locality for the temporary address",
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 102
                                     },
                                     "referral_source_id": {
-                                        "description": "ID of the referral source",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "counselor_referred_id": {
-                                        "description": "ID of the counselor who referred the student",
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -4103,85 +4164,58 @@
                                                 },
                                                 "name": {
                                                     "type": "string",
-                                                    "example": "Prakash Pokhrel"
+                                                    "example": "John Doe"
                                                 },
                                                 "email": {
                                                     "type": "string",
-                                                    "example": "prakash.pokhrel@example.com"
+                                                    "example": "john.doe@example.com"
                                                 },
                                                 "address": {
                                                     "type": "string",
-                                                    "example": "Pokhara"
+                                                    "example": "123 Main St"
                                                 },
                                                 "phone": {
                                                     "type": "string",
-                                                    "example": "9866064728"
+                                                    "example": "+1234567890"
                                                 },
                                                 "permanent_address": {
                                                     "type": "string",
-                                                    "example": "Nepaljung"
+                                                    "example": "Permanent Address Example"
                                                 },
                                                 "temporary_address": {
                                                     "type": "string",
-                                                    "example": "Pokhara"
+                                                    "example": "Temporary Address Example"
                                                 },
                                                 "permanent_locality_id": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 101
                                                 },
                                                 "temporary_locality_id": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 102
                                                 },
                                                 "referral_source_id": {
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "counselor_referred_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2025-03-09T10:19:39.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2025-03-09T10:19:39.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation failed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Validation failed"
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "name": {
+                                                "counselors": {
                                                     "type": "array",
                                                     "items": {
-                                                        "type": "string",
-                                                        "example": "The name field is required."
-                                                    }
-                                                },
-                                                "email": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The email field is required."
+                                                        "properties": {
+                                                            "counselor_name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            },
+                                                            "counselor_email": {
+                                                                "type": "string",
+                                                                "example": "jane.smith@example.com"
+                                                            },
+                                                            "counselor_role_name": {
+                                                                "type": "string",
+                                                                "example": "Senior Counselor"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 }
                                             },
@@ -4193,25 +4227,8 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal Server Error"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'email@example.com' for key 'students_email_unique'"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "404": {
+                        "description": "Student not found"
                     }
                 },
                 "security": [
