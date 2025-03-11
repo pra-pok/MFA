@@ -13,16 +13,13 @@ return new class extends Migration
     {
         Schema::create('targets', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('counselor_referrer_id')->nullable();
-            $table->unsignedBigInteger('academic_year_id')->nullable();
+            $table->unsignedBigInteger('target_group_id');
             $table->integer('min_target')->nullable();
             $table->integer('max_target')->nullable();
             $table->string('amount_percentage')->nullable();
             $table->string('type')->nullable();
             $table->timestamps();
-            $table->softDeletes();
-            $table->foreign('counselor_referrer_id')->references('id')->on('counselor_referrers')->onDelete('cascade');
-            $table->foreign('academic_year_id')->references('id')->on('academic_years')->onDelete('cascade');
+            $table->foreign('target_group_id')->references('id')->on('target_groups')->onDelete('cascade');
         });
     }
 

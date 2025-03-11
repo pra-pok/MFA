@@ -9,22 +9,18 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Target extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     protected $fillable = [
-        'counselor_referrer_id',
-        'academic_year_id',
+        'target_group_id',
         'min_target',
         'max_target',
         'amount_percentage',
         'type',
+        'per_student'
     ];
     protected $table = 'targets';
-    public function counselorReferrer()
+
+    public function targetGroup()
     {
-        return $this->belongsTo(CounselorReferrer::class, 'counselor_referrer_id');
-    }
-    public function academicYear()
-    {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->belongsTo(TargetGroup::class, 'target_group_id');
     }
 }

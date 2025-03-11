@@ -4302,143 +4302,90 @@
                 ]
             }
         },
-        "/api/v1/target": {
+        "/api/v1/students/education/history": {
             "get": {
                 "tags": [
-                    "Target"
+                    "Student Education History"
                 ],
-                "summary": "Retrieve a list of Target with pagination",
-                "description": "Get List of Target with Pagination & Limit",
-                "operationId": "4016996b4540909bbdaf3b3c75768153",
+                "summary": "Get All Education History for a Student",
+                "description": "Returns a list of all education history records for a specific student.",
+                "operationId": "a602cc903245a601f1f6247516c2c14a",
                 "parameters": [
                     {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Number of items per page (for pagination)",
-                        "required": false,
+                        "name": "student_id",
+                        "in": "path",
+                        "description": "ID of the student whose education history is to be retrieved",
+                        "required": true,
                         "schema": {
-                            "type": "integer",
-                            "default": 10,
-                            "example": 10
-                        }
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Number of items to retrieve",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "example": 5
-                        }
-                    },
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "description": "Number of items to skip (used with limit)",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "example": 0
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "List of all education history records for the student",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "address": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "marks_received": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "note": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "course_studied": {
+                                                "type": "string"
+                                            },
+                                            "student_id": {
+                                                "type": "integer"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No education history found for this student",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        },
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "counselor_referrer_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "academic_year_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "min_target": {
-                                                        "type": "integer",
-                                                        "example": 10
-                                                    },
-                                                    "max_target": {
-                                                        "type": "integer",
-                                                        "example": 20
-                                                    },
-                                                    "amount_percentage": {
-                                                        "type": "string",
-                                                        "example": "10%"
-                                                    },
-                                                    "type": {
-                                                        "type": "string",
-                                                        "example": "type"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-01-01T00:00:00.000000Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-01-02T12:00:00.000000Z"
-                                                    }
-                                                },
-                                                "type": "object"
+                                                "type": "string"
                                             }
-                                        },
-                                        "meta": {
-                                            "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 100
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "current_page": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "last_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "next_page_url": {
-                                                    "type": "string",
-                                                    "example": "http://example.com/api/v1/academic/year?per_page=10&page=2",
-                                                    "nullable": true
-                                                },
-                                                "prev_page_url": {
-                                                    "type": "string",
-                                                    "example": null,
-                                                    "nullable": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Target retrieved successfully"
-                                        },
-                                        "status": {
-                                            "type": "boolean",
-                                            "example": true
-                                        },
-                                        "timestamp": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2025-03-10T12:00:00.000000Z"
                                         }
                                     },
                                     "type": "object"
@@ -4446,23 +4393,17 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "No Target Data found",
+                    "500": {
+                        "description": "Server error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
-                                            "type": "string",
-                                            "example": "No Target Data found"
+                                            "type": "string"
                                         },
                                         "status": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
+                                            "type": "integer"
                                         }
                                     },
                                     "type": "object"
@@ -4479,52 +4420,48 @@
             },
             "post": {
                 "tags": [
-                    "Target"
+                    "Student Education History"
                 ],
-                "summary": "Create multiple Targets",
-                "description": "Store multiple Targets",
-                "operationId": "02821284dcdeb76fe94d07f7fcba6b3f",
+                "summary": "Create new Education History for a Student",
+                "description": "Creates a new education history record for a specific student.",
+                "operationId": "a5088355544ae144dea1510eb885626a",
                 "requestBody": {
+                    "description": "Data for the new education history record",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "academic_year_id",
-                                    "targets"
+                                    "name",
+                                    "course_studied",
+                                    "marks_received"
                                 ],
                                 "properties": {
-                                    "counselor_referrer_id": {
-                                        "type": "integer",
-                                        "example": null,
+                                    "name": {
+                                        "type": "string",
+                                        "example": "XYZ University"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 University St",
                                         "nullable": true
                                     },
-                                    "academic_year_id": {
-                                        "type": "integer",
-                                        "example": 2
+                                    "marks_received": {
+                                        "type": "string",
+                                        "example": "85%"
                                     },
-                                    "targets": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "min_target": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "max_target": {
-                                                    "type": "integer",
-                                                    "example": 20
-                                                },
-                                                "amount_percentage": {
-                                                    "type": "string",
-                                                    "example": "10%"
-                                                },
-                                                "type": {
-                                                    "type": "string",
-                                                    "example": "amount"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Excellent performance",
+                                        "nullable": true
+                                    },
+                                    "course_studied": {
+                                        "type": "string",
+                                        "example": "Computer Science"
+                                    },
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": "5"
                                     }
                                 },
                                 "type": "object"
@@ -4534,78 +4471,53 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Created successfully",
+                        "description": "Education history created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Targets added successfully"
+                                            "example": "Education history created successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
                                         },
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "counselor_referrer_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "academic_year_id": {
-                                                        "type": "integer",
-                                                        "example": 2
-                                                    },
-                                                    "min_target": {
-                                                        "type": "integer",
-                                                        "example": 10
-                                                    },
-                                                    "max_target": {
-                                                        "type": "integer",
-                                                        "example": 20
-                                                    },
-                                                    "amount_percentage": {
-                                                        "type": "string",
-                                                        "example": "10%"
-                                                    },
-                                                    "type": {
-                                                        "type": "string",
-                                                        "example": "amount"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-03-10T10:00:00.000000Z"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "format": "date-time",
-                                                        "example": "2024-03-10T10:00:00.000000Z"
-                                                    }
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
                                                 },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation failed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Validation failed"
-                                        },
-                                        "errors": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "marks_received": {
+                                                    "type": "string"
+                                                },
+                                                "note": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "course_studied": {
+                                                    "type": "string"
+                                                },
+                                                "student_id": {
+                                                    "type": "integer"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
                                             "type": "object"
                                         }
                                     },
@@ -4614,19 +4526,37 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "400": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Internal Server Error"
+                                            "example": "Validation error: 'course_studied' is required."
                                         },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Unexpected error occurred"
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
                                         }
                                     },
                                     "type": "object"
@@ -4642,45 +4572,14 @@
                 ]
             }
         },
-        "/api/v1/target/{id}": {
-            "get": {
-                "tags": [
-                    "Target"
-                ],
-                "summary": "Get single Target",
-                "description": "Returns list of Target",
-                "operationId": "53f025d0b3d7ce13555fd12ad7e00c3e",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "successful operation"
-                    },
-                    "400": {
-                        "description": "Bad request"
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            },
+        "/api/v1/students/education/history/{id}": {
             "put": {
                 "tags": [
-                    "Target"
+                    "Student Education History"
                 ],
-                "summary": "Update an existing Target",
-                "description": "Update Target",
-                "operationId": "26404edc7cd43e1d0da7ca9413a35a5a",
+                "summary": "Update Education History for a Student",
+                "description": "Updates an existing education history record for a specific student.",
+                "operationId": "37d227c90342a3ffb0b485ead6bbde27",
                 "parameters": [
                     {
                         "name": "id",
@@ -4692,52 +4591,59 @@
                     }
                 ],
                 "requestBody": {
+                    "description": "Updated data for the education history record",
+                    "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
+                                "required": [
+                                    "name",
+                                    "course_studied",
+                                    "marks_received"
+                                ],
                                 "properties": {
-                                    "counselor_referrer_id": {
-                                        "type": "integer"
+                                    "name": {
+                                        "type": "string",
+                                        "example": "XYZ University"
                                     },
-                                    "academic_year_id": {
-                                        "type": "integer"
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 University St",
+                                        "nullable": true
                                     },
-                                    "min_target": {
-                                        "type": "integer"
+                                    "marks_received": {
+                                        "type": "string",
+                                        "example": "85%"
                                     },
-                                    "max_target": {
-                                        "type": "integer"
+                                    "note": {
+                                        "type": "string",
+                                        "example": "Excellent performance",
+                                        "nullable": true
                                     },
-                                    "amount_percentage": {
-                                        "type": "string"
+                                    "course_studied": {
+                                        "type": "string",
+                                        "example": "Computer Science"
                                     },
-                                    "type": {
-                                        "type": "string"
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": "5"
                                     }
                                 },
                                 "type": "object"
-                            },
-                            "example": {
-                                "counselor_referrer_id": 1,
-                                "academic_year_id": 2,
-                                "min_target": 10,
-                                "max_target": 20,
-                                "amount_percentage": "10%",
-                                "type": "percentage"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Success",
+                        "description": "Education history updated successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Target updated successfully"
+                                            "example": "Education history updated successfully"
                                         },
                                         "status": {
                                             "type": "integer",
@@ -4746,18 +4652,35 @@
                                         "data": {
                                             "properties": {
                                                 "id": {
-                                                    "type": "integer",
-                                                    "example": 1
+                                                    "type": "integer"
                                                 },
-                                                "updated_at": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
                                                     "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-03-10T10:00:00.000000Z"
+                                                    "nullable": true
+                                                },
+                                                "marks_received": {
+                                                    "type": "string"
+                                                },
+                                                "note": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "course_studied": {
+                                                    "type": "string"
+                                                },
+                                                "student_id": {
+                                                    "type": "integer"
                                                 },
                                                 "created_at": {
                                                     "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2024-03-10T10:00:00.000000Z"
+                                                    "format": "date-time"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
                                                 }
                                             },
                                             "type": "object"
@@ -4768,15 +4691,15 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Target not found",
+                    "400": {
+                        "description": "Validation error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Target not found"
+                                            "example": "Validation error: 'course_studied' is required."
                                         },
                                         "status": {
                                             "type": "integer",
@@ -4788,18 +4711,19 @@
                             }
                         }
                     },
-                    "422": {
-                        "description": "Validation failed",
+                    "404": {
+                        "description": "Education history or student not found",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Validation failed"
+                                            "example": "Education history or student not found."
                                         },
-                                        "errors": {
-                                            "type": "object"
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
                                         }
                                     },
                                     "type": "object"
@@ -4808,18 +4732,16 @@
                         }
                     },
                     "500": {
-                        "description": "Internal Server Error",
+                        "description": "Server error",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
-                                            "type": "string",
-                                            "example": "Internal Server Error"
+                                            "type": "string"
                                         },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Unexpected error occurred"
+                                        "status": {
+                                            "type": "integer"
                                         }
                                     },
                                     "type": "object"
@@ -4836,31 +4758,33 @@
             },
             "delete": {
                 "tags": [
-                    "Target"
+                    "Student Education History"
                 ],
-                "summary": "Delete a Target",
-                "description": "Delete Target",
-                "operationId": "7222fdbc19321f955fbea10bd08aff39",
+                "summary": "Delete Education History for a Student",
+                "description": "Deletes a student education history from the system.",
+                "operationId": "1c40dccd49b04dfa35a0ed31cf7ff623",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Target  deleted successfully",
+                        "description": "Student education history deleted successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "msg": {
-                                            "type": "string",
-                                            "example": "delete todo success"
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
                                         }
                                     },
                                     "type": "object"
@@ -4869,7 +4793,40 @@
                         }
                     },
                     "404": {
-                        "description": "Target not found"
+                        "description": "Student education history not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "status": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -5334,6 +5291,423 @@
                 ]
             }
         },
+        "/api/v1/target": {
+            "get": {
+                "tags": [
+                    "Target"
+                ],
+                "summary": "Retrieve a list of Target with pagination",
+                "description": "Get List of Target with Pagination & Limit",
+                "operationId": "4016996b4540909bbdaf3b3c75768153",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "counselor_referrer_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "academic_year_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "min_target": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "max_target": {
+                                                        "type": "integer",
+                                                        "example": 20
+                                                    },
+                                                    "amount_percentage": {
+                                                        "type": "string",
+                                                        "example": "10%"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "type"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-01T00:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-01-02T12:00:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "next_page_url": {
+                                                    "type": "string",
+                                                    "example": "http://example.com/api/v1/academic/year?per_page=10&page=2",
+                                                    "nullable": true
+                                                },
+                                                "prev_page_url": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Target retrieved successfully"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-10T12:00:00.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Target Data found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Target Data found"
+                                        },
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Target"
+                ],
+                "summary": "Create multiple Targets",
+                "description": "Store multiple Targets",
+                "operationId": "02821284dcdeb76fe94d07f7fcba6b3f",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "academic_year_id",
+                                    "targets"
+                                ],
+                                "properties": {
+                                    "counselor_referrer_id": {
+                                        "type": "integer",
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "academic_year_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "targets": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "min_target": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "max_target": {
+                                                    "type": "integer",
+                                                    "example": 20
+                                                },
+                                                "amount_percentage": {
+                                                    "type": "string",
+                                                    "example": "10%"
+                                                },
+                                                "type": {
+                                                    "type": "string",
+                                                    "example": "amount"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Targets added successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "counselor_referrer_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "academic_year_id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "min_target": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "max_target": {
+                                                        "type": "integer",
+                                                        "example": 20
+                                                    },
+                                                    "amount_percentage": {
+                                                        "type": "string",
+                                                        "example": "10%"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "amount"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-10T10:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2024-03-10T10:00:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unexpected error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/target/{id}": {
+            "get": {
+                "tags": [
+                    "Target"
+                ],
+                "summary": "Get single Target",
+                "description": "Returns list of Target",
+                "operationId": "53f025d0b3d7ce13555fd12ad7e00c3e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Target"
+                ],
+                "summary": "Delete a Target",
+                "description": "Delete Target",
+                "operationId": "7222fdbc19321f955fbea10bd08aff39",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Target  deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string",
+                                            "example": "delete todo success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Target not found"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/university/{id}": {
             "get": {
                 "tags": [
@@ -5607,12 +5981,16 @@
             "description": "Students"
         },
         {
-            "name": "Target",
-            "description": "Target"
+            "name": "Student Education History",
+            "description": "Student Education History"
         },
         {
             "name": "Student Guardian Info",
             "description": "Student Guardian Info"
+        },
+        {
+            "name": "Target",
+            "description": "Target"
         },
         {
             "name": "University",

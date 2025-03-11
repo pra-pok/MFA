@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\CounselorReferrer;
 use App\Models\Target;
+use App\Models\TargetGroup;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -97,7 +98,9 @@ class TargetRestApiController extends Controller
             $perPage = $request->input('per_page', 10);
             $limit = $request->input('limit');
             $offset = $request->input('offset', 0);
-            $query = Target::query()->orderBy('id', 'desc');
+            $query = Target::query()
+                ->with(['targetGroup', 'targetGroup.counselorReferrer', 'targetGroup.academicYear'])
+                ->orderBy('id', 'desc');
             if ($limit) {
                 $total = $query->count();
                 $target = $query->limit($limit)->offset($offset)->get();
@@ -206,160 +209,56 @@ class TargetRestApiController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'counselor_referrer_id' => [
-                'nullable',
-                'integer',
-                Rule::exists('counselor_referrers', 'id')->whereNotNull('id')
-            ],
+            'counselor_referrer_id' => 'nullable|integer|exists:counselor_referrers,id',
             'academic_year_id' => 'required|integer|exists:academic_years,id',
             'targets' => 'required|array|min:1',
+            'targets.*.id' => 'nullable|integer|exists:targets,id',
             'targets.*.min_target' => 'required|integer|min:1',
             'targets.*.max_target' => 'required|integer|gt:targets.*.min_target',
             'targets.*.amount_percentage' => 'nullable|string',
             'targets.*.type' => 'nullable|string',
+            'targets.*.per_student' => 'nullable|boolean',
         ]);
-
         try {
-            $targets = [];
-
+            // Check if a TargetGroup already exists for the given academic_year_id and counselor_referrer_id
+            $targetGroup = TargetGroup::create([
+                'counselor_referrer_id' => $request->counselor_referrer_id,
+                'academic_year_id' => $request->academic_year_id,
+            ]);
             foreach ($validatedData['targets'] as $targetData) {
-                $target = Target::create([
-                    'counselor_referrer_id' => $request->counselor_referrer_id,
-                    'academic_year_id' => $request->academic_year_id,
-                    'min_target' => $targetData['min_target'],
-                    'max_target' => $targetData['max_target'],
-                    'amount_percentage' => $targetData['amount_percentage'] ?? null,
-                    'type' => $targetData['type'] ?? null,
-                ]);
-
-                $targets[] = $target;
+                if (isset($targetData['id'])) {
+                    // Update existing target
+                    $target = Target::where('id', $targetData['id'])
+                        ->where('target_group_id', $targetGroup->id)
+                        ->first();
+                    if ($target) {
+                        $target->update([
+                            'min_target' => $targetData['min_target'],
+                            'max_target' => $targetData['max_target'],
+                            'amount_percentage' => $targetData['amount_percentage'] ?? null,
+                            'type' => $targetData['type'] ?? null,
+                            'per_student' => $targetData['per_student'] ?? null,
+                        ]);
+                    }
+                } else {
+                    // Create new target if ID is not provided
+                    $targetGroup->targets()->create([
+                        'min_target' => $targetData['min_target'],
+                        'max_target' => $targetData['max_target'],
+                        'amount_percentage' => $targetData['amount_percentage'] ?? null,
+                        'type' => $targetData['type'] ?? null,
+                        'per_student' => $targetData['per_student'] ?? null,
+                    ]);
+                }
             }
-
             return response()->json([
-                'message' => 'Targets added successfully',
-                'data' => $targets,
+                'message' => 'Targets added/updated successfully',
+                'data' => $targetGroup->load('targets'),
             ], 201);
-        } catch (QueryException $e) {
-            return response()->json([
-                'message' => 'Database error',
-                'error' => $e->getMessage(),
-            ], 500);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Internal Server Error',
                 'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function edit($id)
-    {
-    }
-    /**
-     * Update Target
-     * @OA\Put (
-     *     path="/api/v1/target/{id}",
-     *     security={{"Bearer": {}}},
-     *     tags={"Target"},
-     *     summary="Update an existing Target",
-     *     @OA\Parameter(
-     *         in="path",
-     *         name="id",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\RequestBody(
-     *         @OA\MediaType(
-     *             mediaType="application/json",
-     *             @OA\Schema(
-     *                 type="object",
-     *                 @OA\Property(property="counselor_referrer_id", type="integer"),
-     *                 @OA\Property(property="academic_year_id", type="integer"),
-     *                 @OA\Property(property="min_target", type="integer"),
-     *                 @OA\Property(property="max_target", type="integer"),
-     *                 @OA\Property(property="amount_percentage", type="string"),
-     *                 @OA\Property(property="type", type="string")
-     *             ),
-     *             example={
-     *                 "counselor_referrer_id": 1,
-     *                 "academic_year_id": 2,
-     *                 "min_target": 10,
-     *                 "max_target": 20,
-     *                 "amount_percentage": "10%",
-     *                 "type": "percentage"
-     *             }
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Success",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Target updated successfully"),
-     *             @OA\Property(property="status", type="integer", example=1),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2024-03-10T10:00:00.000000Z"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2024-03-10T10:00:00.000000Z")
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Target not found",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Target not found"),
-     *             @OA\Property(property="status", type="integer", example=0)
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=422,
-     *         description="Validation failed",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Validation failed"),
-     *             @OA\Property(property="errors", type="object")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=500,
-     *         description="Internal Server Error",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Internal Server Error"),
-     *             @OA\Property(property="error", type="string", example="Unexpected error occurred")
-     *         )
-     *     )
-     * )
-     */
-    public function update(Request $request, $id)
-    {
-        $data = Target::find($id);
-        if (!$data) {
-            return response()->json([
-                'message' => 'Target not found',
-                'status' => 0
-            ], 404);
-        }
-        $validatedData = $request->validate([
-            'counselor_referrer_id' => 'nullable|integer',
-            'academic_year_id' => 'required|integer',
-            'min_target' => 'required|integer|min:1',
-            'max_target' => 'required|integer|gt:min_target',
-            'amount_percentage' => 'nullable|string',
-            'type' => 'nullable|string',
-        ]);
-        DB::beginTransaction();
-        try {
-            $data->update($validatedData);
-            DB::commit();
-            return response()->json([
-                'message' => 'Target updated successfully',
-                'status' => 1,
-                'data' => $data
-            ], 200);
-        } catch (\Exception $err) {
-            DB::rollBack();
-            return response()->json([
-                'message' => 'Internal Server Error: ' . $err->getMessage(),
-                'status' => 0
             ], 500);
         }
     }
@@ -391,7 +290,8 @@ class TargetRestApiController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $data = Target::findOrFail($id);
+        $data = Target::with(['targetGroup', 'targetGroup.counselorReferrer', 'targetGroup.academicYear'])
+            ->findOrFail($id);
         if (is_null($data)) {
             $response = [
                 'message' => 'Target does not exits',
