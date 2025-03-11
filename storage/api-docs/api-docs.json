@@ -3855,15 +3855,13 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/students/store": {
+            },
             "post": {
                 "tags": [
                     "Students"
                 ],
                 "summary": "Create a new student",
-                "operationId": "6009c93e5044f7285b5fbf8dda8e63d1",
+                "operationId": "e8da8a91b827db61857606dcfb1b4c47",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -4000,13 +3998,13 @@
                 ]
             }
         },
-        "/api/v1/students/update/{id}": {
+        "/api/v1/students/{id}": {
             "put": {
                 "tags": [
                     "Students"
                 ],
                 "summary": "Update an existing student",
-                "operationId": "3f4f7979e1ff244c6019435bc403b2fd",
+                "operationId": "455fd791fa8f5faaf59ac6f142b44a3e",
                 "parameters": [
                     {
                         "name": "id",
@@ -4221,15 +4219,13 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/students/delete/{id}": {
+            },
             "delete": {
                 "tags": [
                     "Students"
                 ],
                 "summary": "Delete a student",
-                "operationId": "93fd6652c1304f56395d3a3ab6398ce2",
+                "operationId": "5a2dfe049c8a27bca2f631d626db2255",
                 "parameters": [
                     {
                         "name": "id",

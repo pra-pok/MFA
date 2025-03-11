@@ -60,7 +60,7 @@ class StudentApiController extends Controller
 
     /**
     * @OA\Post(
-    *     path="/api/v1/students/store",
+    *     path="/api/v1/students",
     *     summary="Create a new student",
     *     security={{"Bearer": {}}},
     *     tags={"Students"},
@@ -155,7 +155,7 @@ class StudentApiController extends Controller
 
 /**
  * @OA\Put(
- *     path="/api/v1/students/update/{id}",
+ *     path="/api/v1/students/{id}",
  *     summary="Update an existing student",
  *     tags={"Students"},
  *     security={{"Bearer": {}}},
@@ -278,7 +278,7 @@ class StudentApiController extends Controller
     }
     /**
  * @OA\Delete(
- *     path="/api/v1/students/delete/{id}",
+ *     path="/api/v1/students/{id}",
  *     summary="Delete a student",
  *     tags={"Students"},
  *     security={{"Bearer": {}}},
