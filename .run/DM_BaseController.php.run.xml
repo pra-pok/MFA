@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DM_BaseController.php" type="PhpLocalRunConfigurationType" factoryName="PHP Console" singleton="false" path="$PROJECT_DIR$/app/Http/Controllers/Admin/DM_BaseController.php">
+    <method v="2" />
+  </configuration>
+</component>

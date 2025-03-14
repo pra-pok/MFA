@@ -338,4 +338,57 @@ class StatusRestApiController extends Controller
         }
         return response()->json($response, 200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/status/list",
+     *     summary="Get list of status",
+     *     tags={"Config Search"},
+     *     security={{"Bearer": {}}},
+     *     description="Returns list of status",
+     *
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful response - List of Status",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example=""),
+     *             @OA\Property(property="data", type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="title", type="string", example="example title"),
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Internal Server Error"),
+     *             @OA\Property(property="error", type="string", example="Exception message here")
+     *         )
+     *     )
+     * )
+     */
+    public function getStatus()
+    {
+        try {
+            $status = CounsellingStatus::orderBy('created_at', 'desc')->get()
+                ->makeHidden([
+                    'color', 'created_at', 'updated_at', 'note'
+                ]);
+            return response()->json([
+                'message' => '',
+                'data' => $status
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

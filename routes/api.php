@@ -55,7 +55,6 @@ Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogi
 Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
 Route::get('/v1/address', [AddressRestApiController::class, 'getAddress']);
 
-
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
     // API routes Status
@@ -64,6 +63,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/status/{id}', [StatusRestApiController::class, 'update']);
     Route::delete('/v1/status/{id}', [StatusRestApiController::class, 'destroy']);
     Route::get('/v1/status/{id}', [StatusRestApiController::class, 'show']);
+    Route::get('/v1/status/list', [StatusRestApiController::class, 'getStatus']);
 
     // Referral Sources API routes
     Route::get('/v1/referral/source', [ReferralSourceRestApiController::class, 'index']);
@@ -85,13 +85,14 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
+    Route::get('/v1/student/list', [StudentApiController::class, 'getStudent']);
 
     // API Routes for Student Guardian Info
     Route::apiResource('/v1/students/guardians/info', StudentGuardianInfoApiController::class);
 
     // API Routes for Student Education History
     Route::apiResource('v1/students/education/history', StudentEducationHistoryApiController::class);
-    
+
     // API routes for FollowUp
     Route::get('/v1/followup', [FollowUpRestApiController::class, 'index']);
     Route::post('/v1/followup', [FollowUpRestApiController::class, 'store']);
