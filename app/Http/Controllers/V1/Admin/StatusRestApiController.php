@@ -164,9 +164,7 @@ class StatusRestApiController extends Controller
             ], 500);
         }
     }
-    public function edit($id)
-    {
-    }
+    public function edit($id) {}
     /**
      * Update Status
      * @OA\Put (

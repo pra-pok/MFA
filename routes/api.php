@@ -22,9 +22,12 @@ use App\Http\Controllers\V1\Admin\AddressRestApiController;
 use App\Http\Controllers\V1\Admin\StudentApiController;
 use App\Http\Controllers\V1\Admin\StudentGuardianInfoApiController;
 use App\Http\Controllers\V1\Admin\StudentEducationHistoryApiController;
+use App\Http\Controllers\V1\Admin\StudentCourseInterestApiController;
 use App\Http\Controllers\V1\Admin\FollowUpRestApiController;
 use App\Http\Controllers\V1\Admin\AcademicYearRestApiController;
 use App\Http\Controllers\V1\Admin\TargetRestApiController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -87,11 +90,17 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
     Route::get('/v1/student/list', [StudentApiController::class, 'getStudent']);
 
+    Route::apiResource('/v1/students', StudentApiController::class);
+
     // API Routes for Student Guardian Info
     Route::apiResource('/v1/students/guardians/info', StudentGuardianInfoApiController::class);
 
     // API Routes for Student Education History
     Route::apiResource('v1/students/education/history', StudentEducationHistoryApiController::class);
+
+    // API Routes for Student course interest
+    Route::apiResource('v1/students/course/interests', StudentCourseInterestApiController::class);
+
 
     // API routes for FollowUp
     Route::get('/v1/followup', [FollowUpRestApiController::class, 'index']);

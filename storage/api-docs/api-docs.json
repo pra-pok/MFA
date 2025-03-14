@@ -3858,61 +3858,120 @@
                 ],
                 "summary": "Get list of students",
                 "operationId": "fef61e1ee731d4df9e4e853bb4a1a284",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of students per page",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "A list of Students",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "properties": {
-                                            "name": {
-                                                "description": "Student's full name",
-                                                "type": "string"
-                                            },
-                                            "email": {
-                                                "description": "Student's email address",
-                                                "type": "string"
-                                            },
-                                            "address": {
-                                                "description": "Student's address",
-                                                "type": "string"
-                                            },
-                                            "phone": {
-                                                "description": "Student's phone number",
-                                                "type": "string"
-                                            },
-                                            "permanent_address": {
-                                                "description": "Permanent address of student",
-                                                "type": "string"
-                                            },
-                                            "temporary_address": {
-                                                "description": "Temporary address of student",
-                                                "type": "string"
-                                            },
-                                            "permanent_locality_id": {
-                                                "description": "ID of the locality for the permanent address",
-                                                "type": "integer"
-                                            },
-                                            "temporary_locality_id": {
-                                                "description": "ID of the locality for the temporary address",
-                                                "type": "integer"
-                                            },
-                                            "referral_source_id": {
-                                                "description": "ID of the referral source",
-                                                "type": "integer"
-                                            },
-                                            "counselor_referred_id": {
-                                                "description": "ID of the counselor who referred the student",
-                                                "type": "integer"
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Students retrieved successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "John Doe"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "john.doe@example.com"
+                                                    },
+                                                    "address": {
+                                                        "type": "string",
+                                                        "example": "123 Main St"
+                                                    },
+                                                    "phone": {
+                                                        "type": "string",
+                                                        "example": "+1234567890"
+                                                    },
+                                                    "counselors": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "counselor_name": {
+                                                                    "type": "string",
+                                                                    "example": "Jane Smith"
+                                                                },
+                                                                "counselor_email": {
+                                                                    "type": "string",
+                                                                    "example": "jane.smith@example.com"
+                                                                },
+                                                                "counselor_role_name": {
+                                                                    "type": "string",
+                                                                    "example": "Senior Counselor"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
                                             }
                                         },
-                                        "type": "object"
-                                    }
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "No Student found"
                     }
                 },
                 "security": [
@@ -3920,15 +3979,13 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/students/store": {
+            },
             "post": {
                 "tags": [
                     "Students"
                 ],
                 "summary": "Create a new student",
-                "operationId": "6009c93e5044f7285b5fbf8dda8e63d1",
+                "operationId": "e8da8a91b827db61857606dcfb1b4c47",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -3978,8 +4035,11 @@
                                         "type": "integer"
                                     },
                                     "counselor_referred_id": {
-                                        "description": "ID of the counselor who referred the student",
-                                        "type": "integer"
+                                        "description": "Array of counselor/referrer/agent IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -3988,65 +4048,67 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Student successfully created",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "name": {
+                                        "message": {
                                             "type": "string",
-                                            "example": "John Doe"
+                                            "example": "Student created successfully"
                                         },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "john.doe@example.com"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "123 Main St"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "+1234567890"
-                                        },
-                                        "permanent_address": {
-                                            "type": "string",
-                                            "example": "Permanent Address Example"
-                                        },
-                                        "temporary_address": {
-                                            "type": "string",
-                                            "example": "Temporary Address Example"
-                                        },
-                                        "permanent_locality_id": {
-                                            "type": "integer",
-                                            "example": 101
-                                        },
-                                        "temporary_locality_id": {
-                                            "type": "integer",
-                                            "example": 102
-                                        },
-                                        "referral_source_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "counselor_referred_id": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john.doe@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "permanent_address": {
+                                                    "type": "string",
+                                                    "example": "Permanent Address Example"
+                                                },
+                                                "temporary_address": {
+                                                    "type": "string",
+                                                    "example": "Temporary Address Example"
+                                                },
+                                                "permanent_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                },
+                                                "temporary_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 102
+                                                },
+                                                "referral_source_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "counselor_referred_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -4054,8 +4116,11 @@
                             }
                         }
                     },
-                    "400": {
-                        "description": "Invalid input"
+                    "422": {
+                        "description": "Validation failed"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
                     }
                 },
                 "security": [
@@ -4065,21 +4130,22 @@
                 ]
             }
         },
-        "/api/v1/students/update/{id}": {
+        "/api/v1/students/{id}": {
             "put": {
                 "tags": [
                     "Students"
                 ],
-                "summary": "Update an existing student",
-                "operationId": "3f4f7979e1ff244c6019435bc403b2fd",
+                "summary": "Update a student",
+                "operationId": "455fd791fa8f5faaf59ac6f142b44a3e",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "ID of the student to be updated",
+                        "description": "ID of the student to update",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
@@ -4096,54 +4162,47 @@
                                 ],
                                 "properties": {
                                     "name": {
-                                        "description": "Student's full name",
                                         "type": "string",
-                                        "example": "Prakash Pokhrel"
+                                        "example": "John Doe"
                                     },
                                     "email": {
-                                        "description": "Student's email address",
                                         "type": "string",
-                                        "example": "prakash.pokhrel@example.com"
+                                        "example": "john.doe@example.com"
                                     },
                                     "address": {
-                                        "description": "Student's address",
                                         "type": "string",
-                                        "example": "Pokhara"
+                                        "example": "123 Main St"
                                     },
                                     "phone": {
-                                        "description": "Student's phone number",
                                         "type": "string",
-                                        "example": "9866064728"
+                                        "example": "+1234567890"
                                     },
                                     "permanent_address": {
-                                        "description": "Permanent address of student",
                                         "type": "string",
-                                        "example": "Nepaljung"
+                                        "example": "Permanent Address Example"
                                     },
                                     "temporary_address": {
-                                        "description": "Temporary address of student",
                                         "type": "string",
-                                        "example": "Pokhara"
+                                        "example": "Temporary Address Example"
                                     },
                                     "permanent_locality_id": {
-                                        "description": "ID of the locality for the permanent address",
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 101
                                     },
                                     "temporary_locality_id": {
-                                        "description": "ID of the locality for the temporary address",
                                         "type": "integer",
-                                        "example": 1
+                                        "example": 102
                                     },
                                     "referral_source_id": {
-                                        "description": "ID of the referral source",
                                         "type": "integer",
                                         "example": 1
                                     },
                                     "counselor_referred_id": {
-                                        "description": "ID of the counselor who referred the student",
-                                        "type": "integer",
-                                        "example": 1
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 2
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -4170,85 +4229,58 @@
                                                 },
                                                 "name": {
                                                     "type": "string",
-                                                    "example": "Prakash Pokhrel"
+                                                    "example": "John Doe"
                                                 },
                                                 "email": {
                                                     "type": "string",
-                                                    "example": "prakash.pokhrel@example.com"
+                                                    "example": "john.doe@example.com"
                                                 },
                                                 "address": {
                                                     "type": "string",
-                                                    "example": "Pokhara"
+                                                    "example": "123 Main St"
                                                 },
                                                 "phone": {
                                                     "type": "string",
-                                                    "example": "9866064728"
+                                                    "example": "+1234567890"
                                                 },
                                                 "permanent_address": {
                                                     "type": "string",
-                                                    "example": "Nepaljung"
+                                                    "example": "Permanent Address Example"
                                                 },
                                                 "temporary_address": {
                                                     "type": "string",
-                                                    "example": "Pokhara"
+                                                    "example": "Temporary Address Example"
                                                 },
                                                 "permanent_locality_id": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 101
                                                 },
                                                 "temporary_locality_id": {
                                                     "type": "integer",
-                                                    "example": 1
+                                                    "example": 102
                                                 },
                                                 "referral_source_id": {
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "counselor_referred_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "example": "2025-03-09T10:19:39.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "example": "2025-03-09T10:19:39.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation failed",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Validation failed"
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "name": {
+                                                "counselors": {
                                                     "type": "array",
                                                     "items": {
-                                                        "type": "string",
-                                                        "example": "The name field is required."
-                                                    }
-                                                },
-                                                "email": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "string",
-                                                        "example": "The email field is required."
+                                                        "properties": {
+                                                            "counselor_name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            },
+                                                            "counselor_email": {
+                                                                "type": "string",
+                                                                "example": "jane.smith@example.com"
+                                                            },
+                                                            "counselor_role_name": {
+                                                                "type": "string",
+                                                                "example": "Senior Counselor"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 }
                                             },
@@ -4260,25 +4292,8 @@
                             }
                         }
                     },
-                    "500": {
-                        "description": "Internal server error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal Server Error"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'email@example.com' for key 'students_email_unique'"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "404": {
+                        "description": "Student not found"
                     }
                 },
                 "security": [
@@ -4286,15 +4301,13 @@
                         "Bearer": []
                     }
                 ]
-            }
-        },
-        "/api/v1/students/delete/{id}": {
+            },
             "delete": {
                 "tags": [
                     "Students"
                 ],
                 "summary": "Delete a student",
-                "operationId": "93fd6652c1304f56395d3a3ab6398ce2",
+                "operationId": "5a2dfe049c8a27bca2f631d626db2255",
                 "parameters": [
                     {
                         "name": "id",
@@ -4352,6 +4365,519 @@
                                         "error": {
                                             "type": "string",
                                             "example": "SQLSTATE[23000]: Integrity constraint violation: 1451 Cannot delete or update a parent row"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/students/course/interests": {
+            "get": {
+                "tags": [
+                    "Student Course Interest"
+                ],
+                "summary": "Get all Student Course Interest",
+                "description": "Retrieve a list of all student education history records.",
+                "operationId": "32b3ab3e8cce0a43eec64ccd4e79a644",
+                "responses": {
+                    "200": {
+                        "description": "List of student course interests retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "student_id": {
+                                                "type": "integer"
+                                            },
+                                            "course_id": {
+                                                "type": "integer"
+                                            },
+                                            "agreement_amount": {
+                                                "type": "number",
+                                                "format": "float"
+                                            },
+                                            "remarks": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "current": {
+                                                "type": "boolean"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No education history records found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No records found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Student Course Interest"
+                ],
+                "summary": "Create a New Student Course Interest",
+                "description": "Stores a new course interest for a student.",
+                "operationId": "ecad02c57ab9848e4d2ccdd8a51561ea",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "course_id",
+                                    "agreement_amount"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "course_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "agreement_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1000.5
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Interested in advanced training",
+                                        "nullable": true
+                                    },
+                                    "current": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Student course interest created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student course interest created successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "student_id": {
+                                                    "type": "integer"
+                                                },
+                                                "course_id": {
+                                                    "type": "integer"
+                                                },
+                                                "agreement_amount": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "remarks": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "current": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/students/course/interests/{id}": {
+            "put": {
+                "tags": [
+                    "Student Course Interest"
+                ],
+                "summary": "Update an Existing Student Course Interest",
+                "description": "Updates an existing student course interest record.",
+                "operationId": "a3cc815bfe1e07ddab71746ded0cf1da",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the student course interest to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "student_id",
+                                    "course_id",
+                                    "agreement_amount"
+                                ],
+                                "properties": {
+                                    "student_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "course_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "agreement_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 1500.75
+                                    },
+                                    "remarks": {
+                                        "type": "string",
+                                        "example": "Updated remarks",
+                                        "nullable": true
+                                    },
+                                    "current": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Student course interest updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student course interest updated successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "student_id": {
+                                                    "type": "integer"
+                                                },
+                                                "course_id": {
+                                                    "type": "integer"
+                                                },
+                                                "agreement_amount": {
+                                                    "type": "number",
+                                                    "format": "float"
+                                                },
+                                                "remarks": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "current": {
+                                                    "type": "boolean"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student course interest not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Record not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Student Course Interest"
+                ],
+                "summary": "Delete a Student Course Interest",
+                "description": "Soft deletes a student course interest record.",
+                "operationId": "582d9a69407b6f16210e9d85a6e9d8f9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the student course interest to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student course interest deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student course interest deleted successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student course interest not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Record not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 0
                                         }
                                     },
                                     "type": "object"
@@ -6121,6 +6647,10 @@
         {
             "name": "Students",
             "description": "Students"
+        },
+        {
+            "name": "Student Course Interest",
+            "description": "Student Course Interest"
         },
         {
             "name": "Student Education History",

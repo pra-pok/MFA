@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\StudentCounselorReffer;
 
 class Student extends Model
 {
@@ -43,5 +44,15 @@ class Student extends Model
     public function counselorReferred()
     {
         return $this->belongsTo(CounselorReferrer::class, 'counselor_referred_id');
+    }
+
+    public function counselors()
+    {
+        return $this->belongsToMany(
+            CounselorReferrer::class,
+            'student_counselor_referrers',
+            'student_id',
+            'counselor_referred_id'
+        );
     }
 }

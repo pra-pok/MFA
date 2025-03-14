@@ -37,7 +37,7 @@ class MenuController extends DM_BaseController
             return response()->json(['data' => $data]);
         }
         return view(parent::loadView($this->view_path . '.index'));
-      
+
     }
     /**
      * Show the form for creating a new resource.
@@ -64,8 +64,6 @@ class MenuController extends DM_BaseController
             'menuLines' => $menuLines
         ]);
     }
-
-
 
     /**
      * Store a newly created resource in storage.
