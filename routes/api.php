@@ -28,6 +28,11 @@ use App\Http\Controllers\V1\Admin\AcademicYearRestApiController;
 use App\Http\Controllers\V1\Admin\TargetRestApiController;
 use App\Http\Controllers\V1\Admin\ContactUsRestApiController;
 use App\Http\Controllers\V1\Admin\StudentSinglePageRestApiController;
+use App\Http\Controllers\V1\Admin\SmsApiController;
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -124,4 +129,9 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     Route::get('/v1/config/course', [CourseRestController::class, 'configCourse']);
     Route::get('/v1/config/counselor/referral', [CounselorReferralRestApiController::class, 'configCounselorReferral']);
+
+    Route::post('/v1/sms/api/token', [SmsApiController::class, 'storeApiToken']);
+    Route::post('/v1/send/sms', [SmsApiController::class, 'sendSms']);
+
+
 });
