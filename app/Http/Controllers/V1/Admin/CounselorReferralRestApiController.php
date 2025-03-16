@@ -408,4 +408,94 @@ class CounselorReferralRestApiController extends Controller
             'data' => $data
         ], 200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/config/counselor/referral",
+     *     summary="Get active Counselor and Referrer",
+     *     tags={"Config Search"},
+     *     description="Fetches a list of active Counselors and Referrers ordered by latest entries.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Counselor Referral retrieved successfully"),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="counselor",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="John Doe")
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="referrer",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=2),
+     *                         @OA\Property(property="name", type="string", example="Jane Smith")
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No Counselor or Referrer found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No Counselor or Referrer available"),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="counselor", type="array", @OA\Items(type="object")),
+     *                 @OA\Property(property="referrer", type="array", @OA\Items(type="object"))
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function configCounselorReferral(Request $request)
+    {
+        $counselor = CounselorReferrer::where('role', 'Counselor')
+            ->orderBy('id', 'desc')
+            ->select('id', 'name' , 'role' , 'email' , 'phone')
+            ->get();
+        if ($counselor->isEmpty()) {
+            return response()->json([
+                'message' => 'No Counselor found',
+                'status' => 0,
+                'data' => []
+            ], 404);
+        }
+        $referral = CounselorReferrer::where('role', 'Referrer')
+            ->orderBy('id', 'desc')
+            ->select('id', 'name' , 'role', 'email' , 'phone')
+            ->get();
+        if ($referral->isEmpty()) {
+            return response()->json([
+                'message' => 'No Referrer found',
+                'status' => 0,
+                'data' => []
+            ], 404);
+        }
+        return response()->json([
+            'message' => 'Counselor Referral retrieved successfully',
+            'status' => 1,
+            'data' => [
+                'counselor' => $counselor,
+                'referrer' => $referral
+            ]
+        ], 200);
+    }
 }

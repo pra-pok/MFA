@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\CatalogController;
 use App\Http\Controllers\Admin\OrganizationGroupController;
 use App\Http\Controllers\Admin\OrganizationMemberController;
 use App\Http\Controllers\Admin\ReferralSourceController;
+use App\Http\Controllers\Admin\ContactUsController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -172,7 +173,7 @@ Route::middleware('auth')->group(function () {
     Route::get('restore/{id}', [ReferralSourceController::class, 'restore'])->name('referral-source.restore');
     Route::delete('force-delete/{id}', [ReferralSourceController::class, 'forceDeleteData'])->name('referral-source.force_delete');
     Route::delete('{id}', [ReferralSourceController::class, 'destroy'])->name('referral-source.destroy');
-
+    Route::resource('contactus', ContactUsController::class);
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

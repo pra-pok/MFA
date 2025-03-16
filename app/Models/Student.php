@@ -55,4 +55,19 @@ class Student extends Model
             'counselor_referred_id'
         );
     }
+
+    public function guardianInfo()
+    {
+        return $this->hasMany(StudentGuardianInfo::class);
+    }
+
+    public function educationHistory()
+    {
+        return $this->hasMany(StudentEducationHistory::class);
+    }
+
+    public function courseInterests()
+    {
+        return $this->hasMany(StudentCourseInterest::class);
+    }
 }

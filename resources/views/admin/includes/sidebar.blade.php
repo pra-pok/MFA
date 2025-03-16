@@ -258,4 +258,10 @@
             <div class="text-truncate" data-i18n="Form Elements">Referral Source</div>
         </a>
     </li>
+    <li class="menu-item ">
+        <a href="{{route('contactus.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-support"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Support Us</div>
+        </a>
+    </li>
 </ul>

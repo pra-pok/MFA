@@ -124,4 +124,70 @@ class CourseRestController extends Controller
             'timestamp' => now()->toISOString(),
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/config/course",
+     *     summary="Get active courses",
+     *     tags={"Config Search"},
+     *     description="Fetches a list of active courses ordered by latest entries.",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Courses retrieved successfully"),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="title", type="string", example="Computer Science")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No courses found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="No courses available"),
+     *             @OA\Property(property="timestamp", type="string", format="date-time", example="2025-03-03T12:00:00Z"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(type="object")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function configCourse(Request $request)
+    {
+        $courses = Course::where('status', 1)
+            ->orderBy('id', 'desc')
+            ->select('id', 'title')
+            ->get();
+
+        if ($courses->isEmpty()) {
+            return response()->json([
+                'status'    => false,
+                'message'   => 'No courses available',
+                'data'      => [],
+                'timestamp' => now()->toIso8601String(),
+            ], 404);
+        }
+
+        return response()->json([
+            'status'    => true,
+            'message'   => 'Courses retrieved successfully',
+            'data'      => $courses,
+            'timestamp' => now()->toIso8601String(),
+        ], 200);
+    }
 }

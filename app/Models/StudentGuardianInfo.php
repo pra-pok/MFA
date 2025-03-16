@@ -11,9 +11,13 @@ class StudentGuardianInfo extends Model
      use SoftDeletes;
      protected $fillable = [
         'name','phone','address','type','student_id','current_guardian'
-      
+
     ];
 
-    
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
 }
 

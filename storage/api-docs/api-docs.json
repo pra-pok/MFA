@@ -1388,6 +1388,126 @@
                 }
             }
         },
+        "/api/v1/contactus/review": {
+            "post": {
+                "tags": [
+                    "Contact Us"
+                ],
+                "summary": "Store a review from a user",
+                "description": "Store a review from a user",
+                "operationId": "55adc3911d42f6abb420462dad6096b3",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "phone",
+                                    "message"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Name of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Email of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Phone number of the reviewer",
+                                        "type": "string"
+                                    },
+                                    "message": {
+                                        "description": "Review message",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object",
+                                "example": {
+                                    "name": "John Doe",
+                                    "email": "johndoe@example.com",
+                                    "phone": "1234567890",
+                                    "message": "This is a review message"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review successfully stored",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Review added successfully!"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "success"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid input data"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "example": {
+                                                "email": [
+                                                    "The email field is required."
+                                                ]
+                                            }
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred: {error message}"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "example": "error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/counselor/referral/": {
             "get": {
                 "tags": [
@@ -1797,6 +1917,122 @@
                 }
             }
         },
+        "/api/v1/config/counselor/referral": {
+            "get": {
+                "tags": [
+                    "Config Search"
+                ],
+                "summary": "Get active Counselor and Referrer",
+                "description": "Fetches a list of active Counselors and Referrers ordered by latest entries.",
+                "operationId": "3bd31aad7934331aa5d38db5dcbc699d",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Counselor Referral retrieved successfully"
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "counselor": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "John Doe"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "referrer": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 2
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No Counselor or Referrer found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No Counselor or Referrer available"
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "counselor": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "referrer": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/course/{id}": {
             "get": {
                 "tags": [
@@ -1990,6 +2226,90 @@
                     },
                     "404": {
                         "description": "No courses found"
+                    }
+                }
+            }
+        },
+        "/api/v1/config/course": {
+            "get": {
+                "tags": [
+                    "Config Search"
+                ],
+                "summary": "Get active courses",
+                "description": "Fetches a list of active courses ordered by latest entries.",
+                "operationId": "58c1447284fab6ec063aa88e87339607",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Courses retrieved successfully"
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Computer Science"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No courses found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No courses available"
+                                        },
+                                        "timestamp": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-03-03T12:00:00Z"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -4380,6 +4700,71 @@
                 ]
             }
         },
+        "/api/v1/student/list": {
+            "get": {
+                "tags": [
+                    "Config Search"
+                ],
+                "summary": "Get list of student",
+                "description": "Returns list of student",
+                "operationId": "ecbd56a30f34a59cb7c389902b9c20cc",
+                "responses": {
+                    "200": {
+                        "description": "Successful response - List of Status",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": ""
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "example title"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Exception message here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/students/course/interests": {
             "get": {
                 "tags": [
@@ -4878,83 +5263,6 @@
                                         "status": {
                                             "type": "integer",
                                             "example": 0
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/student/list": {
-            "get": {
-                "tags": [
-                    "Config Search"
-                ],
-                "summary": "Get list of students",
-                "description": "Get list of students",
-                "operationId": "ecbd56a30f34a59cb7c389902b9c20cc",
-                "responses": {
-                    "200": {
-                        "description": "Successful response - List of students",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": ""
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "john.doe@example.com"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "123 Main St, NY"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "+1234567890"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Internal Server Error"
-                                        },
-                                        "error": {
-                                            "type": "string",
-                                            "example": "Exception message here"
                                         }
                                     },
                                     "type": "object"
@@ -5959,6 +6267,258 @@
                 ]
             }
         },
+        "/api/v1/single/page/students": {
+            "post": {
+                "tags": [
+                    "Students"
+                ],
+                "summary": "Create a new student",
+                "operationId": "4d537ea90222a744c13a4a1fe6823a27",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "address",
+                                    "phone",
+                                    "counselor_referred_id"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Student's full name",
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Student's email address",
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "address": {
+                                        "description": "Student's address",
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "description": "Student's phone number",
+                                        "type": "string"
+                                    },
+                                    "permanent_address": {
+                                        "description": "Permanent address of student",
+                                        "type": "string"
+                                    },
+                                    "temporary_address": {
+                                        "description": "Temporary address of student",
+                                        "type": "string"
+                                    },
+                                    "permanent_locality_id": {
+                                        "description": "ID of the locality for the permanent address",
+                                        "type": "integer"
+                                    },
+                                    "referral_source_id": {
+                                        "description": "ID of the referral source",
+                                        "type": "integer"
+                                    },
+                                    "counselor_referred_id": {
+                                        "description": "Array of counselor/referrer/agent IDs",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "course_info": {
+                                        "description": "Courses interested in",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "course_id": {
+                                                    "description": "ID of the course",
+                                                    "type": "integer"
+                                                },
+                                                "remarks": {
+                                                    "description": "Remarks for the course",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "guardian_info": {
+                                        "description": "Guardian details",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Guardian's name",
+                                                    "type": "string"
+                                                },
+                                                "phone": {
+                                                    "description": "Guardian's phone number",
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Guardian's address",
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "description": "Type of guardian",
+                                                    "type": "string"
+                                                },
+                                                "current_guardian": {
+                                                    "description": "Is current guardian",
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "education_history": {
+                                        "description": "Educational background",
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Institution name",
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "description": "Institution address",
+                                                    "type": "string"
+                                                },
+                                                "marks_received": {
+                                                    "description": "Marks received",
+                                                    "type": "string"
+                                                },
+                                                "note": {
+                                                    "description": "Additional notes",
+                                                    "type": "string"
+                                                },
+                                                "course_studied": {
+                                                    "description": "Course studied",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Student successfully created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john.doe@example.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "permanent_address": {
+                                                    "type": "string",
+                                                    "example": "Permanent Address Example"
+                                                },
+                                                "temporary_address": {
+                                                    "type": "string",
+                                                    "example": "Temporary Address Example"
+                                                },
+                                                "permanent_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 101
+                                                },
+                                                "referral_source_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "counselor_referred_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/target": {
             "get": {
                 "tags": [
@@ -6611,6 +7171,10 @@
         {
             "name": "Config Search",
             "description": "Config Search"
+        },
+        {
+            "name": "Contact Us",
+            "description": "Contact Us"
         },
         {
             "name": "Counselor Referral",

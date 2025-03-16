@@ -11,6 +11,11 @@ class StudentEducationHistory extends Model
      protected $table = 'student_education_history';
      protected $fillable = [
         'name','address','marks_received','note','course_studied','student_id',
-      
+
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
 }

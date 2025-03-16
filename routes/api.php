@@ -26,8 +26,8 @@ use App\Http\Controllers\V1\Admin\StudentCourseInterestApiController;
 use App\Http\Controllers\V1\Admin\FollowUpRestApiController;
 use App\Http\Controllers\V1\Admin\AcademicYearRestApiController;
 use App\Http\Controllers\V1\Admin\TargetRestApiController;
-
-
+use App\Http\Controllers\V1\Admin\ContactUsRestApiController;
+use App\Http\Controllers\V1\Admin\StudentSinglePageRestApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +57,8 @@ Route::get('/v1/config/search', [ConfigSearchRestController::class, 'getConfigSe
 Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogin']);
 Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
 Route::get('/v1/address', [AddressRestApiController::class, 'getAddress']);
+Route::post('/v1/contactus/review', [ContactUsRestApiController::class, 'contactStore']);
+
 
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
@@ -89,6 +91,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
     Route::get('/v1/student/list', [StudentApiController::class, 'getStudent']);
+    Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
 
     Route::apiResource('/v1/students', StudentApiController::class);
 
@@ -118,4 +121,7 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     // API routes for Target
     Route::apiResource('/v1/target', TargetRestApiController::class);
+
+    Route::get('/v1/config/course', [CourseRestController::class, 'configCourse']);
+    Route::get('/v1/config/counselor/referral', [CounselorReferralRestApiController::class, 'configCounselorReferral']);
 });
