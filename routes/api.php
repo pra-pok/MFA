@@ -131,7 +131,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::get('/v1/config/counselor/referral', [CounselorReferralRestApiController::class, 'configCounselorReferral']);
 
     Route::post('/v1/sms/api/token', [SmsApiController::class, 'storeApiToken']);
-    Route::post('/v1/send/sms', [SmsApiController::class, 'sendSms']);
+    Route::post('/v1/sms/send', [SmsApiController::class, 'sendSms']);
 
 
 });

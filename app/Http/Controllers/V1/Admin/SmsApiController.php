@@ -62,7 +62,7 @@ class SmsApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/v1/send/sms",
+     *     path="/api/v1/sms/send",
      *     security={{"Bearer": {}}},
      *     summary="Send SMS to a recipient",
      *     description="Send SMS to a specified recipient using a vendor API token",

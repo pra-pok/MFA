@@ -3855,7 +3855,7 @@
                 ]
             }
         },
-        "/api/v1/send/sms": {
+        "/api/v1/sms/send": {
             "post": {
                 "tags": [
                     "SMS API"
@@ -6463,10 +6463,37 @@
                                         "type": "integer"
                                     },
                                     "counselor_referred_id": {
-                                        "description": "Array of counselor/referrer/agent IDs",
+                                        "description": "Array of counselor IDs or new counselor data",
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
+                                            "anyOf": [
+                                                {
+                                                    "description": "Existing counselor ID",
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "description": "New counselor details",
+                                                    "properties": {
+                                                        "name": {
+                                                            "description": "Name of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "description": "Email of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "phone": {
+                                                            "description": "Phone number of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "role": {
+                                                            "description": "Role of the counselor",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            ]
                                         }
                                     },
                                     "course_info": {
