@@ -8,9 +8,9 @@ class SmsLog extends Model
 {
     protected $table = "sms_logs";
     protected $fillable = [
-      'vendor','identity','token','organization_id','sender','sms_api_token_id'
+      'vendor','recipients','message','organization_id','organization_name','sender_phone_number','sender','sms_api_token_id','status','response'
     ];
-
+    
     public function smsApiToken()
     {
         return $this->belongsTo(SmsApiToken::class);

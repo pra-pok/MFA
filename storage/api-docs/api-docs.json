@@ -3869,31 +3869,27 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "recipient",
+                                    "recipients",
                                     "message",
                                     "sender",
                                     "vendor"
                                 ],
                                 "properties": {
-                                    "recipient": {
+                                    "recipients": {
                                         "type": "string",
                                         "example": "+1234567890"
                                     },
                                     "message": {
-                                        "type": "string",
+                                        "type": "text",
                                         "example": "Your OTP is 123456"
                                     },
-                                    "sender": {
+                                    "sender_phone_number": {
                                         "type": "string",
                                         "example": "+1098765432"
                                     },
                                     "vendor": {
                                         "type": "string",
-                                        "example": "Twilio"
-                                    },
-                                    "identity": {
-                                        "type": "string",
-                                        "example": "Identity"
+                                        "example": "vendor"
                                     }
                                 },
                                 "type": "object"

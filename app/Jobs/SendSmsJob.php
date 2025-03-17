@@ -24,10 +24,9 @@ class SendSmsJob implements ShouldQueue
 
     public function handle()
     {
-        // Simulate sending SMS (Use API like Twilio, Nexmo, etc.)
         $response = $this->sendSms(
-            $this->smsLog->sender,
-            $this->smsLog->recipient,
+            $this->smsLog->sender_phone_number,
+            $this->smsLog->recipients,
             $this->smsLog->message
         );
 

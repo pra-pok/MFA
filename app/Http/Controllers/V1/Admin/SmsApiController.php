@@ -8,7 +8,7 @@ use App\Models\SmsLog;
 use App\Models\SmsApiToken;
 use App\Jobs\SendSmsJob;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Contracts\Logging\Log;
 class SmsApiController extends Controller
 {
      
@@ -71,12 +71,11 @@ class SmsApiController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"recipient", "message", "sender", "vendor"},
-     *             @OA\Property(property="recipient", type="string", example="+1234567890"),
-     *             @OA\Property(property="message", type="string", example="Your OTP is 123456"),
-     *             @OA\Property(property="sender", type="string", example="+1098765432"),
-     *             @OA\Property(property="vendor", type="string", example="Twilio"),
-     *             @OA\Property(property="identity", type="string", example="Identity"),
+     *             required={"recipients", "message", "sender", "vendor"},
+     *             @OA\Property(property="recipients", type="string", example="+1234567890"),
+     *             @OA\Property(property="message", type="text", example="Your OTP is 123456"),
+     *             @OA\Property(property="sender_phone_number", type="string", example="+1098765432"),
+     *             @OA\Property(property="vendor", type="string", example="vendor"),
      * 
      *         )
      *     ),
@@ -93,41 +92,59 @@ class SmsApiController extends Controller
      *     )
      * )
      */
-    public function sendSms(Request $request)
-    {
-        $request->validate([
-            'recipient' => 'required|string',
-            'message' => 'required|string',
-            'sender' => 'required|string',
-            'vendor' => 'required|string',
-        ]);
 
-        $user = Auth::user();
-
-        // Retrieve the API token based on the vendor
-        $apiToken = SmsApiToken::where('vendor', $request->vendor)->first();
-
-        if (!$apiToken) {
-            return response()->json(['error' => 'No API token found for this vendor'], 400);
-        }
-
-        // Create SMS log entry
-        $smsLog = SmsLog::create([
-            'user_id' => $user->id,
-            'identity' => $request->identity,
-            'vendor' => $request->vendor,
-            'sender' => $request->sender,
-            'recipient' => $request->recipient,
-            'message' => $request->message,
-            'status' => 'pending',
-            'token' => $apiToken->token,
-            'sms_api_token_id' => $apiToken->token,
-        ]);
-        dd($smsLog);
-
-        // Dispatch SMS job to the queue
-        SendSmsJob::dispatch($smsLog);
-
-        return response()->json(['message' => 'SMS is being processed'], 200);
-    }
-}
+     public function sendSms(Request $request)
+     {
+         $request->validate([
+             'recipients' => 'required|string',
+             'message' => 'required|string',
+             'sender_phone_number' => 'required|string',
+             'vendor' => 'required|string',
+         ]);
+     
+         \Log::info('Request Data: ', $request->all());  // Log the incoming request data
+     
+         $user = auth()->user();
+         if (!$user) {
+             return response()->json(['error' => 'Unauthorized'], 401);
+         }
+     
+         $apiToken = SmsApiToken::where('vendor', $request->vendor)->first();
+         if (!$apiToken) {
+             return response()->json(['error' => 'Invalid vendor'], 400);
+         }
+     
+         // Log data to be inserted
+         \Log::info('Data to be inserted into SmsLog:', [
+             'vendor' => $apiToken->vendor,
+             'recipients' => $request->recipients,
+             'message' => $request->message,
+             'organization_id' => $user->id,
+             'organization_name' => $user->username,
+             'sender_phone_number' => $request->sender_phone_number,
+             'status' => 'pending',
+             'sms_api_token_id' => $apiToken->id,
+             'response' => null,
+         ]);
+     
+         // Insert the data
+         $smsLog = SmsLog::create([
+             'vendor' => $apiToken->vendor, 
+             'recipients' => $request->recipients,
+             'message' => $request->message,
+             'organization_id' => $user->id,  
+             'organization_name' => $user->username,
+             'sender_phone_number' => $request->sender_phone_number,
+             'status' => 'pending',  
+             'sms_api_token_id' => $apiToken->id, 
+             'response' => null,
+         ]);
+     
+         // Log the inserted data
+         \Log::info('SmsLog Inserted:', $smsLog->toArray());
+     
+         // Dispatch SMS sending job
+         SendSmsJob::dispatch($smsLog);
+     
+         return response()->json(['message' => 'SMS is being processed'], 200);
+     }}
