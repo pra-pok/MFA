@@ -3787,6 +3787,144 @@
                 }
             }
         },
+        "/api/v1/sms/api/token": {
+            "post": {
+                "tags": [
+                    "SMS API"
+                ],
+                "summary": "Store API token for SMS Vendor",
+                "description": "Stores the API token for a specific SMS vendor",
+                "operationId": "storeApiToken",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "vendor",
+                                    "identity",
+                                    "token"
+                                ],
+                                "properties": {
+                                    "vendor": {
+                                        "type": "string",
+                                        "example": "Twilio"
+                                    },
+                                    "identity": {
+                                        "type": "string",
+                                        "example": "my_app_id"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "example": "abcdef12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "API token saved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "API token saved successfully"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/sms/send": {
+            "post": {
+                "tags": [
+                    "SMS API"
+                ],
+                "summary": "Send SMS to a recipient",
+                "description": "Send SMS to a specified recipient using a vendor API token",
+                "operationId": "sendSms",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "recipients",
+                                    "message",
+                                    "sender",
+                                    "vendor"
+                                ],
+                                "properties": {
+                                    "recipients": {
+                                        "type": "string",
+                                        "example": "+1234567890"
+                                    },
+                                    "message": {
+                                        "type": "text",
+                                        "example": "Your OTP is 123456"
+                                    },
+                                    "sender_phone_number": {
+                                        "type": "string",
+                                        "example": "+1098765432"
+                                    },
+                                    "vendor": {
+                                        "type": "string",
+                                        "example": "vendor"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "SMS is being processed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "SMS is being processed"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Vendor not found or invalid data"
+                    }
+                },
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ]
+            }
+        },
         "/api/v1/status/": {
             "get": {
                 "tags": [
@@ -6321,10 +6459,37 @@
                                         "type": "integer"
                                     },
                                     "counselor_referred_id": {
-                                        "description": "Array of counselor/referrer/agent IDs",
+                                        "description": "Array of counselor IDs or new counselor data",
                                         "type": "array",
                                         "items": {
-                                            "type": "integer"
+                                            "anyOf": [
+                                                {
+                                                    "description": "Existing counselor ID",
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "description": "New counselor details",
+                                                    "properties": {
+                                                        "name": {
+                                                            "description": "Name of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "description": "Email of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "phone": {
+                                                            "description": "Phone number of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "role": {
+                                                            "description": "Role of the counselor",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            ]
                                         }
                                     },
                                     "course_info": {
@@ -7203,6 +7368,10 @@
         {
             "name": "Search",
             "description": "Search"
+        },
+        {
+            "name": "SMS API",
+            "description": "SMS API"
         },
         {
             "name": "Status",
