@@ -58,7 +58,7 @@ Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogi
 Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
 Route::get('/v1/address', [AddressRestApiController::class, 'getAddress']);
 Route::post('/v1/contactus/review', [ContactUsRestApiController::class, 'contactStore']);
-
+Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
 
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
@@ -86,21 +86,23 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     // API routes for Student
     Route::get('/v1/students', [StudentApiController::class, 'index']);
-    Route::post('/v1/students/store', [StudentApiController::class, 'store']);
+   // Route::post('/v1/students/store', [StudentApiController::class, 'store']);
     Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
     Route::get('/v1/student/list', [StudentApiController::class, 'getStudent']);
-    Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
+    // Single Page Student
+    Route::get('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'index']);
+   // Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
+    Route::put('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'update']);
+    Route::get('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'show']);
+    Route::delete('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'destroy']);
 
     Route::apiResource('/v1/students', StudentApiController::class);
-
     // API Routes for Student Guardian Info
     Route::apiResource('/v1/students/guardians/info', StudentGuardianInfoApiController::class);
-
     // API Routes for Student Education History
     Route::apiResource('v1/students/education/history', StudentEducationHistoryApiController::class);
-
     // API Routes for Student course interest
     Route::apiResource('v1/students/course/interests', StudentCourseInterestApiController::class);
 

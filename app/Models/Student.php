@@ -70,4 +70,19 @@ class Student extends Model
     {
         return $this->hasMany(StudentCourseInterest::class);
     }
+
+    public function studentCounselorReffer()
+    {
+        return $this->hasMany(StudentCounselorReffer::class);
+    }
+
+    public function studentReferralSource()
+    {
+        return $this->hasMany(StudentReferralSource::class);
+    }
+
+    public function studentDocuments()
+    {
+        return $this->hasMany(StudentDocument::class);
+    }
 }
