@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\GalleryCategoryController;
 use App\Http\Controllers\Admin\OrganizationGalleryController;
 use App\Http\Controllers\Admin\PageCategoryController;
 use App\Http\Controllers\Admin\NewEventController;
+use App\Http\Controllers\Admin\OrganizationemailconfigController;
 use App\Http\Controllers\Admin\WhatsAppMessagesController;
 
 //universities
@@ -133,3 +134,12 @@ Route::group(['prefix' =>'whatsapp', 'as' => 'whatsapp-messages.'], function() {
     Route::get('create',[WhatsAppMessagesController::class,'create'])->name('create');
     Route::post('send', [WhatsAppMessagesController::class, 'sendTextMessage'])->name('store');
 });
+// Route::group(['prefix' =>'organization-email-config', 'as' => 'organization_email_config.'], function() {
+//     Route::get('/', [OrganizationemailconfigController::class, 'index']);
+//     Route::post('/store', [OrganizationemailconfigController::class, 'store']);
+//     Route::put('/update/{id}', [OrganizationemailconfigController::class, 'update']);
+//     Route::delete('/delete/{id}', [OrganizationemailconfigController::class, 'destroy']);
+//     Route::get('/show/{id}', [OrganizationemailconfigController::class, 'show']);
+// });
+
+

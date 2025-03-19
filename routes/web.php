@@ -34,6 +34,8 @@ use App\Http\Controllers\Admin\OrganizationGroupController;
 use App\Http\Controllers\Admin\OrganizationMemberController;
 use App\Http\Controllers\Admin\ReferralSourceController;
 use App\Http\Controllers\Admin\ContactUsController;
+use App\Http\Controllers\Admin\OrganizationemailconfigController;
+use App\Http\Controllers\Admin\OrganizationemailController;
 
 Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])->name('admin.login');
 Route::post('mfa-admin/login', [AuthenticatedSessionController::class, 'store'])->name('mfa-admin.login');
@@ -174,6 +176,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('force-delete/{id}', [ReferralSourceController::class, 'forceDeleteData'])->name('referral-source.force_delete');
     Route::delete('{id}', [ReferralSourceController::class, 'destroy'])->name('referral-source.destroy');
     Route::resource('contactus', ContactUsController::class);
+    Route::resource('organization-email-config', OrganizationemailconfigController::class)->except('show');
+    Route::get('organization-email-config-search',[OrganizationemailconfigController::class,'search'])->name('organization-email-config.search');
+    Route::get('organization-email-config-show/{id}',[OrganizationemailconfigController::class,'show'])->name('organization-email-config.show');
+
+    Route::group(['prefix' =>'organization-email', 'as' => 'organizationemail.'], function() {
+        Route::get('/',[OrganizationemailController::class,'index'])->name('index');
+        Route::get('/create',[OrganizationemailController::class,'create'])->name('create');
+        Route::post('/store',[OrganizationemailController::class,'store'])->name('store');
+        Route::get('/edit/{id}',[OrganizationemailController::class,'edit'])->name('edit');
+        Route::get('/update/{id}',[OrganizationemailController::class,'update'])->name('update');
+        Route::get('/delete/{id}',[OrganizationemailController::class,'destroy'])->name('destroy');
+    });
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 

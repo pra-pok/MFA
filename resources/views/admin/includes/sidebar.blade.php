@@ -252,6 +252,30 @@
             </li>
         </ul>
     </li>
+    <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bxl-mail"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Email</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('organization-email-config.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Config</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('organizationemail.create')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Send Email</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.index')}}" class="menu-link">
+
+                    <div class="text-truncate" data-i18n="Form Elements">log</div>
+                </a>
+            </li>
+        </ul>
+    </li>
     <li class="menu-item ">
         <a href="{{route('referral-source.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bxs-report"></i>
