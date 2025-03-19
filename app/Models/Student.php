@@ -85,4 +85,9 @@ class Student extends Model
     {
         return $this->hasMany(StudentDocument::class);
     }
+
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class, 'student_id');
+    }
 }

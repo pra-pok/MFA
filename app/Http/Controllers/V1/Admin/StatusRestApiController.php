@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException;
 
 class StatusRestApiController extends Controller
 {
@@ -339,13 +341,18 @@ class StatusRestApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/v1/status/list",
+     *     path="/api/v1/config/status/list",
      *     summary="Get list of status",
      *     tags={"Config Search"},
      *     security={{"Bearer": {}}},
      *     description="Returns list of status",
-     *
-     *
+     *     @OA\Parameter(
+     *      name="keyword",
+     *      in="query",
+     *      description="Search keyword to filter status title",
+     *      required=false,
+     *       @OA\Schema(type="string")
+     *       ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful response - List of Status",
@@ -371,21 +378,47 @@ class StatusRestApiController extends Controller
      *     )
      * )
      */
-    public function getStatus()
+    public function configStatus(Request $request)
     {
         try {
-            $status = CounsellingStatus::orderBy('created_at', 'desc')->get()
-                ->makeHidden([
-                    'color', 'created_at', 'updated_at', 'note'
-                ]);
+            $keyword = $request->query('keyword');
+
+            $query = CounsellingStatus::orderBy('created_at', 'desc')->select(['id', 'title']);
+            // Apply search filter if keyword is provided
+            if (!empty($keyword)) {
+                $query->where('title', 'LIKE', "%$keyword%");
+            }
+            $status = $query->get();
+
+            if ($status->isEmpty()) {
+                return response()->json([
+                    'status'    => false,
+                    'message'   => 'No status records found.',
+                    'data'      => [],
+                    'timestamp' => now()->toIso8601String(),
+                ], 404);
+            }
+
             return response()->json([
-                'message' => '',
-                'data' => $status
+                'status'    => true,
+                'message'   => 'Status retrieved successfully.',
+                'data'      => $status,
+                'timestamp' => now()->toIso8601String(),
             ], 200);
-        } catch (Exception $e) {
+
+        } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
-                'message' => 'Internal Server Error',
-                'error' => $e->getMessage()
+                'status'    => false,
+                'message'   => 'Database query error.',
+                'error'     => $e->getMessage(),
+                'timestamp' => now()->toIso8601String(),
+            ], 500);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status'    => false,
+                'message'   => 'Internal Server Error.',
+                'error'     => $e->getMessage(),
+                'timestamp' => now()->toIso8601String(),
             ], 500);
         }
     }

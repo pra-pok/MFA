@@ -390,7 +390,8 @@ class AcademicYearRestApiController extends Controller
      */
     public function show($id)
     {
-        $data = AcademicYear::findOrFail($id);
+        $data = AcademicYear::with('createds:id,username', 'updatedBy:id,username')
+            ->findOrFail($id);
         if (is_null($data)) {
             $response = [
                 'message' => 'Academic Year not found',

@@ -440,11 +440,16 @@ class StudentApiController extends Controller
      *     tags={"Config Search"},
      *     security={{"Bearer": {}}},
      *     description="Returns list of student",
-     *
-     *
+     *     @OA\Parameter(
+     *       name="keyword",
+     *       in="query",
+     *       description="Search keyword to filter student name",
+     *       required=false,
+     *        @OA\Schema(type="string")
+     *        ),
      *     @OA\Response(
      *         response=200,
-     *         description="Successful response - List of Status",
+     *         description="Successful response - List of Student",
      *         @OA\JsonContent(
      *             type="object",
      *             @OA\Property(property="message", type="string", example=""),
@@ -467,14 +472,18 @@ class StudentApiController extends Controller
      *     )
      * )
      */
-    public function getStudent()
+    public function getStudent(Request $request)
     {
         try {
+            $keyword = $request->query('keyword');
             $students = Student::orderBy('created_at', 'desc')->get()
                 ->makeHidden([
                     'permanent_address', 'created_at', 'updated_at', 'temporary_address',
                     'permanent_locality_id', 'temporary_locality_id', 'referral_source_id', 'deleted_at'
                 ]);
+
+            $query = Student::select('id', 'title') // Select only required fields
+            ->orderBy('created_at', 'desc');
             return response()->json([
                 'message' => '',
                 'data' => $students

@@ -73,10 +73,10 @@ return [
             'model' => App\Models\OrganizationSignup::class, // Replace with your actual model
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'organizations' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\OrganizationSignup::class, // Replace with your actual model
+    ],
     ],
 
     /*

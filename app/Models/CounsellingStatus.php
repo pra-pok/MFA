@@ -15,4 +15,9 @@ class CounsellingStatus extends Model
         'note',
     ];
     protected $table = 'counselling_status';
+
+    public function followUps()
+    {
+        return $this->hasMany(FollowUp::class, 'status_id');
+    }
 }

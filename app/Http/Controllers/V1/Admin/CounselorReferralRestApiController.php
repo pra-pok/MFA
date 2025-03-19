@@ -93,7 +93,7 @@ class CounselorReferralRestApiController extends Controller
      */
     public function index()
     {
-        $counselor = CounselorReferrer::all();
+        $counselor = CounselorReferrer::with('createds','updatedBy')->get();
         if ($counselor->isEmpty()) {
             return response()->json([
                 'message' => 'No Counselor Referral found',
@@ -101,10 +101,32 @@ class CounselorReferralRestApiController extends Controller
                 'data' => []
             ], 404);
         }
+        // Format the data to include only id and username
+        $formattedCounselors = $counselor->map(function ($item) {
+            return [
+                'id' => $item->id,
+                'name' => $item->name,
+                'email' => $item->email,
+                'phone' => $item->phone,
+                'address' => $item->address,
+                'role' => $item->role,
+                'crated_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+                'created_by' => $item->createds ? [
+                    'id' => $item->createds->id,
+                    'username' => $item->createds->username,
+                ] : null,
+                'updated_by' => $item->updatedBy ? [
+                    'id' => $item->updatedBy->id,
+                    'username' => $item->updatedBy->username,
+                ] : null,
+            ];
+        });
+
         return response()->json([
             'message' => 'Counselor Referral retrieved successfully',
             'status' => 1,
-            'data' => $counselor
+            'data' => $formattedCounselors
         ], 200);
     }
     /**
@@ -374,20 +396,33 @@ class CounselorReferralRestApiController extends Controller
      */
     public function show($id)
     {
-        $data = CounselorReferrer::findOrFail($id);
-        if (is_null($data)) {
-            $response = [
-                'message' => 'Counselor Referral not found',
-                'status' => 0,
-            ];
-        } else {
-            $response = [
-                'message' => 'Counselor Referral found',
-                'status' => 1,
-                'data' => $data
-            ];
-        }
-        return response()->json($response, 200);
+        $data = CounselorReferrer::with(['createds', 'updatedBy'])->findOrFail($id);
+
+        // Format the data properly
+        $formattedCounselor = [
+            'id' => $data->id,
+            'name' => $data->name,
+            'email' => $data->email,
+            'phone' => $data->phone,
+            'address' => $data->address,
+            'role' => $data->role,
+            'created_at' => $data->created_at,
+            'updated_at' => $data->updated_at,
+            'created_by' => $data->createds ? [
+                'id' => $data->createds->id,
+                'username' => $data->createds->username,
+            ] : null,
+            'updated_by' => $data->updatedBy ? [
+                'id' => $data->updatedBy->id,
+                'username' => $data->updatedBy->username,
+            ] : null,
+        ];
+
+        return response()->json([
+            'message' => 'Counselor Referral found',
+            'status' => 1,
+            'data' => $formattedCounselor
+        ], 200);
     }
 
     /**
@@ -414,7 +449,15 @@ class CounselorReferralRestApiController extends Controller
      *     path="/api/v1/config/counselor/referral",
      *     summary="Get active Counselor and Referrer",
      *     tags={"Config Search"},
+     *     security={{"Bearer": {}}},
      *     description="Fetches a list of active Counselors and Referrers ordered by latest entries.",
+     *     @OA\Parameter(
+     *     name="keyword",
+     *     in="query",
+     *     description="Search keyword to filter counselors and referrers by name or email",
+     *     required=false,
+     *      @OA\Schema(type="string")
+     *      ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -467,34 +510,57 @@ class CounselorReferralRestApiController extends Controller
      */
     public function configCounselorReferral(Request $request)
     {
-        $counselor = CounselorReferrer::where('role', 'Counselor')
-            ->orderBy('id', 'desc')
-            ->select('id', 'name' , 'role' , 'email' , 'phone')
+        $keyword = $request->query('keyword'); // Get the keyword from the request
+
+        // Query for Counselors
+        $counselorQuery = CounselorReferrer::where('role', 'Counselor');
+        if ($keyword) {
+            $counselorQuery->where(function ($query) use ($keyword) {
+                $query->where('name', 'LIKE', "%$keyword%")
+                    ->orWhere('email', 'LIKE', "%$keyword%")
+                    ->orWhere('phone', 'LIKE', "%$keyword%");
+            });
+        } else {
+            $counselorQuery->limit(3); // Show only 3 by default
+        }
+        $counselor = $counselorQuery->orderBy('id', 'desc')
+            ->select('id', 'name', 'role', 'email', 'phone')
             ->get();
-        if ($counselor->isEmpty()) {
+
+        // Query for Referrers
+        $referrerQuery = CounselorReferrer::where('role', 'Referrer');
+        if ($keyword) {
+            $referrerQuery->where(function ($query) use ($keyword) {
+                $query->where('name', 'LIKE', "%$keyword%")
+                    ->orWhere('email', 'LIKE', "%$keyword%")
+                    ->orWhere('phone', 'LIKE', "%$keyword%");
+            });
+        } else {
+            $referrerQuery->limit(3); // Show only 3 by default
+        }
+        $referrer = $referrerQuery->orderBy('id', 'desc')
+            ->select('id', 'name', 'role', 'email', 'phone')
+            ->get();
+
+        // If both are empty, return a 404 response
+        if ($counselor->isEmpty() && $referrer->isEmpty()) {
             return response()->json([
-                'message' => 'No Counselor found',
+                'message' => 'No Counselor or Referrer found',
                 'status' => 0,
-                'data' => []
+                'data' => [
+                    'counselor' => [],
+                    'referrer' => []
+                ]
             ], 404);
         }
-        $referral = CounselorReferrer::where('role', 'Referrer')
-            ->orderBy('id', 'desc')
-            ->select('id', 'name' , 'role', 'email' , 'phone')
-            ->get();
-        if ($referral->isEmpty()) {
-            return response()->json([
-                'message' => 'No Referrer found',
-                'status' => 0,
-                'data' => []
-            ], 404);
-        }
+
+        // Return the result
         return response()->json([
             'message' => 'Counselor Referral retrieved successfully',
             'status' => 1,
             'data' => [
                 'counselor' => $counselor,
-                'referrer' => $referral
+                'referrer' => $referrer
             ]
         ], 200);
     }

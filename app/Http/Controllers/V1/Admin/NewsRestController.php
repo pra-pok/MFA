@@ -104,7 +104,7 @@ class NewsRestController extends Controller
         }
         $news->each(function ($event) {
             $event->makeHidden([
-                'id', 'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
+                'rank', 'status', 'created_at', 'updated_at', 'deleted_at', 'created_by', 'updated_by',
                 'meta_title', 'meta_keywords', 'meta_description',
             ]);
                 $event->thumbnail = $event->thumbnail ? url('/file/news_event/' . $event->thumbnail) : '';

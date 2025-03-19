@@ -24,7 +24,7 @@ class FollowUp extends Model
 
     public function student()
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Student::class, 'student_id'); // Ensuring relationship
     }
 
     public function status()
