@@ -53,7 +53,7 @@ class FollowUpRestApiController extends Controller
      */
     public function index()
     {
-        $data = FollowUp::all();
+        $data = FollowUp::with('student:id,name,email' ,'status:id,title,color,note')->get();
         if ($data->isEmpty()) {
             return response()->json([
                 'message' => 'No Follow Up data found',
@@ -344,7 +344,7 @@ class FollowUpRestApiController extends Controller
      */
     public function show($id)
     {
-        $data = FollowUp::findOrFail($id);
+        $data = FollowUp::with('student:id,name,email' ,'status:id,title,color,note')->findOrFail($id);
         if (is_null($data)) {
             $response = [
                 'message' => 'Follow Up not found',
