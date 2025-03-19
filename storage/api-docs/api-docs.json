@@ -3892,8 +3892,8 @@
                 "tags": [
                     "SMS API"
                 ],
-                "summary": "Send SMS to a recipient",
-                "description": "Send SMS using a vendor API token",
+                "summary": "Send SMS to multiple recipients",
+                "description": "Send SMS using a vendor API token. Multiple recipients can be sent by passing an array of phone numbers.",
                 "operationId": "sendSms",
                 "requestBody": {
                     "required": true,
@@ -3908,8 +3908,15 @@
                                 ],
                                 "properties": {
                                     "recipients": {
-                                        "type": "string",
-                                        "example": "+1234567890"
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "+1234567890"
+                                        },
+                                        "example": [
+                                            "+1234567890",
+                                            "+0987654321"
+                                        ]
                                     },
                                     "message": {
                                         "type": "string",

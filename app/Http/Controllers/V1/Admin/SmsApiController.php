@@ -61,22 +61,26 @@ class SmsApiController extends Controller
 
         return response()->json(['message' => 'API token saved successfully', 'data' => $apiToken], 201);
     }
-
     /**
      * @OA\Post(
      *     path="/api/v1/sms/send",
      *     security={{ "Bearer": { }}},
-     *     summary="Send SMS to a recipient",
-     *     description="Send SMS using a vendor API token",
+     *     summary="Send SMS to multiple recipients",
+     *     description="Send SMS using a vendor API token. Multiple recipients can be sent by passing an array of phone numbers.",
      *     operationId="sendSms",
      *     tags={"SMS API"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"recipients", "message", "sender_phone_number", "vendor"},
-     *             @OA\Property(property="recipients", type="string", example="+1234567890"),
+     *             @OA\Property(
+     *                 property="recipients",
+     *                 type="array",
+     *                 @OA\Items(type="string", example="+1234567890"),
+     *                 example={"+1234567890", "+0987654321"}
+     *             ),
      *             @OA\Property(property="message", type="string", example="Your OTP is 123456"),
-     *             @OA\Property(property="vendor", type="string", example="vendor123"),
+     *             @OA\Property(property="vendor", type="string", example="vendor123")
      *         )
      *     ),
      *     @OA\Response(
@@ -96,45 +100,47 @@ class SmsApiController extends Controller
      *     )
      * )
      */
-
     public function sendSms(Request $request)
     {
         $request->validate([
-            'recipients' => 'required|string',  // Comma-separated numbers
+            'recipients' => 'required|array',  // ✅ Allow an array instead of string
+            'recipients.*' => 'required|string|regex:/^\+?\d{10,15}$/', // ✅ Ensure each number is valid
             'message' => 'required|string',
+            'sender_phone_number' => 'required|string',
             'vendor' => 'required|string|exists:sms_api_tokens,vendor',
         ]);
-
+    
         $user = Auth::guard('api')->user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-
+    
         $apiToken = SmsApiToken::where('vendor', $request->vendor)->first();
-
         if (!$apiToken) {
             return response()->json(['error' => 'Invalid vendor'], 400);
         }
-
-        $smsLog = SmsLog::create([
-            'vendor' => $apiToken->vendor,
-            'recipients' => $request->recipients,
-            'message' => $request->message,
-            'sender_phone_number' => $user->phone,
-            'status' => 'pending',
-            'sms_api_token_id' => $apiToken->id,
-            'organization_id' => $user->id,
-            'organization_name' => $user->username,
-            'response' => null,
-        ]);
-
-        dispatch(new SendSmsJob(
-            $request->recipients,
-            $request->message,
-            $apiToken->token,
-            $smsLog->id
-        ));
-
+    
+        foreach ($request->recipients as $recipient) {
+            $smsLog = SmsLog::create([
+                'vendor' => $apiToken->vendor,
+                'recipients' => $recipient,  // ✅ Save each number separately
+                'message' => $request->message,
+                'sender_phone_number' => $user->phone,
+                'status' => 'pending',
+                'sms_api_token_id' => $apiToken->id,
+                'organization_id' => $user->id,
+                'organization_name' => $user->username,
+                'response' => null,
+            ]);
+    
+            dispatch(new SendSmsJob(
+                $recipient, // ✅ Send one number at a time
+                $request->message,
+                $apiToken->token,
+                $smsLog->id
+            ));
+        }
+    
         return response()->json([
             'message' => 'SMS is being processed via queue'
         ], 200);
