@@ -84,8 +84,14 @@ class StudentSinglePageRestApiController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
-        $students = Student::orderBy('created_at', 'desc')->with('counselors','studentReferralSource', 'courseInterests',
-            'guardianInfo', 'educationHistory','studentDocuments')->paginate($perPage);
+        $students = Student::orderBy('created_at', 'desc')->with(
+            'counselors',
+            'studentReferralSource',
+            'courseInterests',
+            'guardianInfo',
+            'educationHistory',
+            'studentDocuments'
+        )->paginate($perPage);
         if (!empty($students->studentDocuments)) {
             foreach ($students->studentDocuments as $document) {
                 if (!empty($document->document_file)) {
@@ -235,9 +241,9 @@ class StudentSinglePageRestApiController extends Controller
         try {
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:students,email',
-                'address' => 'required|string',
-                'phone' => 'required|string|max:15',
+                'email' => 'nullable|email|unique:students,email',
+                'address' => 'nullable|string',
+                'phone' => 'nullable|string|max:15',
                 'permanent_address' => 'nullable|string',
                 'permanent_locality_id' => 'nullable|integer',
                 'referral_source_id' => 'nullable|array|min:1',
@@ -258,7 +264,21 @@ class StudentSinglePageRestApiController extends Controller
                 'education_history.*.note' => 'nullable|string',
                 'education_history.*.course_studied' => 'nullable|string',
                 'counselor_referred_id' => 'nullable|array|min:1',
-                'counselor_referred_id.*' => 'exists:counselor_referrers,id',
+                'counselor_referred_id.*' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if (is_numeric($value)) {
+                            if (!\App\Models\CounselorReferrer::where('id', $value)->exists()) {
+                                $fail("The selected $attribute is invalid.");
+                            }
+                        } elseif (is_array($value)) {
+                            // Validate new counselor data if it's an array
+                            $this->validateNewCounselorData($value, $fail, $attribute);
+                        } else {
+                            $fail("Invalid format for $attribute.");
+                        }
+                    }
+                ],
                 'document_file' => 'nullable|array',
                 'document_file.*' => 'file|mimes:pdf,doc,docx,jpg,jpeg,png|max:2048'
             ]);
@@ -270,10 +290,17 @@ class StudentSinglePageRestApiController extends Controller
                 'permanent_address' => $validated['permanent_address'] ?? null,
                 'permanent_locality_id' => $validated['permanent_locality_id'] ?? null,
             ]);
+
             $counselorReferrers = [];
             foreach ($validated['counselor_referred_id'] as $counselorReferrerId) {
-                $counselor = CounselorReferrer::find($counselorReferrerId);
+                // Check if it's an existing counselor, otherwise create a new one
+                $counselor = null;
+                if (is_numeric($counselorReferrerId)) {
+                    $counselor = CounselorReferrer::find($counselorReferrerId);
+                }
+
                 if ($counselor) {
+                    // Existing counselor case
                     $counselorReferrers[] = [
                         'student_id' => $student->id,
                         'counselor_referred_id' => $counselor->id,
@@ -286,22 +313,33 @@ class StudentSinglePageRestApiController extends Controller
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
-                }else {
-                    // If the counselor ID does not exist, store the provided data from the request
+                } else {
+                    // New counselor case
+                    // Assume new counselor data comes from the request (e.g., name, email, role)
+                    $newCounselor = new CounselorReferrer([
+                       'name' => $counselorReferrerId['name'],  // Ensure 'name' is passed
+                       'email' => $counselorReferrerId['email'], // Ensure 'email' is passed
+                       'phone' => $counselorReferrerId['phone'], // Ensure 'phone' is passed
+                       'role' => $counselorReferrerId['role'],   // Ensure 'role' is passed
+                    ]);
+                    $newCounselor->save();
+
                     $counselorReferrers[] = [
                         'student_id' => $student->id,
-                        'counselor_referred_id' => null, // No ID found in DB
+                        'counselor_referred_id' => $newCounselor->id,
                         'student_name' => $student->name,
                         'student_email' => $student->email,
                         'student_phone' => $student->phone,
-                        'counselor_name' => $request->input('name', ''), // Default to 'Unknown' if not provided
-                        'counselor_email' => $request->input('email', null),
-                        'counselor_role_name' => $request->input('role', null),
+                        'counselor_name' => $newCounselor->name,
+                        'counselor_email' => $newCounselor->email,
+                        'counselor_role_name' => $newCounselor->role,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
                 }
             }
+
+            // Insert counselor references
             StudentCounselorReffer::insert($counselorReferrers);
             //referral_source_id
             if (!empty($validated['referral_source_id'])) {
@@ -376,8 +414,14 @@ class StudentSinglePageRestApiController extends Controller
             DB::commit();
             return response()->json([
                 'message' => 'Student saved successfully',
-                'data' => Student::with(['counselors','studentReferralSource', 'courseInterests', 'guardianInfo',
-                    'educationHistory','studentDocuments'])->find($student->id)
+                'data' => Student::with([
+                    'counselors',
+                    'studentReferralSource',
+                    'courseInterests',
+                    'guardianInfo',
+                    'educationHistory',
+                    'studentDocuments'
+                ])->find($student->id)
             ], 201);
         } catch (ValidationException $e) {
             DB::rollBack();
@@ -393,6 +437,13 @@ class StudentSinglePageRestApiController extends Controller
             ], 500);
         }
     }
+
+    private function validateNewCounselorData($value, $fail, $attribute)
+{
+    if (empty($value['name']) || empty($value['email']) || empty($value['phone']) || empty($value['role'])) {
+        $fail("For new counselors, none of the fields (name, email, phone, role) can be empty.");
+    }
+}
     /**
      * @OA\Put(
      *     path="/api/v1/single/page/students/{id}",
@@ -710,20 +761,24 @@ class StudentSinglePageRestApiController extends Controller
             }
             return response()->json([
                 'message' => 'Student updated successfully',
-                'data' => $student->load('counselors','studentReferralSource', 'courseInterests', 'guardianInfo',
-                    'educationHistory' ,'studentDocuments')
+                'data' => $student->load(
+                    'counselors',
+                    'studentReferralSource',
+                    'courseInterests',
+                    'guardianInfo',
+                    'educationHistory',
+                    'studentDocuments'
+                )
             ], 200);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'message' => 'Student not found'
             ], 404);
-
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Internal Server Error',
@@ -810,8 +865,14 @@ class StudentSinglePageRestApiController extends Controller
      */
     public function show($id)
     {
-        $student = Student::with(['counselors','studentReferralSource', 'courseInterests', 'guardianInfo',
-            'educationHistory','studentDocuments'])->find($id);
+        $student = Student::with([
+            'counselors',
+            'studentReferralSource',
+            'courseInterests',
+            'guardianInfo',
+            'educationHistory',
+            'studentDocuments'
+        ])->find($id);
         if (!empty($student->studentDocuments)) {
             foreach ($student->studentDocuments as $document) {
                 if (!empty($document->document_file)) {

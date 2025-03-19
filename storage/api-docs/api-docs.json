@@ -3922,6 +3922,10 @@
                                         "type": "string",
                                         "example": "Your OTP is 123456"
                                     },
+                                    "sender_phone_number": {
+                                        "type": "string",
+                                        "example": "+1122334455"
+                                    },
                                     "vendor": {
                                         "type": "string",
                                         "example": "vendor123"
@@ -4282,14 +4286,25 @@
                 ]
             }
         },
-        "/api/v1/status/list": {
+        "/api/v1/config/status/list": {
             "get": {
                 "tags": [
                     "Config Search"
                 ],
                 "summary": "Get list of status",
                 "description": "Returns list of status",
-                "operationId": "e973b899c45d66ada502f81f8c732492",
+                "operationId": "44bc672c865db9a803c04a0de9bb5fc9",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search keyword to filter status title",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Successful response - List of Status",
@@ -4884,9 +4899,20 @@
                 "summary": "Get list of student",
                 "description": "Returns list of student",
                 "operationId": "ecbd56a30f34a59cb7c389902b9c20cc",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search keyword to filter student name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Successful response - List of Status",
+                        "description": "Successful response - List of Student",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7424,583 +7450,6 @@
                         "Bearer": []
                     }
                 ]
-            },
-            "delete": {
-                "tags": [
-                    "Student Single Page API"
-                ],
-                "summary": "Delete a student",
-                "operationId": "4ddddc5555da9e8b60666dc4554f87a2",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the student to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Student deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Student deleted successfully"
-                                        },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Student not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Student not found"
-                                        },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 0
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {}
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            }
-        },
-        "/api/v1/single/page/students/{id}": {
-            "get": {
-                "tags": [
-                    "Student Single Page API"
-                ],
-                "summary": "Get student details",
-                "operationId": "0e2f948880c9d4bca229522f75b95b6d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the student to retrieve",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Student details retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Student details retrieved successfully"
-                                        },
-                                        "status": {
-                                            "description": "Status code indicating success",
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "data": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "example": "john@gmail.com"
-                                                },
-                                                "address": {
-                                                    "type": "string",
-                                                    "example": "123 Main St"
-                                                },
-                                                "phone": {
-                                                    "type": "string",
-                                                    "example": "+1234567890"
-                                                },
-                                                "permanent_address": {
-                                                    "type": "string",
-                                                    "example": "456 Another St, City"
-                                                },
-                                                "permanent_locality_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "counselors": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "counselor_name": {
-                                                                "type": "string",
-                                                                "example": "Jane Smith"
-                                                            },
-                                                            "counselor_email": {
-                                                                "type": "string",
-                                                                "example": "jane@gmail.com"
-                                                            },
-                                                            "counselor_role_name": {
-                                                                "type": "string",
-                                                                "example": "Senior Counselor"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "referral_sources": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "referral_source_name": {
-                                                                "type": "string",
-                                                                "example": "Google"
-                                                            },
-                                                            "referral_source_description": {
-                                                                "type": "string",
-                                                                "example": "Google search engine"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "course_interests": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "course_name": {
-                                                                "type": "string",
-                                                                "example": "Computer Science"
-                                                            },
-                                                            "remarks": {
-                                                                "type": "string",
-                                                                "example": "Interested in the course"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "guardian_info": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "Jane Doe"
-                                                            },
-                                                            "phone": {
-                                                                "type": "string",
-                                                                "example": "9876543210"
-                                                            },
-                                                            "address": {
-                                                                "type": "string",
-                                                                "example": "789 Parent St, City"
-                                                            },
-                                                            "type": {
-                                                                "type": "string",
-                                                                "example": "Mother"
-                                                            },
-                                                            "current_guardian": {
-                                                                "type": "boolean",
-                                                                "example": true
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "education_history": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "properties": {
-                                                            "name": {
-                                                                "type": "string",
-                                                                "example": "XYZ High School"
-                                                            },
-                                                            "address": {
-                                                                "type": "string",
-                                                                "example": "123 School St, City"
-                                                            },
-                                                            "marks_received": {
-                                                                "type": "integer",
-                                                                "example": 85
-                                                            },
-                                                            "note": {
-                                                                "type": "string",
-                                                                "example": "Graduated with honors"
-                                                            },
-                                                            "course_studied": {
-                                                                "type": "string",
-                                                                "example": "Science"
-                                                            }
-                                                        },
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Student not found",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Student not found"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "Student Single Page API"
-                ],
-                "summary": "Update student details",
-                "description": "Updates the details of a student along with counselor references, referral sources, course info, guardian info, and education history.",
-                "operationId": "updateStudent",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the student to update",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email",
-                                    "phone",
-                                    "counselor_referred_id"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "John Doe"
-                                    },
-                                    "email": {
-                                        "type": "string",
-                                        "example": "johndoe@example.com"
-                                    },
-                                    "address": {
-                                        "type": "string",
-                                        "example": "123 Main St, City"
-                                    },
-                                    "phone": {
-                                        "type": "string",
-                                        "example": "123-456-7890"
-                                    },
-                                    "permanent_address": {
-                                        "type": "string",
-                                        "example": "456 Another St, City",
-                                        "nullable": true
-                                    },
-                                    "permanent_locality_id": {
-                                        "type": "integer",
-                                        "example": 1,
-                                        "nullable": true
-                                    },
-                                    "counselor_referred_id": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer",
-                                            "example": 1
-                                        }
-                                    },
-                                    "referral_source_id": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "integer",
-                                            "example": 2
-                                        },
-                                        "nullable": true
-                                    },
-                                    "course_info": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "course_id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "remarks": {
-                                                    "type": "string",
-                                                    "example": "Interested in the course"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "nullable": true
-                                    },
-                                    "guardian_info": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "Jane Doe"
-                                                },
-                                                "phone": {
-                                                    "type": "string",
-                                                    "example": "987-654-3210"
-                                                },
-                                                "address": {
-                                                    "type": "string",
-                                                    "example": "789 Parent St, City",
-                                                    "nullable": true
-                                                },
-                                                "type": {
-                                                    "type": "string",
-                                                    "example": "Mother",
-                                                    "nullable": true
-                                                },
-                                                "current_guardian": {
-                                                    "type": "boolean",
-                                                    "example": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "nullable": true
-                                    },
-                                    "education_history": {
-                                        "type": "array",
-                                        "items": {
-                                            "properties": {
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "XYZ High School"
-                                                },
-                                                "address": {
-                                                    "type": "string",
-                                                    "example": "123 School St, City",
-                                                    "nullable": true
-                                                },
-                                                "marks_received": {
-                                                    "type": "integer",
-                                                    "example": 85,
-                                                    "nullable": true
-                                                },
-                                                "note": {
-                                                    "type": "string",
-                                                    "example": "Graduated with honors",
-                                                    "nullable": true
-                                                },
-                                                "course_studied": {
-                                                    "type": "string",
-                                                    "example": "Science",
-                                                    "nullable": true
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "nullable": true
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Student updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Student updated successfully"
-                                        },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "John Doe"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "johndoe@example.com"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "123 Main St, City"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "123-456-7890"
-                                        },
-                                        "permanent_address": {
-                                            "type": "string",
-                                            "example": "456 Another St, City",
-                                            "nullable": true
-                                        },
-                                        "permanent_locality_id": {
-                                            "type": "integer",
-                                            "example": 1,
-                                            "nullable": true
-                                        },
-                                        "counselor_referred_id": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer",
-                                                "example": 1
-                                            }
-                                        },
-                                        "referral_source_id": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer",
-                                                "example": 2
-                                            },
-                                            "nullable": true
-                                        },
-                                        "course_info": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "course_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "remarks": {
-                                                        "type": "string",
-                                                        "example": "Interested in the course"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            },
-                                            "nullable": true
-                                        },
-                                        "guardian_info": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "Jane Doe"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "987-654-3210"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "789 Parent St, City",
-                                                        "nullable": true
-                                                    },
-                                                    "type": {
-                                                        "type": "string",
-                                                        "example": "Mother",
-                                                        "nullable": true
-                                                    },
-                                                    "current_guardian": {
-                                                        "type": "boolean",
-                                                        "example": true
-                                                    }
-                                                },
-                                                "type": "object"
-                                            },
-                                            "nullable": true
-                                        },
-                                        "education_history": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "XYZ High School"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "123 School St, City",
-                                                        "nullable": true
-                                                    },
-                                                    "marks_received": {
-                                                        "type": "integer",
-                                                        "example": 85,
-                                                        "nullable": true
-                                                    },
-                                                    "note": {
-                                                        "type": "string",
-                                                        "example": "Graduated with honors",
-                                                        "nullable": true
-                                                    },
-                                                    "course_studied": {
-                                                        "type": "string",
-                                                        "example": "Science",
-                                                        "nullable": true
-                                                    }
-                                                },
-                                                "type": "object"
-                                            },
-                                            "nullable": true
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
             },
             "delete": {
                 "tags": [

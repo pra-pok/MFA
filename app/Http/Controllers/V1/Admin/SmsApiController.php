@@ -80,6 +80,7 @@ class SmsApiController extends Controller
      *                 example={"+1234567890", "+0987654321"}
      *             ),
      *             @OA\Property(property="message", type="string", example="Your OTP is 123456"),
+     *             @OA\Property(property="sender_phone_number", type="string", example="+1122334455"),
      *             @OA\Property(property="vendor", type="string", example="vendor123")
      *         )
      *     ),
@@ -103,27 +104,32 @@ class SmsApiController extends Controller
     public function sendSms(Request $request)
     {
         $request->validate([
-            'recipients' => 'required|array',  // ✅ Allow an array instead of string
-            'recipients.*' => 'required|string|regex:/^\+?\d{10,15}$/', // ✅ Ensure each number is valid
+            'recipients' => 'required|string',
+            'recipients.*' => 'required|string',  
             'message' => 'required|string',
-            'sender_phone_number' => 'required|string',
             'vendor' => 'required|string|exists:sms_api_tokens,vendor',
         ]);
-    
+
         $user = Auth::guard('api')->user();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
-    
+
         $apiToken = SmsApiToken::where('vendor', $request->vendor)->first();
         if (!$apiToken) {
             return response()->json(['error' => 'Invalid vendor'], 400);
         }
-    
-        foreach ($request->recipients as $recipient) {
+
+        $recipients = explode(',', $request->recipients); // Convert string to array
+
+        $smsLogs = []; // Store logs for response
+
+        foreach ($recipients as $recipient) {
+            $recipient = trim($recipient); // Remove extra spaces
+
             $smsLog = SmsLog::create([
                 'vendor' => $apiToken->vendor,
-                'recipients' => $recipient,  // ✅ Save each number separately
+                'recipients' => $recipient, // Store individual recipient
                 'message' => $request->message,
                 'sender_phone_number' => $user->phone,
                 'status' => 'pending',
@@ -132,17 +138,21 @@ class SmsApiController extends Controller
                 'organization_name' => $user->username,
                 'response' => null,
             ]);
-    
+
+            $smsLogs[] = $smsLog;
+
+            // Dispatch job for each recipient
             dispatch(new SendSmsJob(
-                $recipient, // ✅ Send one number at a time
+                $recipient, // Send SMS to one recipient at a time
                 $request->message,
                 $apiToken->token,
                 $smsLog->id
             ));
         }
-    
+
         return response()->json([
-            'message' => 'SMS is being processed via queue'
+            'message' => 'SMS is being processed via queue',
+            'logs' => $smsLogs
         ], 200);
     }
 }
