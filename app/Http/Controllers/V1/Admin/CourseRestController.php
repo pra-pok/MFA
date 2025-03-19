@@ -130,7 +130,15 @@ class CourseRestController extends Controller
      *     path="/api/v1/config/course",
      *     summary="Get active courses",
      *     tags={"Config Search"},
+     *     security={{"Bearer": {}}},
      *     description="Fetches a list of active courses ordered by latest entries.",
+     *     @OA\Parameter(
+     *      name="keyword",
+     *      in="query",
+     *      description="Search keyword to filter course name",
+     *      required=false,
+     *       @OA\Schema(type="string")
+     *       ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -169,11 +177,19 @@ class CourseRestController extends Controller
      */
     public function configCourse(Request $request)
     {
-        $courses = Course::where('status', 1)
-            ->orderBy('id', 'desc')
+        $keyword = $request->query('keyword');
+        // Query for active courses
+        $courseQuery = Course::where('status', 1);
+        // Apply search filter if keyword is provided
+        if ($keyword) {
+            $courseQuery->where('title', 'LIKE', "%$keyword%");
+        } else {
+            $courseQuery->limit(3); // Show only 3 courses by default
+        }
+        $courses = $courseQuery->orderBy('id', 'desc')
             ->select('id', 'title')
             ->get();
-
+        // If no courses found
         if ($courses->isEmpty()) {
             return response()->json([
                 'status'    => false,
@@ -182,7 +198,7 @@ class CourseRestController extends Controller
                 'timestamp' => now()->toIso8601String(),
             ], 404);
         }
-
+        // Return filtered data
         return response()->json([
             'status'    => true,
             'message'   => 'Courses retrieved successfully',

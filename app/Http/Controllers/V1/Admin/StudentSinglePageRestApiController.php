@@ -84,8 +84,15 @@ class StudentSinglePageRestApiController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
-        $students = Student::with('counselors','studentReferralSource', 'courseInterests',
+        $students = Student::orderBy('created_at', 'desc')->with('counselors','studentReferralSource', 'courseInterests',
             'guardianInfo', 'educationHistory','studentDocuments')->paginate($perPage);
+        if (!empty($students->studentDocuments)) {
+            foreach ($students->studentDocuments as $document) {
+                if (!empty($document->document_file)) {
+                    $document->document_file = url('/file/students/' . $document->document_file);
+                }
+            }
+        }
         if ($students->isEmpty()) {
             return response()->json([
                 'message' => 'No Student found',
@@ -393,6 +400,7 @@ class StudentSinglePageRestApiController extends Controller
      *     description="Updates the details of a student along with counselor references, referral sources, course info, guardian info, and education history.",
      *     operationId="updateStudent",
      *     tags={"Student Single Page API"},
+     *     security={{"Bearer": {}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -804,6 +812,13 @@ class StudentSinglePageRestApiController extends Controller
     {
         $student = Student::with(['counselors','studentReferralSource', 'courseInterests', 'guardianInfo',
             'educationHistory','studentDocuments'])->find($id);
+        if (!empty($student->studentDocuments)) {
+            foreach ($student->studentDocuments as $document) {
+                if (!empty($document->document_file)) {
+                    $document->document_file = url('/file/students/' . $document->document_file);
+                }
+            }
+        }
         if (!$student) {
             return response()->json([
                 'message' => 'Student not found',

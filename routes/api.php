@@ -63,8 +63,6 @@ Route::post('/v1/college/login', [CollegeLoginApiController::class, 'collegeLogi
 Route::get('/v1/counselor/', [CounselorReferralRestApiController::class, 'counselor']);
 Route::get('/v1/address', [AddressRestApiController::class, 'getAddress']);
 Route::post('/v1/contactus/review', [ContactUsRestApiController::class, 'contactStore']);
-Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
-
 Route::middleware(['jwt.auth'])->group(function () {
     //validate token (signature + expiry)
     // API routes Status
@@ -73,7 +71,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::put('/v1/status/{id}', [StatusRestApiController::class, 'update']);
     Route::delete('/v1/status/{id}', [StatusRestApiController::class, 'destroy']);
     Route::get('/v1/status/{id}', [StatusRestApiController::class, 'show']);
-    Route::get('/v1/status/list', [StatusRestApiController::class, 'getStatus']);
+    Route::get('/v1/config/status/list', [StatusRestApiController::class, 'configStatus']);
 
     // Referral Sources API routes
     Route::get('/v1/referral/source', [ReferralSourceRestApiController::class, 'index']);
@@ -91,14 +89,14 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     // API routes for Student
     Route::get('/v1/students', [StudentApiController::class, 'index']);
-   // Route::post('/v1/students/store', [StudentApiController::class, 'store']);
+    Route::post('/v1/students/store', [StudentApiController::class, 'store']);
     Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
     Route::get('/v1/students/show/{id}', [StudentApiController::class, 'show']);
     Route::get('/v1/student/list', [StudentApiController::class, 'getStudent']);
     // Single Page Student
     Route::get('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'index']);
-   // Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
+    Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
     Route::put('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'update']);
     Route::get('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'show']);
     Route::delete('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'destroy']);
