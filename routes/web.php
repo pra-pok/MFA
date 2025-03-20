@@ -177,16 +177,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('{id}', [ReferralSourceController::class, 'destroy'])->name('referral-source.destroy');
     Route::resource('contactus', ContactUsController::class);
     Route::resource('organization-email-config', OrganizationemailconfigController::class)->except('show');
-    Route::get('organization-email-config-search',[OrganizationemailconfigController::class,'search'])->name('organization-email-config.search');
-    Route::get('organization-email-config-show/{id}',[OrganizationemailconfigController::class,'show'])->name('organization-email-config.show');
+    Route::get('organization-email-config-search', [OrganizationemailconfigController::class, 'search'])->name('organization-email-config.search');
+    Route::get('organization-email-config-show/{id}', [OrganizationemailconfigController::class, 'show'])->name('organization-email-config.show');
 
-    Route::group(['prefix' =>'organization-email', 'as' => 'organizationemail.'], function() {
-        Route::get('/',[OrganizationemailController::class,'index'])->name('index');
-        Route::get('/create',[OrganizationemailController::class,'create'])->name('create');
-        Route::post('/store',[OrganizationemailController::class,'store'])->name('store');
-        Route::get('/edit/{id}',[OrganizationemailController::class,'edit'])->name('edit');
-        Route::get('/update/{id}',[OrganizationemailController::class,'update'])->name('update');
-        Route::get('/delete/{id}',[OrganizationemailController::class,'destroy'])->name('destroy');
+    Route::group(['prefix' => 'organization-email', 'as' => 'organizationemail.'], function () {
+        Route::get('/', [OrganizationemailController::class, 'index'])->name('index');
+        Route::get('/create', [OrganizationemailController::class, 'create'])->name('create');
+        Route::get('/search', [OrganizationemailController::class, 'search'])->name('search');
+        Route::post('/store', [OrganizationemailController::class, 'store'])->name('store');
+        Route::get('/edit/{id}', [OrganizationemailController::class, 'edit'])->name('edit');
+        Route::get('/update/{id}', [OrganizationemailController::class, 'update'])->name('update');
+        Route::get('/delete/{id}', [OrganizationemailController::class, 'destroy'])->name('destroy');
     });
 
     Route::get('verify-email', EmailVerificationPromptController::class)
