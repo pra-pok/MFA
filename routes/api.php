@@ -27,6 +27,8 @@ use App\Http\Controllers\V1\Admin\FollowUpRestApiController;
 use App\Http\Controllers\V1\Admin\AcademicYearRestApiController;
 use App\Http\Controllers\V1\Admin\TargetRestApiController;
 use App\Http\Controllers\V1\Admin\ContactUsRestApiController;
+use App\Http\Controllers\V1\Admin\EmailApiController;
+use App\Http\Controllers\V1\Admin\OrganizationemailconfigController;
 use App\Http\Controllers\V1\Admin\StudentSinglePageRestApiController;
 use App\Http\Controllers\V1\Admin\SmsApiController;
 
@@ -44,6 +46,7 @@ use App\Http\Controllers\V1\Admin\SmsApiController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::get('/v1/home', [HomeRestApiController::class, 'index']);
 Route::get('/v1/org/{id}', [CollegeRestApiController::class, 'collegeDetail']);
 Route::post('/v1/org/review', [HomeRestApiController::class, 'reviewStore']);
@@ -89,6 +92,7 @@ Route::middleware(['jwt.auth'])->group(function () {
 
     // API routes for Student
     Route::get('/v1/students', [StudentApiController::class, 'index']);
+    // Route::post('/v1/students/store', [StudentApiController::class, 'store']);
     Route::post('/v1/students/store', [StudentApiController::class, 'store']);
     Route::put('/v1/students/update/{id}', [StudentApiController::class, 'update']);
     Route::delete('/v1/students/delete/{id}', [StudentApiController::class, 'destroy']);
@@ -97,6 +101,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     // Single Page Student
     Route::get('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'index']);
     Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
+    // Route::post('/v1/single/page/students', [StudentSinglePageRestApiController::class, 'singlepageStudentStore']);
     Route::put('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'update']);
     Route::get('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'show']);
     Route::delete('/v1/single/page/students/{id}', [StudentSinglePageRestApiController::class, 'destroy']);
@@ -133,5 +138,16 @@ Route::middleware(['jwt.auth'])->group(function () {
     Route::post('/v1/sms/api/token', [SmsApiController::class, 'storeApiToken']);
     Route::post('/v1/sms/send', [SmsApiController::class, 'sendSms']);
 
+    // Api routes for the email config of the organization
 
+    // API routes for Academic Year
+    Route::get('/v1/organization-email-config', [OrganizationemailconfigController::class, 'index']);
+    Route::post('/v1/organization-email-config/store', [OrganizationemailconfigController::class, 'store']);
+    Route::put('/v1/organization-email-config/update/{id}', [OrganizationemailconfigController::class, 'update']);
+    Route::delete('/v1/organization-email-config/delete/{id}', [OrganizationemailconfigController::class, 'destroy']);
+    Route::get('/v1/organization-email-config/show/{id}', [OrganizationemailconfigController::class, 'show']);
+
+
+    // Api routes for the Email
+        Route::post('/v1/email/store', [EmailApiController::class,'store']);
 });

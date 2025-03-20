@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropForeign('students_referral_source_id_foreign');
-            $table->dropColumn('referral_source_id');
+        Schema::table('emailtrackings', function (Blueprint $table) {
+            $table->foreignId('organization_signup_id')->constrained('organization_signup')->onDelete('cascade');
+
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('students', function (Blueprint $table) {
+        Schema::table('emailtrackings', function (Blueprint $table) {
             //
         });
     }

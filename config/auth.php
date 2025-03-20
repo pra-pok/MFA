@@ -68,6 +68,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'organizations' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\OrganizationSignup::class, // Replace with your actual model
+        ],
 
         'organizations' => [
         'driver' => 'eloquent',

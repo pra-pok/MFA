@@ -197,12 +197,7 @@
             <div class="text-truncate" data-i18n="Form Elements">Course</div>
         </a>
     </li>
-{{--    <li class="menu-item ">--}}
-{{--        <a href="{{route('admin.administrative_area.index')}}" class="menu-link">--}}
-{{--            <i class="menu-icon tf-icons bx bx-area"></i>--}}
-{{--            <div class="text-truncate" data-i18n="Form Elements">Administrative Area</div>--}}
-{{--        </a>--}}
-{{--    </li>--}}
+
     <li class="menu-item ">
         <a href="{{route('admin.gallery_category.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bx-images"></i>
@@ -235,6 +230,31 @@
     </li>
     <li class="menu-item">
         <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-envelope"></i>
+            <div class="text-truncate" data-i18n="Basic Inputs">Send Notifications</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('organization-email-config.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Email Configuration</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.create')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Send Notifications</div>
+                </a>
+            </li>
+
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Form Elements">History</div>
+                </a>
+            </li>
+        </ul>
+    </li>
+
+    {{-- <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bxl-whatsapp"></i>
             <div class="text-truncate" data-i18n="Basic Inputs">Whatsapp</div>
         </a>
@@ -251,7 +271,33 @@
                 </a>
             </li>
         </ul>
-    </li>
+    </li> --}}
+    {{-- <li class="menu-item">
+        <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-envelope"></i>
+
+            <div class="text-truncate" data-i18n="Basic Inputs">Email</div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item ">
+                <a href="{{route('organization-email-config.index')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Config</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('organizationemail.create')}}" class="menu-link">
+                    <div class="text-truncate" data-i18n="Basic Inputs">Send Email</div>
+                </a>
+            </li>
+            <li class="menu-item ">
+                <a href="{{route('admin.whatsapp-messages.index')}}" class="menu-link">
+
+                    <div class="text-truncate" data-i18n="Form Elements">log</div>
+                </a>
+            </li>
+        </ul>
+    </li> --}}
+
     <li class="menu-item ">
         <a href="{{route('referral-source.index')}}" class="menu-link">
             <i class="menu-icon tf-icons bx bxs-report"></i>

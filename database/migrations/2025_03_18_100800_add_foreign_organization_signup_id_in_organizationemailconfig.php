@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropForeign('students_counselor_referred_id_foreign');
-            $table->dropColumn('counselor_referred_id');
+        Schema::table('organization_emailconfigs', function (Blueprint $table) {
+            $table->foreignId('organization_signup_id')->constrained('organization_signup')->onDelete('cascade');
         });
     }
 
@@ -22,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            //
+        Schema::table('organization_emailconfigs', function (Blueprint $table) {
+            
         });
     }
 };
