@@ -264,4 +264,10 @@
             <div class="text-truncate" data-i18n="Form Elements">Support Us</div>
         </a>
     </li>
+    <li class="menu-item ">
+        <a href="{{route('students.index')}}" class="menu-link">
+            <i class="menu-icon tf-icons bx bx-user"></i>
+            <div class="text-truncate" data-i18n="Form Elements">Student</div>
+        </a>
+    </li>
 </ul>

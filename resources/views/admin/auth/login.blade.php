@@ -7,6 +7,7 @@
             <input class="form-control" type="text" name="username" :value="old( 'username')" required autofocus
                 autocomplete="username" />
             <x-input-error :messages="$errors->get('username')" class="mt-2" />
+
         </div>
         {{--<img src="{{route('mfa_ext.file', ['file' => '1738490041.jpg'])}}" alt="">--}}
 

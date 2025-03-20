@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ArticleController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\StudentImportController;
 use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\UserActionController;
@@ -174,6 +175,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('force-delete/{id}', [ReferralSourceController::class, 'forceDeleteData'])->name('referral-source.force_delete');
     Route::delete('{id}', [ReferralSourceController::class, 'destroy'])->name('referral-source.destroy');
     Route::resource('contactus', ContactUsController::class);
+    Route::resource('students', StudentImportController::class);
+
     Route::get('verify-email', EmailVerificationPromptController::class)
         ->name('verification.notice');
 
