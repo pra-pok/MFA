@@ -13,10 +13,9 @@ use Illuminate\Routing\Controller as BaseController;
  *         title="My Free Admission Api",
  *         description="My Free Admission Api",
  *     )
- *
  * )
  * @OA\Server(
- *     url="http://127.0.0.1:8000/",
+ *     url=L5_SWAGGER_CONST_API_HOST,
  *     description="API server"
  * )
  */

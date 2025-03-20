@@ -124,4 +124,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+
+    'api_host' => env('API_HOST', 'https://api.myfreeadmission.com'),
 ];
