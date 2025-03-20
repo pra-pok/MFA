@@ -40,32 +40,69 @@ class StudentSinglePageRestApiController extends Controller
      *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\Response(
-     *         response=200,
-     *         description="A list of students",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Students retrieved successfully"),
-     *             @OA\Property(property="status", type="integer", example=1),
-     *             @OA\Property(property="data", type="array",
-     *                 @OA\Items(
-     *                     @OA\Property(property="id", type="integer", example=1),
-     *                     @OA\Property(property="name", type="string", example="John Doe"),
-     *                     @OA\Property(property="email", type="string", example="john.doe@example.com"),
-     *                     @OA\Property(property="address", type="string", example="123 Main St"),
-     *                     @OA\Property(property="phone", type="string", example="+1234567890"),
-     *                     @OA\Property(property="counselors", type="array",
-     *                         @OA\Items(
-     *                             @OA\Property(property="counselor_name", type="string", example="Jane Smith"),
-     *                             @OA\Property(property="counselor_email", type="string", example="jane.smith@example.com"),
-     *                             @OA\Property(property="counselor_role_name", type="string", example="Senior Counselor")
-     *                         )
-     *                     )
-     *                 )
-     *             ),
-     *             @OA\Property(property="pagination", type="object",
-     *                 @OA\Property(property="total", type="integer", example=100),
-     *                 @OA\Property(property="per_page", type="integer", example=10),
-     *                 @OA\Property(property="current_page", type="integer", example=1),
-     *                 @OA\Property(property="last_page", type="integer", example=10)
+     *          response=200,
+     *          description="Student details retrieved successfully",
+     *          @OA\JsonContent(
+     *              @OA\Property(property="message", type="string", example="Student details retrieved successfully"),
+     *              @OA\Property(property="status", type="integer", example=1, description="Status code indicating success"),
+     *              @OA\Property(property="data", type="object",
+     *                   @OA\Property(property="id", type="integer", example=1),
+     *                   @OA\Property(property="name", type="string", example="John Doe"),
+     *                   @OA\Property(property="email", type="string", example="john@gmail.com"),
+     *                   @OA\Property(property="address", type="string", example="123 Main St"),
+     *                   @OA\Property(property="phone", type="string", example="+1234567890"),
+     *                   @OA\Property(property="permanent_locality_id", type="integer", example=1),
+     *                   @OA\Property(property="counselors", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="counselor_name", type="string", example="Jane Smith"),
+     *                           @OA\Property(property="counselor_email", type="string", example="jane@gmail.com"),
+     *                          @OA\Property(property="counselor_role_name", type="string", example="Senior Counselor")
+     *                       )
+     *                   ),
+     *                   @OA\Property(property="document_files", type="array", description="Uploaded document files",
+     *                      @OA\Items(type="string", example="document1.pdf")
+     *                   ),
+     *                   @OA\Property(property="referral_sources", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="referral_source_name", type="string", example="Google"),
+     *                           @OA\Property(property="referral_source_description", type="string", example="Google search engine")
+     *                       )
+     *                   ),
+     *                   @OA\Property(property="course_interests", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="course_name", type="string", example="Computer Science"),
+     *                           @OA\Property(property="remarks", type="string", example="Interested in the course")
+     *                       )
+     *                   ),
+     *                   @OA\Property(property="follow up", type="array",
+     *                        @OA\Items(
+     *                            @OA\Property(property="date", type="string", example="date"),
+     *                            @OA\Property(property="next date", type="string", example="next date"),
+     *                            @OA\Property(property="status", type="string", example="visit")
+     *                        )
+     *                    ),
+     *                   @OA\Property(property="permanent_locality_name", type="string", example="municiplity"),
+     *                   @OA\Property(property="parent id", type="string", example="district"),
+     *                   @OA\Property(property="adminstrative area", type="string", example="province"),
+     *                   @OA\Property(property="country", type="string", example="nepal"),
+     *                   @OA\Property(property="guardian_info", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="name", type="string", example="Jane Doe"),
+     *                          @OA\Property(property="phone", type="string", example="9876543210"),
+     *                           @OA\Property(property="address", type="string", example="789 Parent St, City"),
+     *                         @OA\Property(property="type", type="string", example="Mother"),
+     *                           @OA\Property(property="current_guardian", type="boolean", example=true)
+     *                       )
+     *                   ),
+     *                   @OA\Property(property="education_history", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="name", type="string", example="XYZ High School"),
+     *                           @OA\Property(property="address", type="string", example="123 School St, City"),
+     *                           @OA\Property(property="marks_received", type="integer", example=85),
+     *                           @OA\Property(property="note", type="string", example="Graduated with honors"),
+     *                           @OA\Property(property="course_studied", type="string", example="Science")
+     *                       )
+     *                   )
      *             )
      *         )
      *     ),
@@ -84,14 +121,22 @@ class StudentSinglePageRestApiController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->query('per_page', 10);
-        $students = Student::orderBy('created_at', 'desc')->with(
-            'counselors',
-            'studentReferralSource',
-            'courseInterests',
-            'guardianInfo',
-            'educationHistory',
-            'studentDocuments'
-        )->paginate($perPage);
+        $students = Student::orderBy('created_at', 'desc')
+            ->with([
+                'counselors',
+                'studentReferralSource.referralSource',
+                'courseInterests.course' => function ($query) {
+                    $query->select('id', 'title');
+                },
+                'guardianInfo',
+                'educationHistory',
+                'studentDocuments',
+                'followUps.status',
+                'permanentLocality' => function ($query) {
+                    $query->with('administrativeArea.parent.country');
+                },
+            ])
+            ->paginate($perPage);
         if (!empty($students->studentDocuments)) {
             foreach ($students->studentDocuments as $document) {
                 if (!empty($document->document_file)) {
@@ -164,6 +209,7 @@ class StudentSinglePageRestApiController extends Controller
      *                     @OA\Property(property="remarks", type="string", description="Remarks for the course")
      *                 )
      *             ),
+     *
      *             @OA\Property(property="guardian_info", type="array", description="Guardian details",
      *                 @OA\Items(
      *                     @OA\Property(property="name", type="string", description="Guardian's name"),
@@ -827,12 +873,26 @@ class StudentSinglePageRestApiController extends Controller
      *                          @OA\Property(property="referral_source_description", type="string", example="Google search engine")
      *                      )
      *                  ),
-     *                  @OA\Property(property="course_interests", type="array",
+     *               @OA\Property(property="document_files", type="array", description="Uploaded document files",
+     *                    @OA\Items(type="string", example="document1.pdf")
+     *                   ),
+     *                 @OA\Property(property="course_interests", type="array",
      *                      @OA\Items(
      *                          @OA\Property(property="course_name", type="string", example="Computer Science"),
      *                          @OA\Property(property="remarks", type="string", example="Interested in the course")
      *                      )
      *                  ),
+     *                  @OA\Property(property="follow up", type="array",
+     *                       @OA\Items(
+     *                           @OA\Property(property="date", type="string", example="date"),
+     *                           @OA\Property(property="next date", type="string", example="next date"),
+     *                           @OA\Property(property="status", type="string", example="visit")
+     *                       )
+     *                   ),
+     *                    @OA\Property(property="permanent_locality_name", type="string", example="municiplity"),
+     *                    @OA\Property(property="parent id", type="string", example="district"),
+     *                    @OA\Property(property="adminstrative area", type="string", example="province"),
+     *                     @OA\Property(property="country", type="string", example="nepal"),
      *                  @OA\Property(property="guardian_info", type="array",
      *                      @OA\Items(
      *                          @OA\Property(property="name", type="string", example="Jane Doe"),
@@ -867,11 +927,17 @@ class StudentSinglePageRestApiController extends Controller
     {
         $student = Student::with([
             'counselors',
-            'studentReferralSource',
-            'courseInterests',
+            'studentReferralSource.referralSource',
+            'courseInterests.course' => function ($query) {
+                $query->select('id', 'title');
+            },
             'guardianInfo',
             'educationHistory',
-            'studentDocuments'
+            'studentDocuments',
+            'followUps.status',
+            'permanentLocality' => function ($query) {
+                $query->with('administrativeArea.parent.country');
+            },
         ])->find($id);
         if (!empty($student->studentDocuments)) {
             foreach ($student->studentDocuments as $document) {

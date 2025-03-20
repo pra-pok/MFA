@@ -26,6 +26,34 @@ class FollowUpRestApiController extends Controller
      *     security={{"Bearer": {}}},
      *     tags={"Follow Up"},
      *     summary="Retrieve a list of follow-ups",
+     *           @OA\Parameter(
+     *            name="per_page",
+     *            in="query",
+     *            description="Number of items per page (for pagination)",
+     *            required=false,
+     *            @OA\Schema(type="integer", default=10, example=10)
+     *        ),
+     *        @OA\Parameter(
+     *            name="limit",
+     *            in="query",
+     *            description="Number of items to retrieve",
+     *            required=false,
+     *            @OA\Schema(type="integer", example=5)
+     *        ),
+     *        @OA\Parameter(
+     *            name="offset",
+     *            in="query",
+     *            description="Number of items to skip (used with limit)",
+     *            required=false,
+     *            @OA\Schema(type="integer", example=0)
+     *        ),
+     *       @OA\Parameter(
+     *             name="keyword",
+     *             in="query",
+     *             description="Search by date",
+     *             required=false,
+     *             @OA\Schema(type="string", example="2025")
+     *         ),
      *     @OA\Response(
      *         response=200,
      *         description="Success",
@@ -51,21 +79,60 @@ class FollowUpRestApiController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = FollowUp::with('student:id,name,email' ,'status:id,title,color,note')->get();
-        if ($data->isEmpty()) {
+        try {
+            $perPage = $request->input('per_page', 10);
+            $limit = $request->input('limit');
+            $offset = $request->input('offset', 0);
+            $keyword = $request->input('keyword');
+
+            $query = FollowUp::with('student:id,name,email', 'status:id,title,color,note')->orderBy('id', 'desc');
+
+            if (!empty($keyword)) {
+                $query->where('date', 'LIKE', "%{$keyword}%")
+                    ->orWhere('note', 'LIKE', "%{$keyword}")
+                ; // Adjust the column name for date as needed
+            }
+            if ($limit) {
+                $total = $query->count();
+                $followUps = $query->limit($limit)->offset($offset)->get();
+                $meta = [
+                    'total' => $total,
+                    'per_page' => (int) $limit,
+                    'current_page' => (int) ceil(($offset + 1) / $limit),
+                    'last_page' => (int) ceil($total / $limit),
+                    'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                    'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
+                ];
+            } else {
+                $paginatedFollowUps = $query->paginate($perPage);
+                $meta = [
+                    'total' => $paginatedFollowUps->total(),
+                    'per_page' => $paginatedFollowUps->perPage(),
+                    'current_page' => $paginatedFollowUps->currentPage(),
+                    'last_page' => $paginatedFollowUps->lastPage(),
+                    'next_page_url' => $paginatedFollowUps->nextPageUrl(),
+                    'prev_page_url' => $paginatedFollowUps->previousPageUrl(),
+                ];
+                $followUps = collect($paginatedFollowUps->items());
+            }
+
             return response()->json([
-                'message' => 'No Follow Up data found',
-                'status' => 0,
-                'data' => []
-            ], 404);
+                'data' => $followUps,
+                'meta' => $meta,
+                'message' => 'Follow Up retrieved successfully',
+                'status' => 1,
+                'timestamp' => now()->toISOString(),
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => false,
+                'error' => $e->getMessage(),
+            ], 500);
         }
-        return response()->json([
-            'message' => 'Follow Up retrieved successfully',
-            'status' => 1,
-            'data' => $data
-        ], 200);
     }
     /**
      * Store a new Follow-Up

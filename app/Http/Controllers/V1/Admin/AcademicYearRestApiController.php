@@ -47,6 +47,13 @@ class AcademicYearRestApiController extends Controller
      *         required=false,
      *         @OA\Schema(type="integer", example=0)
      *     ),
+     *    @OA\Parameter(
+     *          name="keyword",
+     *          in="query",
+     *          description="Search by adcademic year",
+     *          required=false,
+     *          @OA\Schema(type="string", example="2025")
+     *      ),
      *     @OA\Response(
      *         response=200,
      *         description="Success",
@@ -93,7 +100,13 @@ class AcademicYearRestApiController extends Controller
             $perPage = $request->input('per_page', 10);
             $limit = $request->input('limit');
             $offset = $request->input('offset', 0);
+            $keyword = $request->input('keyword');
             $query = AcademicYear::query()->orderBy('id', 'desc');
+            if (!empty($keyword)) {
+                $query->where('name', 'LIKE', "%{$keyword}%")
+                    ->orWhere('effective_from', 'LIKE', "%{$keyword}%")
+                    ->orWhere('valid_till', 'LIKE', "%{$keyword}%");
+            }
             if ($limit) {
                 $total = $query->count();
                 $academicYears = $query->limit($limit)->offset($offset)->get();

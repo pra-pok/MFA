@@ -22,6 +22,7 @@ class Student extends Model
         'temporary_locality_id',
         'referral_source_id',
         'counselor_referred_id',
+        'tenant_id'
     ];
 
     protected $table = 'students';
@@ -89,5 +90,10 @@ class Student extends Model
     public function followUps()
     {
         return $this->hasMany(FollowUp::class, 'student_id');
+    }
+
+    public function tenants()
+    {
+        return $this->belongsTo(Tenant::class, 'tenant_id');
     }
 }

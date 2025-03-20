@@ -26,6 +26,34 @@ class CounselorReferralRestApiController extends Controller
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
      *     summary="Retrieve a list of counselor referrals",
+     *    @OA\Parameter(
+     *           name="per_page",
+     *           in="query",
+     *           description="Number of items per page (for pagination)",
+     *           required=false,
+     *           @OA\Schema(type="integer", default=10, example=10)
+     *       ),
+     *       @OA\Parameter(
+     *           name="limit",
+     *           in="query",
+     *           description="Number of items to retrieve",
+     *           required=false,
+     *           @OA\Schema(type="integer", example=5)
+     *       ),
+     *       @OA\Parameter(
+     *           name="offset",
+     *           in="query",
+     *           description="Number of items to skip (used with limit)",
+     *           required=false,
+     *           @OA\Schema(type="integer", example=0)
+     *       ),
+     *      @OA\Parameter(
+     *            name="keyword",
+     *            in="query",
+     *            description="Search by name",
+     *            required=false,
+     *            @OA\Schema(type="string", example="shivam")
+     *        ),
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -91,43 +119,78 @@ class CounselorReferralRestApiController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $counselor = CounselorReferrer::with('createds','updatedBy')->get();
-        if ($counselor->isEmpty()) {
-            return response()->json([
-                'message' => 'No Counselor Referral found',
-                'status' => 0,
-                'data' => []
-            ], 404);
-        }
-        // Format the data to include only id and username
-        $formattedCounselors = $counselor->map(function ($item) {
-            return [
-                'id' => $item->id,
-                'name' => $item->name,
-                'email' => $item->email,
-                'phone' => $item->phone,
-                'address' => $item->address,
-                'role' => $item->role,
-                'crated_at' => $item->created_at,
-                'updated_at' => $item->updated_at,
-                'created_by' => $item->createds ? [
-                    'id' => $item->createds->id,
-                    'username' => $item->createds->username,
-                ] : null,
-                'updated_by' => $item->updatedBy ? [
-                    'id' => $item->updatedBy->id,
-                    'username' => $item->updatedBy->username,
-                ] : null,
-            ];
-        });
+        try {
+            $perPage = $request->input('per_page', 10);
+            $limit = $request->input('limit');
+            $offset = $request->input('offset', 0);
+            $keyword = $request->input('keyword');
+            $query = CounselorReferrer::query()->orderBy('id', 'desc');
+            // Filter by keyword if present
+            if (!empty($keyword)) {
+                $query->where('name', 'LIKE', "%{$keyword}%");
+            }
+            // Fetch data based on limit or per_page
+            if ($limit) {
+                $total = $query->count();
+                $counselors = $query->limit($limit)->offset($offset)->get();
+                $meta = [
+                    'total' => $total,
+                    'per_page' => (int) $limit,
+                    'current_page' => (int) ceil(($offset + 1) / $limit),
+                    'last_page' => (int) ceil($total / $limit),
+                    'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                    'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
+                ];
+            } else {
+                $paginatedCounselors = $query->paginate($perPage);
+                $meta = [
+                    'total' => $paginatedCounselors->total(),
+                    'per_page' => $paginatedCounselors->perPage(),
+                    'current_page' => $paginatedCounselors->currentPage(),
+                    'last_page' => $paginatedCounselors->lastPage(),
+                    'next_page_url' => $paginatedCounselors->nextPageUrl(),
+                    'prev_page_url' => $paginatedCounselors->previousPageUrl(),
+                ];
+                $counselors = collect($paginatedCounselors->items());
+            }
+            // Format the data
+            $formattedCounselors = $counselors->map(function ($item) {
+                return [
+                    '_id' => $item->id,
+                    'name' => $item->name,
+                    'email' => $item->email,
+                    'phone' => $item->phone,
+                    'address' => $item->address,
+                    'role' => $item->role,
+                    'created_by' => $item->createds ? [
+                        'id' => $item->createds->id,
+                        'username' => $item->createds->username,
+                    ] : null,
+                    'updated_by' => $item->updatedBy ? [
+                        'id' => $item->updatedBy->id,
+                        'username' => $item->updatedBy->username,
+                    ] : null,
+                    'created_at' => $item->created_at->toDateTimeString(),
+                    'updated_at' => $item->updated_at->toDateTimeString(),
+                ];
+            });
 
-        return response()->json([
-            'message' => 'Counselor Referral retrieved successfully',
-            'status' => 1,
-            'data' => $formattedCounselors
-        ], 200);
+            return response()->json([
+                'message' => 'Counselor Referral retrieved successfully',
+                'status' => 1,
+                'data' => $formattedCounselors,
+                'meta' => $meta
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
     /**
      * Store a new Counselor Referral

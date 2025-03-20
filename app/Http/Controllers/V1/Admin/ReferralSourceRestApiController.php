@@ -26,6 +26,34 @@ class ReferralSourceRestApiController extends Controller
      *     security={{"Bearer": {}}},
      *     tags={"Referral Source"},
      *     summary="Retrieve a list of counselor Source",
+     *      @OA\Parameter(
+     *           name="per_page",
+     *           in="query",
+     *           description="Number of items per page (for pagination)",
+     *           required=false,
+     *           @OA\Schema(type="integer", default=10, example=10)
+     *       ),
+     *       @OA\Parameter(
+     *           name="limit",
+     *           in="query",
+     *           description="Number of items to retrieve",
+     *           required=false,
+     *           @OA\Schema(type="integer", example=5)
+     *       ),
+     *       @OA\Parameter(
+     *           name="offset",
+     *           in="query",
+     *           description="Number of items to skip (used with limit)",
+     *           required=false,
+     *           @OA\Schema(type="integer", example=0)
+     *       ),
+     *      @OA\Parameter(
+     *            name="keyword",
+     *            in="query",
+     *            description="Search by title",
+     *            required=false,
+     *            @OA\Schema(type="string", example="facebook")
+     *        ),
      *     @OA\Response(
      *         response=200,
      *         description="success",
@@ -66,22 +94,54 @@ class ReferralSourceRestApiController extends Controller
      *     )
      * )
      */
-    public function index()
+    public function index(Request $request)
     {
-        $statuses = ReferralSource::all();
-        if ($statuses->isEmpty()) {
+        try{
+            $perPage = $request->input('per_page', 10);
+            $limit = $request->input('limit');
+            $offset = $request->input('offset', 0);
+            $keyword = $request->input('keyword');
+            $query = ReferralSource::query()->orderBy('id', 'desc');
+            if (!empty($keyword)) {
+                $query->where('title', 'LIKE', "%{$keyword}%");
+            }
+            if ($limit) {
+                $total = $query->count();
+                $statuses = $query->limit($limit)->offset($offset)->get();
+                $meta = [
+                    'total' => $total,
+                    'per_page' => (int) $limit,
+                    'current_page' => (int) ceil(($offset + 1) / $limit),
+                    'last_page' => (int) ceil($total / $limit),
+                    'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                    'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
+                ];
+            } else {
+                $paginatedStatus = $query->paginate($perPage);
+                $meta = [
+                    'total' => $paginatedStatus->total(),
+                    'per_page' => $paginatedStatus->perPage(),
+                    'current_page' => $paginatedStatus->currentPage(),
+                    'last_page' => $paginatedStatus->lastPage(),
+                    'next_page_url' => $paginatedStatus->nextPageUrl(),
+                    'prev_page_url' => $paginatedStatus->previousPageUrl(),
+                ];
+                $statuses = collect($paginatedStatus->items());
+            }
             return response()->json([
-                'message' => 'No Referral Source found',
-                'status' => 0,
-                'data' => []
-            ], 404);
+                'data' => $statuses,
+                'meta' => $meta,
+                'message' => '',
+                'status' => true,
+                'timestamp' => now()->toISOString(),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Internal Server Error',
+                'status' => false,
+                'error' => $e->getMessage()
+            ], 500);
         }
-
-        return response()->json([
-            'message' => 'Referral Source retrieved successfully',
-            'status' => 1,
-            'data' => $statuses
-        ], 200);
     }
     /**
      * Store Referral Source

@@ -18,7 +18,7 @@
                         name="file"
                         id="file"
                         class="form-control required"
-                        accept=".xlsx, .xls, .csv"
+
                         required />
                 </div>
             </div>

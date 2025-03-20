@@ -13,8 +13,13 @@ class StudentImportController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            // Fetch the students data, order by created_at
             $data = Student::orderBy('created_at', 'desc')->get();
-            return response()->json($data);
+
+            // Return the data as a JSON response
+            return response()->json([
+                'data' => $data,
+            ]);
         }
         return view('admin.components.students.index');
     }
@@ -26,7 +31,7 @@ class StudentImportController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|mimes:xlsx,csv,xls'
+                'file' => 'required|mimes:xlsx,csv,xls,ods'
             ]);
             Excel::import(new StudentsImport, $request->file('file'));
             logUserAction(
@@ -48,6 +53,6 @@ class StudentImportController extends Controller
             );
             $request->session()->flash('alert-danger', "Import failed: {$exception->getMessage()}");
         }
-        return redirect()->route("{$this->base_route}.index");
+        return redirect()->route("students.index");
     }
 }

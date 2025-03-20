@@ -28,7 +28,6 @@
                                 <th>Email</th>
                                 <th class="text-center">Phone</th>
                                 <th class="text-center">Address</th>
-                                <th>Modified By/At</th>
                             </tr>
                         </thead>
                         <tbody class="table-border-bottom-0">
@@ -77,10 +76,7 @@
                 },
                 {
                     data: 'address'
-                },
-                {
-                    data: 'createds.username'
-                },
+                }
             ],
             rowCallback: function(row, data, index) {
                 const pageInfo = $('#datatable').DataTable().page.info();
@@ -88,11 +84,6 @@
                 const pageLength = pageInfo.length;
 
                 const serialNumber = (pageIndex * pageLength) + (index + 1);
-                const modifiedByName = data.updatedBy && data.updatedBy.username ?
-                    data.updatedBy.username :
-                    (data.createds && data.createds.username ? data.createds.username : 'Unknown');
-                const modifiedDate = data.updated_at ? new Date(data.updated_at).toLocaleString() : (data
-                    .created_at ? new Date(data.created_at).toLocaleString() : '');
                 const rowContent = `
             <td class="text-center">${serialNumber}</td>
             <td class="position-relative">
@@ -103,12 +94,10 @@
                         </button>
                 </div>
             </td>
-            <td>${data.slug}</td>
-            <td class="text-center">${data.rank}</td>
-            <td class="text-center">${statusBadge}</td>
+            <td>${data.email}</td>
+            <td class="text-center">${data.phone}</td>
             <td>
-                ${modifiedByName}<br>
-                ${modifiedDate}
+                ${data.address}
             </td>
            `;
                 $(row).html(rowContent);
@@ -116,13 +105,6 @@
             pageLength: 10,
             lengthMenu: [10, 25, 50, 75, 100, 150],
             responsive: true
-        });
-        $(document).ready(function() {
-            $('#name').on('input', function() {
-                var name = $(this).val();
-                var slug = name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-                $('#slug').val(slug);
-            });
         });
         $('#basicModal').on('hidden.bs.modal', function() {
             $(this).find('form')[0].reset();

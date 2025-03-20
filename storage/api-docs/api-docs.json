@@ -51,6 +51,16 @@
                             "type": "integer",
                             "example": 0
                         }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by adcademic year",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2025"
+                        }
                     }
                 ],
                 "responses": {
@@ -1516,6 +1526,49 @@
                 "summary": "Retrieve a list of counselor referrals",
                 "description": "Get List Counselor Referral",
                 "operationId": "fba0483041cb17c9724d4f7ccb6dbe1d",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "shivam"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "success",
@@ -2354,6 +2407,49 @@
                 "summary": "Retrieve a list of follow-ups",
                 "description": "Get List of Follow Up",
                 "operationId": "94ff9b93d86199313b14956b1621f507",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by date",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2025"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -3138,6 +3234,49 @@
                 "summary": "Retrieve a list of counselor Source",
                 "description": "Get List Referral Source",
                 "operationId": "03bf0298885b16734c83f3858e0c7b7c",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by title",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "facebook"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "success",
@@ -3975,6 +4114,49 @@
                 "summary": "Retrieve a list of Status",
                 "description": "Get List Status",
                 "operationId": "ced9df959b187ac83cd8e3ce5b460cc6",
+                "parameters": [
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page (for pagination)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by title",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "visit"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "success",
@@ -6500,84 +6682,197 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A list of students",
+                        "description": "Student details retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Students retrieved successfully"
+                                            "example": "Student details retrieved successfully"
                                         },
                                         "status": {
+                                            "description": "Status code indicating success",
                                             "type": "integer",
                                             "example": 1
                                         },
                                         "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "John Doe"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "john.doe@example.com"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "123 Main St"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "+1234567890"
-                                                    },
-                                                    "counselors": {
-                                                        "type": "array",
-                                                        "items": {
-                                                            "properties": {
-                                                                "counselor_name": {
-                                                                    "type": "string",
-                                                                    "example": "Jane Smith"
-                                                                },
-                                                                "counselor_email": {
-                                                                    "type": "string",
-                                                                    "example": "jane.smith@example.com"
-                                                                },
-                                                                "counselor_role_name": {
-                                                                    "type": "string",
-                                                                    "example": "Senior Counselor"
-                                                                }
-                                                            },
-                                                            "type": "object"
-                                                        }
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        },
-                                        "pagination": {
                                             "properties": {
-                                                "total": {
-                                                    "type": "integer",
-                                                    "example": 100
-                                                },
-                                                "per_page": {
-                                                    "type": "integer",
-                                                    "example": 10
-                                                },
-                                                "current_page": {
+                                                "id": {
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "last_page": {
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john@gmail.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "permanent_locality_id": {
                                                     "type": "integer",
-                                                    "example": 10
+                                                    "example": 1
+                                                },
+                                                "counselors": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "counselor_name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            },
+                                                            "counselor_email": {
+                                                                "type": "string",
+                                                                "example": "jane@gmail.com"
+                                                            },
+                                                            "counselor_role_name": {
+                                                                "type": "string",
+                                                                "example": "Senior Counselor"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "document_files": {
+                                                    "description": "Uploaded document files",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "document1.pdf"
+                                                    }
+                                                },
+                                                "referral_sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "referral_source_name": {
+                                                                "type": "string",
+                                                                "example": "Google"
+                                                            },
+                                                            "referral_source_description": {
+                                                                "type": "string",
+                                                                "example": "Google search engine"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "course_interests": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "course_name": {
+                                                                "type": "string",
+                                                                "example": "Computer Science"
+                                                            },
+                                                            "remarks": {
+                                                                "type": "string",
+                                                                "example": "Interested in the course"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "follow up": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "date"
+                                                            },
+                                                            "next date": {
+                                                                "type": "string",
+                                                                "example": "next date"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "visit"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "permanent_locality_name": {
+                                                    "type": "string",
+                                                    "example": "municiplity"
+                                                },
+                                                "parent id": {
+                                                    "type": "string",
+                                                    "example": "district"
+                                                },
+                                                "adminstrative area": {
+                                                    "type": "string",
+                                                    "example": "province"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "nepal"
+                                                },
+                                                "guardian_info": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Doe"
+                                                            },
+                                                            "phone": {
+                                                                "type": "string",
+                                                                "example": "9876543210"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "789 Parent St, City"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Mother"
+                                                            },
+                                                            "current_guardian": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "education_history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "XYZ High School"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "123 School St, City"
+                                                            },
+                                                            "marks_received": {
+                                                                "type": "integer",
+                                                                "example": 85
+                                                            },
+                                                            "note": {
+                                                                "type": "string",
+                                                                "example": "Graduated with honors"
+                                                            },
+                                                            "course_studied": {
+                                                                "type": "string",
+                                                                "example": "Science"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
                                                 }
                                             },
                                             "type": "object"
@@ -7043,6 +7338,14 @@
                                                         "type": "object"
                                                     }
                                                 },
+                                                "document_files": {
+                                                    "description": "Uploaded document files",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "document1.pdf"
+                                                    }
+                                                },
                                                 "course_interests": {
                                                     "type": "array",
                                                     "items": {
@@ -7058,6 +7361,42 @@
                                                         },
                                                         "type": "object"
                                                     }
+                                                },
+                                                "follow up": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "date"
+                                                            },
+                                                            "next date": {
+                                                                "type": "string",
+                                                                "example": "next date"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "visit"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "permanent_locality_name": {
+                                                    "type": "string",
+                                                    "example": "municiplity"
+                                                },
+                                                "parent id": {
+                                                    "type": "string",
+                                                    "example": "district"
+                                                },
+                                                "adminstrative area": {
+                                                    "type": "string",
+                                                    "example": "province"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "nepal"
                                                 },
                                                 "guardian_info": {
                                                     "type": "array",
