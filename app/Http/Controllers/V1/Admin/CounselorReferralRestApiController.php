@@ -4,6 +4,8 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CounselorReferrer;
+use App\Models\Target;
+use App\Models\TargetGroup;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -56,67 +58,62 @@ class CounselorReferralRestApiController extends Controller
      *        ),
      *     @OA\Response(
      *         response=200,
-     *         description="success",
-     *         @OA\JsonContent(
+     *         description="Successful operation",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Counselor Referral found"),
+     *             @OA\Property(property="status", type="integer", example=1),
      *             @OA\Property(
-     *                 type="array",
-     *                 property="rows",
-     *                 @OA\Items(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="+1234567890"),
+     *                 @OA\Property(property="address", type="string", example="123 Street Name"),
+     *                 @OA\Property(property="role", type="string", example="Counselor"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2022-01-01T00:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2022-01-02T00:00:00Z"),
+     *                 @OA\Property(
+     *                     property="created_by",
      *                     type="object",
-     *                     @OA\Property(
-     *                         property="_id",
-     *                         type="number",
-     *                         example="1"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="name",
-     *                         type="string",
-     *                         example="example name"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="email",
-     *                         type="string",
-     *                         example="example email"
-     *                     ),
-     *                      @OA\Property(
-     *                         property="phone",
-     *                         type="string",
-     *                         example="example phone"
-     *                     ),
-     *                 @OA\Property(
-     *                    property="address",
-     *                    type="string",
-     *                    example="example address"
-     *                  ),
-     *                  @OA\Property(
-     *                   property="role",
-     *                   type="string",
-     *                   example="example role"
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="username", type="string", example="admin")
      *                 ),
      *                 @OA\Property(
-     *                property="created_by",
-     *                type="string",
-     *                example="example created_by"
+     *                     property="updated_by",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=2),
+     *                     @OA\Property(property="username", type="string", example="manager")
      *                 ),
-     *              @OA\Property(
-     *              property="updated_by",
-     *              type="string",
-     *              example="example updated_by"
-     *             ),
-     *                     @OA\Property(
-     *                         property="updated_at",
-     *                         type="string",
-     *                         example="2021-12-11T09:25:53.000000Z"
-     *                     ),
-     *                     @OA\Property(
-     *                         property="created_at",
-     *                         type="string",
-     *                         example="2021-12-11T09:25:53.000000Z"
+     *                 @OA\Property(
+     *                     property="target_groups",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=4),
+     *                         @OA\Property(property="academic_year_id", type="integer", example=1),
+     *                         @OA\Property(property="academic_year_name", type="string", example="2021-2022"),
+     *                         @OA\Property(
+     *                             property="targets",
+     *                             type="array",
+     *                             @OA\Items(
+     *                                 type="object",
+     *                                 @OA\Property(property="id", type="integer", example=7),
+     *                                 @OA\Property(property="min_target", type="integer", example=20),
+     *                                 @OA\Property(property="max_target", type="integer", example=30),
+     *                                 @OA\Property(property="amount_percentage", type="string", example="40%"),
+     *                                 @OA\Property(property="type", type="string", example="Percentage"),
+     *                                 @OA\Property(property="per_student", type="integer", example=1)
+     *                             )
+     *                         )
      *                     )
      *                 )
      *             )
      *         )
-     *     )
+     *     ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Not Found")
      * )
      */
     public function index(Request $request)
@@ -126,11 +123,15 @@ class CounselorReferralRestApiController extends Controller
             $limit = $request->input('limit');
             $offset = $request->input('offset', 0);
             $keyword = $request->input('keyword');
-            $query = CounselorReferrer::query()->orderBy('id', 'desc');
+
+            $query = CounselorReferrer::with(['targetGroups.academicYear', 'targetGroups.targets', 'createds', 'updatedBy'])
+                ->orderBy('id', 'desc');
+
             // Filter by keyword if present
             if (!empty($keyword)) {
                 $query->where('name', 'LIKE', "%{$keyword}%");
             }
+
             // Fetch data based on limit or per_page
             if ($limit) {
                 $total = $query->count();
@@ -155,6 +156,7 @@ class CounselorReferralRestApiController extends Controller
                 ];
                 $counselors = collect($paginatedCounselors->items());
             }
+
             // Format the data
             $formattedCounselors = $counselors->map(function ($item) {
                 return [
@@ -172,6 +174,23 @@ class CounselorReferralRestApiController extends Controller
                         'id' => $item->updatedBy->id,
                         'username' => $item->updatedBy->username,
                     ] : null,
+                    'target_groups' => $item->targetGroups->map(function ($group) {
+                        return [
+                            'id' => $group->id,
+                            'academic_year_id' => $group->academic_year_id,
+                            'academic_year_name' => $group->academicYear ? $group->academicYear->name : null,
+                            'targets' => $group->targets->map(function ($target) {
+                                return [
+                                    'id' => $target->id,
+                                    'min_target' => $target->min_target,
+                                    'max_target' => $target->max_target,
+                                    'amount_percentage' => $target->amount_percentage,
+                                    'type' => $target->type,
+                                    'per_student' => $target->per_student,
+                                ];
+                            }),
+                        ];
+                    }),
                     'created_at' => $item->created_at->toDateTimeString(),
                     'updated_at' => $item->updated_at->toDateTimeString(),
                 ];
@@ -192,13 +211,15 @@ class CounselorReferralRestApiController extends Controller
             ], 500);
         }
     }
+
     /**
-     * Store a new Counselor Referral
-     * @OA\Post (
+     * Store a new Counselor Referral with Targets
+     *
+     * @OA\Post(
      *     path="/api/v1/counselor/referral",
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
-     *     summary="Create a new counselor referral",
+     *     summary="Create a new counselor referral along with multiple targets",
      *     @OA\RequestBody(
      *         @OA\MediaType(
      *             mediaType="application/json",
@@ -208,32 +229,69 @@ class CounselorReferralRestApiController extends Controller
      *                 @OA\Property(property="phone", type="string"),
      *                 @OA\Property(property="address", type="string"),
      *                 @OA\Property(property="role", type="string", enum={"Counselor", "Agent", "Referrer"}),
-     *                 @OA\Property(property="created_by", type="integer"),
+     *                 @OA\Property(property="academic_year_id", type="integer"),
+     *                 @OA\Property(property="targets", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="min_target", type="integer"),
+     *                         @OA\Property(property="max_target", type="integer"),
+     *                         @OA\Property(property="amount_percentage", type="string"),
+     *                         @OA\Property(property="type", type="string"),
+     *                         @OA\Property(property="per_student", type="boolean")
+     *                     )
+     *                 ),
      *                 example={
-     *                     "name": "example name",
-     *                     "email": "example email",
-     *                     "phone": "example phone",
-     *                     "address": "example address",
+     *                     "name": "John Doe",
+     *                     "email": "johndoe@example.com",
+     *                     "phone": "+1234567890",
+     *                     "address": "123 Street, City",
      *                     "role": "Counselor",
-     *                     "created_by": 1
+     *                     "academic_year_id": 1,
+     *                     "targets": {
+     *                         {
+     *                             "min_target": 10,
+     *                             "max_target": 20,
+     *                             "amount_percentage": "10%",
+     *                             "type": "Percentage",
+     *                             "per_student": 1
+     *                         },
+     *                         {
+     *                             "min_target": 21,
+     *                             "max_target": 30,
+     *                             "amount_percentage": "15000",
+     *                             "type": "Amount",
+     *                             "per_student": 0
+     *                         }
+     *                     }
      *                 }
      *             )
      *         )
      *     ),
      *     @OA\Response(
      *         response=201,
-     *         description="Created successfully",
+     *         description="Counselor Referral and Targets created successfully",
      *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="number", example=1),
-     *             @OA\Property(property="name", type="string", example="name"),
-     *             @OA\Property(property="email", type="string", example="email"),
-     *             @OA\Property(property="phone", type="string", example="phone"),
-     *             @OA\Property(property="address", type="string", example="address"),
-     *             @OA\Property(property="role", type="string", example="Counselor"),
-     *             @OA\Property(property="created_by", type="number", example=1),
-     *             @OA\Property(property="updated_by", type="number", example=1),
-     *             @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *             @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z")
+     *             @OA\Property(property="message", type="string", example="Counselor Referral added successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="+1234567890"),
+     *                 @OA\Property(property="role", type="string", example="Counselor"),
+     *                 @OA\Property(property="created_by", type="integer", example=1),
+     *                 @OA\Property(property="updated_by", type="integer", example=1),
+     *                 @OA\Property(property="created_at", type="string", example="2025-03-21T09:25:53.000000Z"),
+     *                 @OA\Property(property="updated_at", type="string", example="2025-03-21T09:25:53.000000Z"),
+     *                 @OA\Property(property="targets", type="array",
+     *                     @OA\Items(
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="min_target", type="integer", example=10),
+     *                         @OA\Property(property="max_target", type="integer", example=20),
+     *                         @OA\Property(property="amount_percentage", type="string", example="10%"),
+     *                         @OA\Property(property="type", type="string", example="Percentage"),
+     *                         @OA\Property(property="per_student", type="boolean", example=1)
+     *                     )
+     *                 )
+     *             )
      *         )
      *     ),
      *     @OA\Response(
@@ -243,6 +301,14 @@ class CounselorReferralRestApiController extends Controller
      *             @OA\Property(property="message", type="string", example="Validation failed"),
      *             @OA\Property(property="errors", type="object")
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Internal Server Error"),
+     *             @OA\Property(property="error", type="string", example="Exception message here")
+     *         )
      *     )
      * )
      */
@@ -251,8 +317,8 @@ class CounselorReferralRestApiController extends Controller
         $organization = Auth::user();
         $request->request->add(['created_by' =>$organization->id]);
         $request->request->add(['updated_by' =>$organization->id]);
-        //$data['role'] = ['Counselor' => 'Counselor', 'Agent' => 'Agent', 'Referrer' => 'Referrer'];
         try {
+            // Validate CounselorReferrer Data
             $validatedData = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'nullable|email|max:255',
@@ -260,18 +326,50 @@ class CounselorReferralRestApiController extends Controller
                 'address' => 'nullable|string',
                 'role' => 'nullable|string|in:Counselor,Agent,Referrer',
                 'created_by' => 'nullable',
+                'academic_year_id' => 'required|integer|exists:academic_years,id',
+                'targets' => 'required|array|min:1',
+                'targets.*.min_target' => 'required|integer|min:1',
+                'targets.*.max_target' => 'required|integer|gt:targets.*.min_target',
+                'targets.*.amount_percentage' => 'nullable|string',
+                'targets.*.type' => 'nullable|string',
+                'targets.*.per_student' => 'nullable|boolean',
             ]);
-            $data = CounselorReferrer::create($validatedData);
+
+            DB::beginTransaction();
+
+            // Create CounselorReferrer
+            $counselorReferrer = CounselorReferrer::create($validatedData);
+
+            // Create TargetGroup
+            $targetGroup = TargetGroup::create([
+                'counselor_referrer_id' => $counselorReferrer->id,
+                'academic_year_id' => $validatedData['academic_year_id'],
+            ]);
+
+            // Add Targets
+            foreach ($validatedData['targets'] as $targetData) {
+                $targetGroup->targets()->create([
+                    'min_target' => $targetData['min_target'],
+                    'max_target' => $targetData['max_target'],
+                    'amount_percentage' => $targetData['amount_percentage'] ?? null,
+                    'type' => $targetData['type'] ?? null,
+                    'per_student' => $targetData['per_student'] ?? null,
+                ]);
+            }
+            DB::commit();
             return response()->json([
-                'message' => 'Counselor Referral added successfully',
-                'data' => $data,
+                'message' => 'Counselor Referral and Targets added successfully',
+                'data' => $counselorReferrer->load('targetGroups.targets'),
             ], 201);
+
         } catch (ValidationException $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
         } catch (Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'message' => 'Internal Server Error',
                 'error' => $e->getMessage()
@@ -285,7 +383,7 @@ class CounselorReferralRestApiController extends Controller
 
     /**
      * Update Counselor Referral
-     * @OA\Put (
+     * @OA\Put(
      *     path="/api/v1/counselor/referral/{id}",
      *     security={{"Bearer": {}}},
      *     tags={"Counselor Referral"},
@@ -300,61 +398,143 @@ class CounselorReferralRestApiController extends Controller
      *         @OA\MediaType(
      *             mediaType="application/json",
      *             @OA\Schema(
+     *                 type="object",
      *                 @OA\Property(
-     *                      type="object",
-     *                      @OA\Property(
-     *                          property="name",
-     *                          type="string"
-     *                      ),
-     *                      @OA\Property(
-     *                          property="content",
-     *                          type="string"
-     *                      )
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="email",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="phone",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="address",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="role",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="target_groups",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(
+     *                             property="academic_year_id",
+     *                             type="integer"
+     *                         ),
+     *                         @OA\Property(
+     *                             property="targets",
+     *                             type="array",
+     *                             @OA\Items(
+     *                                 type="object",
+     *                                 @OA\Property(
+     *                                     property="min_target",
+     *                                     type="integer"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="max_target",
+     *                                     type="integer"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="amount_percentage",
+     *                                     type="integer"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="type",
+     *                                     type="string"
+     *                                 ),
+     *                                 @OA\Property(
+     *                                     property="per_student",
+     *                                     type="integer"
+     *                                 )
+     *                             )
+     *                         )
+     *                     )
      *                 ),
      *                 example={
-     *                     "name":"example name",
-     *                     "email":"example email",
-     *                     "phone":"example phone",
-     *                     "address":"example address",
-     *                     "role":"example role",
-     *                     "created_by":"example created_by",
-     *                     "updated_by":"example updated_by"
-     *                }
+     *                     "name": "example name",
+     *                     "email": "example email",
+     *                     "phone": "example phone",
+     *                     "address": "example address",
+     *                     "role": "example role",
+     *                     "target_groups":
+     *                         {
+     *                             "academic_year_id": 1,
+     *                             "targets":
+     *                                 {
+     *                                     "min_target": 50,
+     *                                     "max_target": 100,
+     *                                     "amount_percentage": 10,
+     *                                     "type": "percentage",
+     *                                     "per_student": 5
+     *                                 }
+     *
+     *                         }
+     *
+     *                 }
      *             )
      *         )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="success",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="id", type="number", example=1),
-     *              @OA\Property(property="name", type="string", example="name"),
-     *              @OA\Property(property="email", type="string", example="email"),
-     *              @OA\Property(property="phone", type="string", example="phone"),
-     *              @OA\Property(property="address", type="string", example="address"),
-     *              @OA\Property(property="role", type="string", example="role"),
-     *              @OA\Property(property="created_by", type="number", example="created_by"),
-     *              @OA\Property(property="updated_by", type="number", example="updated_by"),
-     *              @OA\Property(property="updated_at", type="string", example="2021-12-11T09:25:53.000000Z"),
-     *              @OA\Property(property="created_at", type="string", example="2021-12-11T09:25:53.000000Z")
-     *          )
-     *      )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="success",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", example="johndoe@example.com"),
+     *             @OA\Property(property="phone", type="string", example="+1234567890"),
+     *             @OA\Property(property="role", type="string", example="Counselor"),
+     *             @OA\Property(property="created_by", type="integer", example=1),
+     *             @OA\Property(property="updated_by", type="integer", example=1),
+     *             @OA\Property(property="created_at", type="string", example="2025-03-21T09:25:53.000000Z"),
+     *             @OA\Property(property="updated_at", type="string", example="2025-03-21T09:25:53.000000Z"),
+     *             @OA\Property(
+     *                 property="targets",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="min_target", type="integer", example=10),
+     *                     @OA\Property(property="max_target", type="integer", example=20),
+     *                     @OA\Property(property="amount_percentage", type="string", example="10%"),
+     *                     @OA\Property(property="type", type="string", example="Percentage"),
+     *                     @OA\Property(property="per_student", type="boolean", example=1)
+     *                 )
+     *             )
+     *         )
+     *     )
      * )
      */
     public function update(Request $request, $id)
     {
+        // Authentication and adding user IDs for the operation
         $organization = Auth::user();
-        $request->request->add(['created_by' =>$organization->id]);
-        $request->request->add(['updated_by' =>$organization->id]);
+        $request->request->add(['created_by' => $organization->id]);
+        $request->request->add(['updated_by' => $organization->id]);
+
+        // Validate the incoming request data
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'required|string|max:255',
             'address' => 'nullable|string',
             'role' => 'nullable|string',
-            'created_by' => 'nullable',
-            'updated_by' => 'nullable',
+            'target_groups' => 'required|array',  // Ensure target_groups is an array
+            'target_groups.*.academic_year_id' => 'required|integer|exists:academic_years,id',
+            'target_groups.*.targets' => 'required|array',
+            'target_groups.*.targets.*.min_target' => 'required|integer',
+            'target_groups.*.targets.*.max_target' => 'required|integer',
+            'target_groups.*.targets.*.amount_percentage' => 'required|integer',
+            'target_groups.*.targets.*.type' => 'required|string',
+            'target_groups.*.targets.*.per_student' => 'required|integer',
         ]);
+
+        // Find the counselor referral record
         $data = CounselorReferrer::find($id);
         if (!$data) {
             return response()->json([
@@ -362,10 +542,39 @@ class CounselorReferralRestApiController extends Controller
                 'status' => 0
             ], 404);
         }
+
+        // Begin database transaction
         DB::beginTransaction();
         try {
+            // Update the counselor referral data
             $data->update($validatedData);
+
+            // Handle target group and target updates or additions
+            foreach ($validatedData['target_groups'] as $groupData) {
+                // Update or create target group
+                $group = $data->targetGroups()->updateOrCreate(
+                    ['academic_year_id' => $groupData['academic_year_id']],
+                    ['academic_year_id' => $groupData['academic_year_id']]
+                );
+
+                // Handle targets for the group
+                foreach ($groupData['targets'] as $targetData) {
+                    $group->targets()->updateOrCreate(
+                        ['id' => $targetData['id'] ?? null], // Use the target ID if exists
+                        [
+                            'min_target' => $targetData['min_target'],
+                            'max_target' => $targetData['max_target'],
+                            'amount_percentage' => $targetData['amount_percentage'],
+                            'type' => $targetData['type'],
+                            'per_student' => $targetData['per_student'],
+                        ]
+                    );
+                }
+            }
+
+            // Commit the transaction
             DB::commit();
+
             return response()->json([
                 'message' => 'Counselor Referral updated successfully',
                 'status' => 1,
@@ -440,28 +649,87 @@ class CounselorReferralRestApiController extends Controller
     /**
      * @OA\Get(
      *     path="/api/v1/counselor/referral/{id}",
-     *      security={{"Bearer": {}}},
-     *      tags={"Counselor Referral"},
-     *      summary="Get single  Counselor Referral",
-     *      description="Returns list of Counselor Referral",
-     *          @OA\Parameter(
-     *          in="path",
-     *          name="id",
-     *          required=true,
-     *          @OA\Schema(type="string")
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="successful operation"
-     *       ),
-     *       @OA\Response(response=400, description="Bad request"),
-     *     )
+     *     security={{"Bearer": {}}},
+     *     tags={"Counselor Referral"},
+     *     summary="Get single Counselor Referral",
+     *     description="Returns a Counselor Referral with target groups, academic year, and targets",
+     *     @OA\Parameter(
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\Schema(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Counselor Referral found"),
+     *             @OA\Property(property="status", type="integer", example=1),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="email", type="string", example="john@example.com"),
+     *                 @OA\Property(property="phone", type="string", example="+1234567890"),
+     *                 @OA\Property(property="address", type="string", example="123 Street Name"),
+     *                 @OA\Property(property="role", type="string", example="Counselor"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2022-01-01T00:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2022-01-02T00:00:00Z"),
+     *                 @OA\Property(
+     *                     property="created_by",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="username", type="string", example="admin")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="updated_by",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=2),
+     *                     @OA\Property(property="username", type="string", example="manager")
+     *                 ),
+     *                 @OA\Property(
+     *                     property="target_groups",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=4),
+     *                         @OA\Property(property="academic_year_id", type="integer", example=1),
+     *                         @OA\Property(property="academic_year_name", type="string", example="2021-2022"),
+     *                         @OA\Property(
+     *                             property="targets",
+     *                             type="array",
+     *                             @OA\Items(
+     *                                 type="object",
+     *                                 @OA\Property(property="id", type="integer", example=7),
+     *                                 @OA\Property(property="min_target", type="integer", example=20),
+     *                                 @OA\Property(property="max_target", type="integer", example=30),
+     *                                 @OA\Property(property="amount_percentage", type="string", example="40%"),
+     *                                 @OA\Property(property="type", type="string", example="Percentage"),
+     *                                 @OA\Property(property="per_student", type="integer", example=1)
+     *                             )
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=400, description="Bad request"),
+     *     @OA\Response(response=404, description="Not Found")
+     * )
      */
     public function show($id)
     {
-        $data = CounselorReferrer::with(['createds', 'updatedBy'])->findOrFail($id);
+        // Fetching the Counselor Referrer data along with related target groups, academic year, and targets
+        $data = CounselorReferrer::with([
+            'targetGroups.academicYear',
+            'targetGroups.targets',
+            'createds',
+            'updatedBy'
+        ])->findOrFail($id);
 
-        // Format the data properly
+        // Formatting the response data
         $formattedCounselor = [
             'id' => $data->id,
             'name' => $data->name,
@@ -479,8 +747,26 @@ class CounselorReferralRestApiController extends Controller
                 'id' => $data->updatedBy->id,
                 'username' => $data->updatedBy->username,
             ] : null,
+            'target_groups' => $data->targetGroups->map(function ($group) {
+                return [
+                    'id' => $group->id,
+                    'academic_year_id' => $group->academic_year_id,
+                    'academic_year_name' => $group->academicYear ? $group->academicYear->name : null,
+                    'targets' => $group->targets->map(function ($target) {
+                        return [
+                            'id' => $target->id,
+                            'min_target' => $target->min_target,
+                            'max_target' => $target->max_target,
+                            'amount_percentage' => $target->amount_percentage,
+                            'type' => $target->type,
+                            'per_student' => $target->per_student,
+                        ];
+                    }),
+                ];
+            }),
         ];
 
+        // Return the formatted response in JSON
         return response()->json([
             'message' => 'Counselor Referral found',
             'status' => 1,

@@ -22,7 +22,7 @@ class CounselorReferrer extends Model
         'updated_by',
     ];
 
-    
+
     public function createds(){
         return $this->belongsTo(OrganizationSignup::class,'created_by','id');
     }
@@ -38,6 +38,11 @@ class CounselorReferrer extends Model
             'counselor_referred_id',
             'student_id'
         );
+    }
+
+    public function targetGroups()
+    {
+        return $this->hasMany(TargetGroup::class, 'counselor_referrer_id'); // Adjust FK if different
     }
 
 }

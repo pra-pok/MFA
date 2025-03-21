@@ -27,6 +27,6 @@ class TargetGroup extends Model
     }
     public function academicYear()
     {
-        return $this->belongsTo(AcademicYear::class, 'academic_year_id');
+        return $this->belongsTo(AcademicYear::class, 'academic_year_id', 'id');
     }
 }

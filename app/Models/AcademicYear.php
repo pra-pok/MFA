@@ -28,5 +28,10 @@ class AcademicYear extends Model
     public function updatedBy(){
         return $this->belongsTo(OrganizationSignup::class,'updated_by','id');
     }
+    public function targetGroups()
+    {
+        return $this->hasMany(TargetGroup::class, 'academic_year_id');
+    }
+
 
 }

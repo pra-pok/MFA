@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://xyz.com",
+            "url": "http://127.0.0.1:8000/",
             "description": "API server"
         }
     ],
@@ -1221,6 +1221,26 @@
                             "default": 10,
                             "example": 10
                         }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of items to retrieve",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
                     }
                 ],
                 "responses": {
@@ -1571,64 +1591,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "success",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "rows": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "_id": {
-                                                        "type": "number",
-                                                        "example": "1"
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "example name"
-                                                    },
-                                                    "email": {
-                                                        "type": "string",
-                                                        "example": "example email"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "example phone"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "example address"
-                                                    },
-                                                    "role": {
-                                                        "type": "string",
-                                                        "example": "example role"
-                                                    },
-                                                    "created_by": {
-                                                        "type": "string",
-                                                        "example": "example created_by"
-                                                    },
-                                                    "updated_by": {
-                                                        "type": "string",
-                                                        "example": "example updated_by"
-                                                    },
-                                                    "updated_at": {
-                                                        "type": "string",
-                                                        "example": "2021-12-11T09:25:53.000000Z"
-                                                    },
-                                                    "created_at": {
-                                                        "type": "string",
-                                                        "example": "2021-12-11T09:25:53.000000Z"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 },
                 "security": [
@@ -1643,8 +1612,8 @@
                 "tags": [
                     "Counselor Referral"
                 ],
-                "summary": "Create a new counselor referral",
-                "description": "Store a new Counselor Referral",
+                "summary": "Create a new counselor referral along with multiple targets",
+                "description": "Store a new Counselor Referral with Targets",
                 "operationId": "af0f1ceeec9c7da9ac20741613e11f18",
                 "requestBody": {
                     "content": {
@@ -1671,18 +1640,57 @@
                                             "Referrer"
                                         ]
                                     },
-                                    "created_by": {
+                                    "academic_year_id": {
                                         "type": "integer"
+                                    },
+                                    "targets": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "min_target": {
+                                                    "type": "integer"
+                                                },
+                                                "max_target": {
+                                                    "type": "integer"
+                                                },
+                                                "amount_percentage": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "per_student": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object",
                                 "example": {
-                                    "name": "example name",
-                                    "email": "example email",
-                                    "phone": "example phone",
-                                    "address": "example address",
+                                    "name": "John Doe",
+                                    "email": "johndoe@example.com",
+                                    "phone": "+1234567890",
+                                    "address": "123 Street, City",
                                     "role": "Counselor",
-                                    "created_by": 1
+                                    "academic_year_id": 1,
+                                    "targets": [
+                                        {
+                                            "min_target": 10,
+                                            "max_target": 20,
+                                            "amount_percentage": "10%",
+                                            "type": "Percentage",
+                                            "per_student": 1
+                                        },
+                                        {
+                                            "min_target": 21,
+                                            "max_target": 30,
+                                            "amount_percentage": "15000",
+                                            "type": "Amount",
+                                            "per_student": 0
+                                        }
+                                    ]
                                 }
                             }
                         }
@@ -1690,50 +1698,87 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Created successfully",
+                        "description": "Counselor Referral and Targets created successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "name": {
+                                        "message": {
                                             "type": "string",
-                                            "example": "name"
+                                            "example": "Counselor Referral added successfully"
                                         },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "email"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "phone"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "address"
-                                        },
-                                        "role": {
-                                            "type": "string",
-                                            "example": "Counselor"
-                                        },
-                                        "created_by": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "updated_by": {
-                                            "type": "number",
-                                            "example": 1
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "johndoe@example.com"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "role": {
+                                                    "type": "string",
+                                                    "example": "Counselor"
+                                                },
+                                                "created_by": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "updated_by": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025-03-21T09:25:53.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025-03-21T09:25:53.000000Z"
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "min_target": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            },
+                                                            "max_target": {
+                                                                "type": "integer",
+                                                                "example": 20
+                                                            },
+                                                            "amount_percentage": {
+                                                                "type": "string",
+                                                                "example": "10%"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Percentage"
+                                                            },
+                                                            "per_student": {
+                                                                "type": "boolean",
+                                                                "example": 1
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -1759,6 +1804,26 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Exception message here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -1773,8 +1838,8 @@
                 "tags": [
                     "Counselor Referral"
                 ],
-                "summary": "Get single  Counselor Referral",
-                "description": "Returns list of Counselor Referral",
+                "summary": "Get single Counselor Referral",
+                "description": "Returns a Counselor Referral with target groups, academic year, and targets",
                 "operationId": "065cfe44acb46e56371b01fca1b7d2bc",
                 "parameters": [
                     {
@@ -1788,10 +1853,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "successful operation"
+                        "description": "Successful operation"
                     },
                     "400": {
                         "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     }
                 },
                 "security": [
@@ -1822,16 +1890,54 @@
                         "application/json": {
                             "schema": {
                                 "properties": {
-                                    "": {
-                                        "properties": {
-                                            "name": {
-                                                "type": "string"
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    },
+                                    "target_groups": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "academic_year_id": {
+                                                    "type": "integer"
+                                                },
+                                                "targets": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "min_target": {
+                                                                "type": "integer"
+                                                            },
+                                                            "max_target": {
+                                                                "type": "integer"
+                                                            },
+                                                            "amount_percentage": {
+                                                                "type": "integer"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "per_student": {
+                                                                "type": "integer"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
                                             },
-                                            "content": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "type": "object"
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object",
@@ -1841,8 +1947,16 @@
                                     "phone": "example phone",
                                     "address": "example address",
                                     "role": "example role",
-                                    "created_by": "example created_by",
-                                    "updated_by": "example updated_by"
+                                    "target_groups": {
+                                        "academic_year_id": 1,
+                                        "targets": {
+                                            "min_target": 50,
+                                            "max_target": 100,
+                                            "amount_percentage": 10,
+                                            "type": "percentage",
+                                            "per_student": 5
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1856,44 +1970,72 @@
                                 "schema": {
                                     "properties": {
                                         "id": {
-                                            "type": "number",
+                                            "type": "integer",
                                             "example": 1
                                         },
                                         "name": {
                                             "type": "string",
-                                            "example": "name"
+                                            "example": "John Doe"
                                         },
                                         "email": {
                                             "type": "string",
-                                            "example": "email"
+                                            "example": "johndoe@example.com"
                                         },
                                         "phone": {
                                             "type": "string",
-                                            "example": "phone"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "address"
+                                            "example": "+1234567890"
                                         },
                                         "role": {
                                             "type": "string",
-                                            "example": "role"
+                                            "example": "Counselor"
                                         },
                                         "created_by": {
-                                            "type": "number",
-                                            "example": "created_by"
+                                            "type": "integer",
+                                            "example": 1
                                         },
                                         "updated_by": {
-                                            "type": "number",
-                                            "example": "updated_by"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "type": "integer",
+                                            "example": 1
                                         },
                                         "created_at": {
                                             "type": "string",
-                                            "example": "2021-12-11T09:25:53.000000Z"
+                                            "example": "2025-03-21T09:25:53.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2025-03-21T09:25:53.000000Z"
+                                        },
+                                        "targets": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "min_target": {
+                                                        "type": "integer",
+                                                        "example": 10
+                                                    },
+                                                    "max_target": {
+                                                        "type": "integer",
+                                                        "example": 20
+                                                    },
+                                                    "amount_percentage": {
+                                                        "type": "string",
+                                                        "example": "10%"
+                                                    },
+                                                    "type": {
+                                                        "type": "string",
+                                                        "example": "Percentage"
+                                                    },
+                                                    "per_student": {
+                                                        "type": "boolean",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -6660,23 +6802,44 @@
                 "operationId": "d0100137412f58d1c914a9bed23f7379",
                 "parameters": [
                     {
-                        "name": "page",
+                        "name": "per_page",
                         "in": "query",
-                        "description": "Page number for pagination",
+                        "description": "Number of items per page (for pagination)",
                         "required": false,
                         "schema": {
                             "type": "integer",
-                            "example": 1
+                            "default": 10,
+                            "example": 10
                         }
                     },
                     {
-                        "name": "per_page",
+                        "name": "limit",
                         "in": "query",
-                        "description": "Number of students per page",
+                        "description": "Number of items to retrieve",
                         "required": false,
                         "schema": {
                             "type": "integer",
-                            "example": 10
+                            "example": 5
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Number of items to skip (used with limit)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 0
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "description": "Search by name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "shivam"
                         }
                     }
                 ],
@@ -6722,7 +6885,7 @@
                                                     "type": "integer",
                                                     "example": 1
                                                 },
-                                                "counselors": {
+                                                "counselor_referred_id": {
                                                     "type": "array",
                                                     "items": {
                                                         "properties": {
@@ -6734,9 +6897,13 @@
                                                                 "type": "string",
                                                                 "example": "jane@gmail.com"
                                                             },
+                                                            "counselor_phone": {
+                                                                "type": "string",
+                                                                "example": "+977 98525155"
+                                                            },
                                                             "counselor_role_name": {
                                                                 "type": "string",
-                                                                "example": "Senior Counselor"
+                                                                "example": "Counselor"
                                                             }
                                                         },
                                                         "type": "object"
@@ -6955,10 +7122,6 @@
                                         "description": "Student's phone number",
                                         "type": "string"
                                     },
-                                    "permanent_address": {
-                                        "description": "Permanent address of student",
-                                        "type": "string"
-                                    },
                                     "permanent_locality_id": {
                                         "description": "ID of the locality for the permanent address",
                                         "type": "integer"
@@ -6992,19 +7155,19 @@
                                                 {
                                                     "description": "New counselor details",
                                                     "properties": {
-                                                        "name": {
+                                                        "counselor_name": {
                                                             "description": "Name of the counselor",
                                                             "type": "string"
                                                         },
-                                                        "email": {
+                                                        "counselor_email": {
                                                             "description": "Email of the counselor",
                                                             "type": "string"
                                                         },
-                                                        "phone": {
+                                                        "counselor_phone": {
                                                             "description": "Phone number of the counselor",
                                                             "type": "string"
                                                         },
-                                                        "role": {
+                                                        "counselor_role_name": {
                                                             "description": "Role of the counselor",
                                                             "type": "string"
                                                         }
@@ -7096,15 +7259,20 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Student successfully created",
+                    "200": {
+                        "description": "Student details retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Student created successfully"
+                                            "example": "Student details retrieved successfully"
+                                        },
+                                        "status": {
+                                            "description": "Status code indicating success",
+                                            "type": "integer",
+                                            "example": 1
                                         },
                                         "data": {
                                             "properties": {
@@ -7118,7 +7286,7 @@
                                                 },
                                                 "email": {
                                                     "type": "string",
-                                                    "example": "john.doe@example.com"
+                                                    "example": "john@gmail.com"
                                                 },
                                                 "address": {
                                                     "type": "string",
@@ -7128,19 +7296,32 @@
                                                     "type": "string",
                                                     "example": "+1234567890"
                                                 },
-                                                "permanent_address": {
-                                                    "type": "string",
-                                                    "example": "Permanent Address Example"
-                                                },
                                                 "permanent_locality_id": {
                                                     "type": "integer",
-                                                    "example": 101
+                                                    "example": 1
                                                 },
-                                                "referral_source_id": {
+                                                "counselor_referred_id": {
                                                     "type": "array",
                                                     "items": {
-                                                        "type": "integer",
-                                                        "example": 1
+                                                        "properties": {
+                                                            "counselor_name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            },
+                                                            "counselor_email": {
+                                                                "type": "string",
+                                                                "example": "jane@gmail.com"
+                                                            },
+                                                            "counselor_phone": {
+                                                                "type": "string",
+                                                                "example": "+977 98525155"
+                                                            },
+                                                            "counselor_role_name": {
+                                                                "type": "string",
+                                                                "example": "Counselor"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
                                                 "document_files": {
@@ -7151,36 +7332,128 @@
                                                         "example": "document1.pdf"
                                                     }
                                                 },
-                                                "counselor_referred_id": {
+                                                "referral_sources": {
                                                     "type": "array",
                                                     "items": {
-                                                        "anyOf": [
-                                                            {
-                                                                "type": "integer",
-                                                                "example": 2
+                                                        "properties": {
+                                                            "referral_source_name": {
+                                                                "type": "string",
+                                                                "example": "Google"
                                                             },
-                                                            {
-                                                                "properties": {
-                                                                    "name": {
-                                                                        "type": "string",
-                                                                        "example": "Jane Smith"
-                                                                    },
-                                                                    "email": {
-                                                                        "type": "string",
-                                                                        "example": "jane.smith@example.com"
-                                                                    },
-                                                                    "phone": {
-                                                                        "type": "string",
-                                                                        "example": "+1987654321"
-                                                                    },
-                                                                    "role": {
-                                                                        "type": "string",
-                                                                        "example": "Lead Counselor"
-                                                                    }
-                                                                },
-                                                                "type": "object"
+                                                            "referral_source_description": {
+                                                                "type": "string",
+                                                                "example": "Google search engine"
                                                             }
-                                                        ]
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "course_interests": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "course_name": {
+                                                                "type": "string",
+                                                                "example": "Computer Science"
+                                                            },
+                                                            "remarks": {
+                                                                "type": "string",
+                                                                "example": "Interested in the course"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "follow up": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "date"
+                                                            },
+                                                            "next date": {
+                                                                "type": "string",
+                                                                "example": "next date"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "visit"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "permanent_locality_name": {
+                                                    "type": "string",
+                                                    "example": "municiplity"
+                                                },
+                                                "parent id": {
+                                                    "type": "string",
+                                                    "example": "district"
+                                                },
+                                                "adminstrative area": {
+                                                    "type": "string",
+                                                    "example": "province"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "nepal"
+                                                },
+                                                "guardian_info": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Doe"
+                                                            },
+                                                            "phone": {
+                                                                "type": "string",
+                                                                "example": "9876543210"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "789 Parent St, City"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Mother"
+                                                            },
+                                                            "current_guardian": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "education_history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "XYZ High School"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "123 School St, City"
+                                                            },
+                                                            "marks_received": {
+                                                                "type": "integer",
+                                                                "example": 85
+                                                            },
+                                                            "note": {
+                                                                "type": "string",
+                                                                "example": "Graduated with honors"
+                                                            },
+                                                            "course_studied": {
+                                                                "type": "string",
+                                                                "example": "Science"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 }
                                             },
@@ -7294,10 +7567,6 @@
                                                     "type": "string",
                                                     "example": "+1234567890"
                                                 },
-                                                "permanent_address": {
-                                                    "type": "string",
-                                                    "example": "456 Another St, City"
-                                                },
                                                 "permanent_locality_id": {
                                                     "type": "integer",
                                                     "example": 1
@@ -7314,9 +7583,13 @@
                                                                 "type": "string",
                                                                 "example": "jane@gmail.com"
                                                             },
+                                                            "counselor_phone": {
+                                                                "type": "string",
+                                                                "example": "+977 98525155"
+                                                            },
                                                             "counselor_role_name": {
                                                                 "type": "string",
-                                                                "example": "Senior Counselor"
+                                                                "example": "Counselor"
                                                             }
                                                         },
                                                         "type": "object"
@@ -7532,21 +7805,43 @@
                                         "type": "string",
                                         "example": "123-456-7890"
                                     },
-                                    "permanent_address": {
-                                        "type": "string",
-                                        "example": "456 Another St, City",
-                                        "nullable": true
-                                    },
                                     "permanent_locality_id": {
                                         "type": "integer",
                                         "example": 1,
                                         "nullable": true
                                     },
                                     "counselor_referred_id": {
+                                        "description": "Array of counselor IDs or new counselor data",
                                         "type": "array",
                                         "items": {
-                                            "type": "integer",
-                                            "example": 1
+                                            "anyOf": [
+                                                {
+                                                    "description": "Existing counselor ID",
+                                                    "type": "integer"
+                                                },
+                                                {
+                                                    "description": "New counselor details",
+                                                    "properties": {
+                                                        "counselor_name": {
+                                                            "description": "Name of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "counselor_email": {
+                                                            "description": "Email of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "counselor_phone": {
+                                                            "description": "Phone number of the counselor",
+                                                            "type": "string"
+                                                        },
+                                                        "counselor_role_name": {
+                                                            "description": "Role of the counselor",
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            ]
                                         }
                                     },
                                     "referral_source_id": {
@@ -7637,6 +7932,14 @@
                                             "type": "object"
                                         },
                                         "nullable": true
+                                    },
+                                    "document_files": {
+                                        "description": "Uploaded document files",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "document1.pdf"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -7646,136 +7949,258 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Student updated successfully",
+                        "description": "Student details retrieved successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Student updated successfully"
+                                            "example": "Student details retrieved successfully"
                                         },
-                                        "name": {
-                                            "type": "string",
-                                            "example": "John Doe"
-                                        },
-                                        "email": {
-                                            "type": "string",
-                                            "example": "johndoe@example.com"
-                                        },
-                                        "address": {
-                                            "type": "string",
-                                            "example": "123 Main St, City"
-                                        },
-                                        "phone": {
-                                            "type": "string",
-                                            "example": "123-456-7890"
-                                        },
-                                        "permanent_address": {
-                                            "type": "string",
-                                            "example": "456 Another St, City",
-                                            "nullable": true
-                                        },
-                                        "permanent_locality_id": {
+                                        "status": {
+                                            "description": "Status code indicating success",
                                             "type": "integer",
-                                            "example": 1,
-                                            "nullable": true
+                                            "example": 1
                                         },
-                                        "counselor_referred_id": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer",
-                                                "example": 1
-                                            }
-                                        },
-                                        "referral_source_id": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer",
-                                                "example": 2
-                                            },
-                                            "nullable": true
-                                        },
-                                        "course_info": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "course_id": {
-                                                        "type": "integer",
-                                                        "example": 1
-                                                    },
-                                                    "remarks": {
-                                                        "type": "string",
-                                                        "example": "Interested in the course"
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "john@gmail.com"
+                                                },
+                                                "address": {
+                                                    "type": "string",
+                                                    "example": "123 Main St"
+                                                },
+                                                "phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "permanent_locality_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "counselors": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "counselor_name": {
+                                                                "type": "string",
+                                                                "example": "Jane Smith"
+                                                            },
+                                                            "counselor_email": {
+                                                                "type": "string",
+                                                                "example": "jane@gmail.com"
+                                                            },
+                                                            "counselor_phone": {
+                                                                "type": "string",
+                                                                "example": "+977 98525155"
+                                                            },
+                                                            "counselor_role_name": {
+                                                                "type": "string",
+                                                                "example": "Counselor"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
-                                                "type": "object"
-                                            },
-                                            "nullable": true
-                                        },
-                                        "guardian_info": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "Jane Doe"
-                                                    },
-                                                    "phone": {
-                                                        "type": "string",
-                                                        "example": "987-654-3210"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "789 Parent St, City",
-                                                        "nullable": true
-                                                    },
-                                                    "type": {
-                                                        "type": "string",
-                                                        "example": "Mother",
-                                                        "nullable": true
-                                                    },
-                                                    "current_guardian": {
-                                                        "type": "boolean",
-                                                        "example": true
+                                                "referral_sources": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "referral_source_name": {
+                                                                "type": "string",
+                                                                "example": "Google"
+                                                            },
+                                                            "referral_source_description": {
+                                                                "type": "string",
+                                                                "example": "Google search engine"
+                                                            }
+                                                        },
+                                                        "type": "object"
                                                     }
                                                 },
-                                                "type": "object"
-                                            },
-                                            "nullable": true
-                                        },
-                                        "education_history": {
-                                            "type": "array",
-                                            "items": {
-                                                "properties": {
-                                                    "name": {
+                                                "document_files": {
+                                                    "description": "Uploaded document files",
+                                                    "type": "array",
+                                                    "items": {
                                                         "type": "string",
-                                                        "example": "XYZ High School"
-                                                    },
-                                                    "address": {
-                                                        "type": "string",
-                                                        "example": "123 School St, City",
-                                                        "nullable": true
-                                                    },
-                                                    "marks_received": {
-                                                        "type": "integer",
-                                                        "example": 85,
-                                                        "nullable": true
-                                                    },
-                                                    "note": {
-                                                        "type": "string",
-                                                        "example": "Graduated with honors",
-                                                        "nullable": true
-                                                    },
-                                                    "course_studied": {
-                                                        "type": "string",
-                                                        "example": "Science",
-                                                        "nullable": true
+                                                        "example": "document1.pdf"
                                                     }
                                                 },
-                                                "type": "object"
+                                                "course_interests": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "course_name": {
+                                                                "type": "string",
+                                                                "example": "Computer Science"
+                                                            },
+                                                            "remarks": {
+                                                                "type": "string",
+                                                                "example": "Interested in the course"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "follow up": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "date": {
+                                                                "type": "string",
+                                                                "example": "date"
+                                                            },
+                                                            "next date": {
+                                                                "type": "string",
+                                                                "example": "next date"
+                                                            },
+                                                            "status": {
+                                                                "type": "string",
+                                                                "example": "visit"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "permanent_locality_name": {
+                                                    "type": "string",
+                                                    "example": "municiplity"
+                                                },
+                                                "parent id": {
+                                                    "type": "string",
+                                                    "example": "district"
+                                                },
+                                                "adminstrative area": {
+                                                    "type": "string",
+                                                    "example": "province"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "nepal"
+                                                },
+                                                "guardian_info": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Doe"
+                                                            },
+                                                            "phone": {
+                                                                "type": "string",
+                                                                "example": "9876543210"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "789 Parent St, City"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Mother"
+                                                            },
+                                                            "current_guardian": {
+                                                                "type": "boolean",
+                                                                "example": true
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "education_history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "XYZ High School"
+                                                            },
+                                                            "address": {
+                                                                "type": "string",
+                                                                "example": "123 School St, City"
+                                                            },
+                                                            "marks_received": {
+                                                                "type": "integer",
+                                                                "example": 85
+                                                            },
+                                                            "note": {
+                                                                "type": "string",
+                                                                "example": "Graduated with honors"
+                                                            },
+                                                            "course_studied": {
+                                                                "type": "string",
+                                                                "example": "Science"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
                                             },
-                                            "nullable": true
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Student not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Student not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        },
+                                        "error": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -8496,72 +8921,6 @@
             }
         }
     },
-    "components": {
-        "responses": {
-            "422": {
-                "description": "Validation failed",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Validation failed"
-                                },
-                                "errors": {
-                                    "type": "object"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "404": {
-                "description": "Student not found",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Student not found"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            },
-            "500": {
-                "description": "Internal Server Error",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Internal Server Error"
-                                },
-                                "error": {
-                                    "type": "string"
-                                }
-                            },
-                            "type": "object"
-                        }
-                    }
-                }
-            }
-        },
-        "securitySchemes": {
-            "Bearer": {
-                "type": "http",
-                "scheme": "bearer",
-                "bearerFormat": "JWT",
-                "description": "JWT Bearer Authentication - Enter token in format (Bearer <your-token>)"
-            }
-        }
-    },
     "tags": [
         {
             "name": "Academic Year",
@@ -8652,6 +9011,16 @@
             "description": "University"
         }
     ],
+    "components": {
+        "securitySchemes": {
+            "Bearer": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "JWT Bearer Authentication - Enter token in format (Bearer <your-token>)"
+            }
+        }
+    },
     "security": {
         "1": {
             "Bearer": []

@@ -60,6 +60,20 @@ class ConfigSearchRestController extends Controller
      *         required=false,
      *         @OA\Schema(type="integer", default=10, example=10)
      *     ),
+     *     @OA\Parameter(
+     *            name="limit",
+     *            in="query",
+     *            description="Number of items to retrieve",
+     *            required=false,
+     *            @OA\Schema(type="integer", example=5)
+     *        ),
+     *        @OA\Parameter(
+     *            name="offset",
+     *            in="query",
+     *            description="Number of items to skip (used with limit)",
+     *            required=false,
+     *            @OA\Schema(type="integer", example=0)
+     *        ),
      *     @OA\Response(
      *         response=200,
      *         description="Successful operation",
@@ -159,6 +173,9 @@ class ConfigSearchRestController extends Controller
             $query->where('organizations.name', 'LIKE', '%' . $request->keyword . '%');
         }
         $query->orderByDesc('review_count')->orderByDesc('average_rating');
+        // Adding limit and offset for pagination
+
+
         $data['organizations'] = $query->get()->map(function ($org) {
             return [
                 'id' => $org->id,
@@ -172,17 +189,35 @@ class ConfigSearchRestController extends Controller
             ];
         });
         $perPage = $request->input('per_page', 10); // Default per page 10
-        $organizations = $query->paginate($perPage);
+        $limit = $request->input('limit', 10); // Default limit
+        $offset = $request->input('offset', 0); // Default offset
+
+        if ($limit) {
+            $total = $query->count();
+            $organizations = $query->limit($limit)->offset($offset)->get();
+            $meta = [
+                'total' => $total,
+                'per_page' => (int) $limit,
+                'current_page' => (int) ceil(($offset + 1) / $limit),
+                'last_page' => (int) ceil($total / $limit),
+                'next_page_url' => ($offset + $limit < $total) ? url()->current() . "?limit=$limit&offset=" . ($offset + $limit) : null,
+                'prev_page_url' => ($offset - $limit >= 0) ? url()->current() . "?limit=$limit&offset=" . ($offset - $limit) : null,
+            ];
+        } else {
+            $paginatedOrganizations = $query->paginate($perPage);
+            $meta = [
+                'total' => $paginatedOrganizations->total(),
+                'per_page' => $paginatedOrganizations->perPage(),
+                'current_page' => $paginatedOrganizations->currentPage(),
+                'last_page' => $paginatedOrganizations->lastPage(),
+                'next_page_url' => $paginatedOrganizations->nextPageUrl(),
+                'prev_page_url' => $paginatedOrganizations->previousPageUrl(),
+            ];
+            $organizations = collect($paginatedOrganizations->items());
+        }
         return response()->json([
-            'data' => $data,
-            'meta' => [
-                'total' => $organizations->total(),
-                'per_page' => $organizations->perPage(),
-                'current_page' => $organizations->currentPage(),
-                'last_page' => $organizations->lastPage(),
-                'next_page_url' => $organizations->nextPageUrl(),
-                'prev_page_url' => $organizations->previousPageUrl(),
-            ],
+            'data' => $organizations,
+            'meta' => $meta,
             'message' => '',
             'status' => true,
             'timestamp' => now()->toIso8601String()
