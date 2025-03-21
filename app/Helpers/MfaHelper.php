@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 use Ramsey\Uuid\Uuid;
+use App\Models\SmsApiToken;
 class MfaHelper
 {
     public static function generateSecret()
@@ -25,4 +26,5 @@ class MfaHelper
     {
         return Uuid::uuid4()->toString();
     }
+
 }

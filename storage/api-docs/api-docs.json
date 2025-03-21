@@ -4203,10 +4203,6 @@
                                         "type": "string",
                                         "example": "Your OTP is 123456"
                                     },
-                                    "sender_phone_number": {
-                                        "type": "string",
-                                        "example": "+1122334455"
-                                    },
                                     "vendor": {
                                         "type": "string",
                                         "example": "vendor123"

@@ -149,7 +149,9 @@
                         {{-- Email Ends here --}}
 
                         {{-- SMS Starts Here --}}
-                        
+                        <div class="sms" style="display:none;">
+                            @include('admin.components.whatsapp_messages.sms')
+                        </div>
                         {{-- SMS Ends Here --}}
                     </div>
                 </div>
@@ -161,15 +163,22 @@
     @include('admin.components.whatsapp_messages.script')
     @include('admin.components.email.script')
     <script>
-        $(document).ready(function() {
-            $('#emailBtn').on('click', function() {
-                $('.email').css('display', 'block');
-                $('.whatsapp').css('display', 'none');
-            });
-            $('#whatsappBtn').on('click', function() {
-                $('.email').css('display', 'none');
-                $('.whatsapp').css('display', 'block');
-            });
-        });
+   $(document).ready(function() {
+    $('#emailBtn').on('click', function() {
+        $('.email').css('display', 'block');
+        $('.whatsapp').css('display', 'none');
+        $('.sms').css('display', 'none');  // Hide SMS form
+    });
+    $('#whatsappBtn').on('click', function() {
+        $('.email').css('display', 'none');
+        $('.whatsapp').css('display', 'block');
+        $('.sms').css('display', 'none');  // Hide SMS form
+    });
+    $('#smsBtn').on('click', function() {
+        $('.email').css('display', 'none');
+        $('.whatsapp').css('display', 'none');
+        $('.sms').css('display', 'block');  // Show SMS form
+    });
+});
     </script>
 @endsection

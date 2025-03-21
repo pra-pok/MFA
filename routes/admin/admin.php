@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\PageCategoryController;
 use App\Http\Controllers\Admin\NewEventController;
 use App\Http\Controllers\Admin\OrganizationemailconfigController;
 use App\Http\Controllers\Admin\WhatsAppMessagesController;
+use App\Http\Controllers\Admin\SmsController;
 
 //universities
 Route::group(['prefix' =>'university', 'as' => 'university.'], function() {
@@ -134,6 +135,13 @@ Route::group(['prefix' =>'whatsapp', 'as' => 'whatsapp-messages.'], function() {
     Route::get('create',[WhatsAppMessagesController::class,'create'])->name('create');
     Route::post('send', [WhatsAppMessagesController::class, 'sendTextMessage'])->name('store');
 });
+
+Route::group(['prefix' =>'sms', 'as' => 'sms.'], function() {
+    Route::post('/sms/api/token', [SmsController::class, 'storeApiToken'])->name('storeApiToken');
+    Route::post('/sms/send', [SmsController::class, 'sendSms'])->name('sendSms');
+});
+
+
 // Route::group(['prefix' =>'organization-email-config', 'as' => 'organization_email_config.'], function() {
 //     Route::get('/', [OrganizationemailconfigController::class, 'index']);
 //     Route::post('/store', [OrganizationemailconfigController::class, 'store']);

@@ -17,8 +17,8 @@ Route::middleware('guest')->group(function () {
 
     // Route::post('register', [RegisteredUserController::class, 'store']);
 
-//    Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])
-//        ->name('login');
+   Route::get('mfa-admin/signin', [AuthenticatedSessionController::class, 'loginForm'])
+       ->name('login');
 //
 //    Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
